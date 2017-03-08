@@ -11,5 +11,6 @@
     <description>Chattel is a library for connecting to, and gathering assets from, asset servers for Halcyon-based virtual world grids</description>
     <copyright>Copyright 2017</copyright>
     <tags>Halcyon InWorldz WHIP </tags>
+    <releaseNotes>See https://github.com/kf6kjg/chattel/releases for release notes.</releaseNotes>
   </metadata>
 </package>
