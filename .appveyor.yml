@@ -22,7 +22,7 @@ before_build:
   - nuget restore Source\Chattel.sln
 
 after_build:
-  - ps: nuget pack Source\Chattel.nuspec
+  - ps: nuget pack Source\Chattel\Chattel.nuspec
 
 deploy:
   - provider: NuGet
