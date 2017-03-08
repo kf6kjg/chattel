@@ -1,0 +1,20 @@
+language: csharp
+solution: Source/Chattel.sln
+
+mono:
+  - 4.6.0
+
+cache:
+  directories:
+    - Source\packages
+
+before_script:
+  - if [ "$TRAVIS_TAG" ]; then export TAG_VERSION="$TRAVIS_TAG.$TRAVIS_BUILD_NUMBER"; else export TAG_VERSION="v1.0.0.$TRAVIS_BUILD_NUMBER"; fi
+  - export TAG_VERSION=`echo $TAG_VERSION | sed 's/v//'`
+  - echo "Setting version to '$TAG_VERSION'"
+  - sed -i "s/1\.0\.\*/$TAG_VERSION/" Source/Chattel/Properties/AssemblyInfo.cs
+
+before_deploy:
+  - mv bin Anaximander2
+  - zip -r Anaximander2-mono.zip Anaximander2 > /dev/null
+
