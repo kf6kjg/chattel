@@ -18,7 +18,7 @@ before_build:
   - ps: $env:TAG_VERSION = $env:TAG_VERSION -replace 'v',''
   - ps: Write-Host "Setting version to '$env:TAG_VERSION'"
   - ps: (Get-Content Source\Chattel\Properties\AssemblyInfo.cs) -replace '1\.0\.\*', "$env:TAG_VERSION" | Set-Content Source\Chattel\Properties\AssemblyInfo.cs
-  - ps: (Get-Content Source\Chattel\Chattel.nuspec) -replace '0\.0\.\0', "$env:TAG_VERSION" | Set-Content Source\Chattel\Chattel.nuspec
+  - ps: (Get-Content Source\Chattel\Chattel.nuspec) -replace '0\.0\.0', "$env:TAG_VERSION" | Set-Content Source\Chattel\Chattel.nuspec
   - nuget restore Source\Chattel.sln
 
 after_build:
