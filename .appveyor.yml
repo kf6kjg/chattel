@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.0.0.{build}
 
 image: Visual Studio 2015
 
@@ -21,16 +21,11 @@ before_build:
   - ps: (Get-Content Source\Chattel\Chattel.nuspec) -replace '0\.0\.0', "$env:TAG_VERSION" | Set-Content Source\Chattel\Chattel.nuspec
   - nuget restore Source\Chattel.sln
 
-after_build:
-  - ps: nuget pack Source\Chattel\Chattel.nuspec
-
 deploy:
   - provider: NuGet
     name: nuget_release
     api_key:
       secure: +hm1BCQ/EJVCH+54NubYH/vrBBwGlTV2xzAzle4wj72453ao/QRoA6YwVAS6F15C
-      
-      
     skip_symbols: true
     on:
       appveyor_repo_tag: true
