@@ -102,10 +102,10 @@ namespace InWorldz.Data.Assets.Stratus {
 						 Type == (sbyte)OpenMetaverse.AssetType.Texture ||
 						 Type == (sbyte)OpenMetaverse.AssetType.TextureTGA ||
 						 Type == (sbyte)OpenMetaverse.AssetType.Folder ||
-						 Type == (sbyte)OpenMetaverse.AssetType.RootFolder ||
-						 Type == (sbyte)OpenMetaverse.AssetType.LostAndFoundFolder ||
-						 Type == (sbyte)OpenMetaverse.AssetType.SnapshotFolder ||
-						 Type == (sbyte)OpenMetaverse.AssetType.TrashFolder ||
+						 Type == (sbyte)OpenMetaverse.FolderType.Root ||
+						 Type == (sbyte)OpenMetaverse.FolderType.LostAndFound ||
+						 Type == (sbyte)OpenMetaverse.FolderType.Snapshot ||
+						 Type == (sbyte)OpenMetaverse.FolderType.Trash ||
 						 Type == (sbyte)OpenMetaverse.AssetType.ImageJPEG ||
 						 Type == (sbyte)OpenMetaverse.AssetType.ImageTGA ||
 						 Type == (sbyte)OpenMetaverse.AssetType.LSLBytecode);
