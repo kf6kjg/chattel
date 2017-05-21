@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using log4net;
@@ -127,29 +128,35 @@ namespace Chattel {
 					var sourceConfig = configSource.Configs[source];
 					IAssetServer serverConnector = null;
 					var type = sourceConfig?.GetString("Type", string.Empty).ToLower();
-					switch (type) {
-						case "whip":
-							serverConnector = new AssetServerWHIP(
-								source,
-								sourceConfig.GetString("Host", string.Empty),
-								sourceConfig.GetInt("Port", 32700),
-								sourceConfig.GetString("Password", "changeme") // Yes, that's the default password for WHIP.
-							);
-						break;
-						case "cf":
-							serverConnector = new AssetServerCF(
-								source,
-								sourceConfig.GetString("Username", string.Empty),
-								sourceConfig.GetString("APIKey", string.Empty),
-								sourceConfig.GetString("DefaultRegion", string.Empty),
-								sourceConfig.GetBoolean("UseInternalURL", true),
-								sourceConfig.GetString("ContainerPrefix", string.Empty)
-							);
-						break;
-						default:
-							LOG.Warn($"[ASSET_READER] Unknown asset server type in section [{source}].");
-						break;
+					try {
+						switch (type) {
+							case "whip":
+								serverConnector = new AssetServerWHIP(
+									source,
+									sourceConfig.GetString("Host", string.Empty),
+									sourceConfig.GetInt("Port", 32700),
+									sourceConfig.GetString("Password", "changeme") // Yes, that's the default password for WHIP.
+								);
+							break;
+							case "cf":
+								serverConnector = new AssetServerCF(
+									source,
+									sourceConfig.GetString("Username", string.Empty),
+									sourceConfig.GetString("APIKey", string.Empty),
+									sourceConfig.GetString("DefaultRegion", string.Empty),
+									sourceConfig.GetBoolean("UseInternalURL", true),
+									sourceConfig.GetString("ContainerPrefix", string.Empty)
+								);
+							break;
+							default:
+								LOG.Warn($"[ASSET_READER] Unknown asset server type in section [{source}].");
+							break;
+						}
 					}
+					catch (SocketException e) {
+						LOG.Error($"[ASSET_READER] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
+					}
+
 					if (serverConnector != null) {
 						_serialParallelAssetServers.Add(new List<IAssetServer> { serverConnector });
 					}
