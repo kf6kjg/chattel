@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Chattel {
-	public struct AssetServerWHIPConfig : IAssetServerConfig {
+	internal struct AssetServerWHIPConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
 		public AssetServerType Type {

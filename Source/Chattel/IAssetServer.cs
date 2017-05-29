@@ -30,7 +30,7 @@ using Nini.Config;
 using OpenMetaverse;
 
 namespace Chattel {
-	public interface IAssetServer : IDisposable {
+	internal interface IAssetServer : IDisposable {
 		StratusAsset RequestAssetSync(UUID assetID);
 	}
 }

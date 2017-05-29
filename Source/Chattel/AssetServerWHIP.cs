@@ -32,7 +32,7 @@ using log4net;
 using OpenMetaverse;
 
 namespace Chattel {
-	public class AssetServerWHIP : IAssetServer {
+	internal class AssetServerWHIP : IAssetServer {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		// Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.

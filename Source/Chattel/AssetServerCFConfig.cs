@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Chattel {
-	public struct AssetServerCFConfig : IAssetServerConfig {
+	internal struct AssetServerCFConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
 		public AssetServerType Type {

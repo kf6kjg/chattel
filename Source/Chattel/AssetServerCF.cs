@@ -32,7 +32,7 @@ using net.openstack.Core.Domain;
 using OpenMetaverse;
 
 namespace Chattel {
-	public class AssetServerCF : IAssetServer {
+	internal class AssetServerCF : IAssetServer {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;

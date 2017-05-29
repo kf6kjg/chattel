@@ -31,14 +31,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using JSIStudios.SimpleRESTServices.Client;
 using JSIStudios.SimpleRESTServices.Client.Json;
 
 namespace InWorldz.Data.Assets.Stratus.CoreExt {
-	public class ExtendedJsonRestServices : JsonRestServices {
+	internal class ExtendedJsonRestServices : JsonRestServices {
 		private int _writeRequestTimeout = 10000;
 		private int _readRequestTimeout = 45000;
 
