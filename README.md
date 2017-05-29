@@ -4,7 +4,7 @@
 			<h1 align="center">Chattel</h1>
 			<p align="center">.NET/Mono library for acessing WHIP- and CF-based Halcyon assets</p>
 		</th>
-		<th align="right" width="100">
+		<th align="right">
 			<a href="https://travis-ci.org/kf6kjg/chattel"><img alt="Travis-CI Build Status" src="https://travis-ci.org/kf6kjg/chattel.svg?branch=master"/></a><br/>
 			<a href="https://ci.appveyor.com/project/kf6kjg/chattel"><img alt="Appveyor Build Status" src="https://ci.appveyor.com/api/projects/status/github/kf6kjg/chattel?svg=true&branch=master"/></a><br/>
 			<a href="https://www.nuget.org/packages/Chattel"><img alt="Nuget Version" src="https://img.shields.io/nuget/v/Chattel.svg?maxAge=2592000"/></a>
