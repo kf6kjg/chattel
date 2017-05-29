@@ -1,4 +1,4 @@
-// IAssetServer.cs
+// AssetServerWHIP.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>

@@ -1,5 +1,4 @@
-﻿
-// Chattel.cs
+﻿// Chattel.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -26,7 +25,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using log4net;

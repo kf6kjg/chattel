@@ -1,5 +1,4 @@
-﻿
-// Chattel.cs
+﻿// Chattel.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -24,14 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
-using log4net;
 using OpenMetaverse;
-using ProtoBuf;
 
 namespace Chattel {
 	public class ChattelReader {

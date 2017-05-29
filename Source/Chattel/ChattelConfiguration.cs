@@ -92,7 +92,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Warn("[ASSET_CONFIG] Servers empty or not specified. No asset servers connectors configured. Only pre-determined texture colors will be used for drawing.");
+				LOG.Warn("[ASSET_CONFIG] Servers empty or not specified. No asset servers connectors configured.");
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Warn("[ASSET_CONFIG] Assets:Servers empty or not specified. No asset server sections configured. Only pre-determined texture colors will be used for drawing.");
+				LOG.Warn("[ASSET_CONFIG] Assets:Servers empty or not specified. No asset server sections configured.");
 			}
 		}
 
