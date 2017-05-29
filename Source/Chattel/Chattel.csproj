@@ -83,6 +83,7 @@
     <Compile Include="IAssetServerConfig.cs" />
     <Compile Include="AssetServerWHIPConfig.cs" />
     <Compile Include="AssetServerCFConfig.cs" />
+    <Compile Include="ChattelConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

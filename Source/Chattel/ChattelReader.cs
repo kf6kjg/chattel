@@ -1,4 +1,5 @@
-﻿// Chattel.cs
+﻿
+// Chattel.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -24,14 +25,11 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using log4net;
-using Nini.Config;
 using OpenMetaverse;
 using ProtoBuf;
 
@@ -39,132 +37,20 @@ namespace Chattel {
 	public class ChattelReader {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private List<List<IAssetServer>> _serialParallelAssetServers;
-
-		private DirectoryInfo _cacheFolder;
+		private ChattelConfiguration _config;
 
 		private readonly ConcurrentDictionary<string, StratusAsset> _assetsBeingWritten = new ConcurrentDictionary<string, StratusAsset>();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Chattel.Chattel"/> class.
-		/// If the cachePath is null, empty, or references a folder that doesn't exist or doesn't have write access, the cache will be disabled.
-		/// The serialParallelServerConfigs parameter allows you to specify server groups that shoudl be accessed serially with subgroups that should be accessed in parallel.
-		/// Eg. if you have a new server you want to be hit for all operations, but to fallback to whichever of two older servers returns first, then set up a pattern like [ [ primary ], [ second1, second2 ] ].
+		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
 		/// </summary>
-		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
-		/// <param name="serialParallelServerConfigs">Serially-accessed parallel server configs.</param>
-		public ChattelReader(string cachePath = null, List<List<IAssetServerConfig>> serialParallelServerConfigs = null) {
-			// Set up caching
-			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Info($"[ASSET_READER] CachePath is empty, caching assets disabled.");
-			}
-			else if (!Directory.Exists(cachePath)) {
-				LOG.Info($"[ASSET_READER] CachePath folder does not exist, caching assets disabled.");
-			}
-			else {
-				_cacheFolder = new DirectoryInfo(cachePath);
-				LOG.Info($"[ASSET_READER] Caching assets enabled at {_cacheFolder.FullName}");
+		/// <param name="config">Instance of the configuration class.</param>
+		public ChattelReader(ChattelConfiguration config) {
+			if (config == null) {
+				throw new ArgumentNullException(nameof(config));
 			}
 
-			// Set up server handlers
-			if (serialParallelServerConfigs != null && serialParallelServerConfigs.Count > 0) {
-				foreach (var parallelConfigs in serialParallelServerConfigs) {
-					var parallelServerConnectors = new List<IAssetServer>();
-					foreach (var config in parallelConfigs) {
-						IAssetServer serverConnector = null;
-
-						switch (config.Type) {
-							case AssetServerType.WHIP:
-								serverConnector = new AssetServerWHIP((AssetServerWHIPConfig)config);
-							break;
-							case AssetServerType.CF:
-								serverConnector = new AssetServerCF((AssetServerCFConfig)config);
-							break;
-							default:
-								LOG.Warn($"[ASSET_READER] Unknown asset server type {config.Type} with name {config.Name}.");
-							break;
-						}
-
-						if (serverConnector != null) {
-							parallelServerConnectors.Add(serverConnector);
-						}
-					}
-
-					if (parallelServerConnectors.Count > 0) {
-						_serialParallelAssetServers.Add(parallelServerConnectors);
-					}
-				}
-			}
-			else {
-				LOG.Warn("[ASSET_READER] Servers empty or not specified. No asset servers connectors configured. Only pre-determined texture colors will be used for drawing.");
-			}
-		}
-
-		public ChattelReader(IConfigSource configSource) {
-			var config = configSource.Configs["Assets"];
-
-			// Set up caching
-			var cachePath = config?.GetString("CachePath", string.Empty) ?? string.Empty;
-
-			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Info($"[ASSET_READER] Assets:CachePath is empty, caching assets disabled.");
-			}
-			else if (!Directory.Exists(cachePath)) {
-				LOG.Info($"[ASSET_READER] Assets:CachePath folder does not exist, caching assets disabled.");
-			}
-			else {
-				_cacheFolder = new DirectoryInfo(cachePath);
-				LOG.Info($"[ASSET_READER] Caching assets enabled at {_cacheFolder.FullName}");
-			}
-
-			// Set up server handlers
-			_serialParallelAssetServers = new List<List<IAssetServer>>();
-
-			// Read in a config list that lists the priority order of servers and their settings.
-			var sources = config?.GetString("Servers", string.Empty).Split(',').Where(source => !string.IsNullOrWhiteSpace(source)).Select(source => source.Trim());
-
-			if (sources != null && sources.Count() > 0) {
-				foreach (var source in sources) {
-					var sourceConfig = configSource.Configs[source];
-					IAssetServer serverConnector = null;
-					var type = sourceConfig?.GetString("Type", string.Empty).ToLower();
-					try {
-						switch (type) {
-							case "whip":
-								serverConnector = new AssetServerWHIP(
-									source,
-									sourceConfig.GetString("Host", string.Empty),
-									sourceConfig.GetInt("Port", 32700),
-									sourceConfig.GetString("Password", "changeme") // Yes, that's the default password for WHIP.
-								);
-							break;
-							case "cf":
-								serverConnector = new AssetServerCF(
-									source,
-									sourceConfig.GetString("Username", string.Empty),
-									sourceConfig.GetString("APIKey", string.Empty),
-									sourceConfig.GetString("DefaultRegion", string.Empty),
-									sourceConfig.GetBoolean("UseInternalURL", true),
-									sourceConfig.GetString("ContainerPrefix", string.Empty)
-								);
-							break;
-							default:
-								LOG.Warn($"[ASSET_READER] Unknown asset server type in section [{source}].");
-							break;
-						}
-					}
-					catch (SocketException e) {
-						LOG.Error($"[ASSET_READER] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
-					}
-
-					if (serverConnector != null) {
-						_serialParallelAssetServers.Add(new List<IAssetServer> { serverConnector });
-					}
-				}
-			}
-			else {
-				LOG.Warn("[ASSET_READER] Assets:Servers empty or not specified. No asset server sections configured. Only pre-determined texture colors will be used for drawing.");
-			}
+			_config = config;
 		}
 
 		public StratusAsset GetAssetSync(UUID assetId) {
@@ -176,7 +62,7 @@ namespace Chattel {
 			}
 
 			// Got to go try the servers now.
-			foreach (var parallelServers in _serialParallelAssetServers) {
+			foreach (var parallelServers in _config.SerialParallelAssetServers) {
 				if (parallelServers.Count == 1) {
 					result = parallelServers[0].RequestAssetSync(assetId);
 				}
@@ -194,7 +80,7 @@ namespace Chattel {
 		}
 
 		private bool TryGetCachedAsset(UUID assetId, out StratusAsset asset) {
-			if (_cacheFolder == null) { // Caching is disabled.
+			if (!_config.CacheEnabled) {
 				asset = null;
 				return false;
 			}
@@ -217,14 +103,14 @@ namespace Chattel {
 				return true;
 			}
 			catch (PathTooLongException e) {
-				_cacheFolder = null;
+				_config.DisableCache();
 				LOG.Error("[ASSET_READER] Attempted to read a cached asset, but the path was too long for the filesystem.  Disabling caching.", e);
 			}
 			catch (DirectoryNotFoundException) {
 				// Kinda expected if that's an item that's not been cached.
 			}
 			catch (UnauthorizedAccessException e) {
-				_cacheFolder = null;
+				_config.DisableCache();
 				LOG.Error("[ASSET_READER] Attempted to read a cached asset, but this user is not allowed access.  Disabling caching.", e);
 			}
 			catch (FileNotFoundException) {
@@ -257,7 +143,7 @@ namespace Chattel {
 		}
 
 		private void CacheAsset(StratusAsset asset) {
-			if (_cacheFolder == null || asset == null) { // Caching is disabled or stupidity.
+			if (!_config.CacheEnabled || asset == null) { // Caching is disabled or stupidity.
 				return;
 			}
 
@@ -281,15 +167,15 @@ namespace Chattel {
 				LOG.Debug($"[ASSET_READER] Wrote an asset to cache: {path}");
 			}
 			catch (UnauthorizedAccessException e) {
-				_cacheFolder = null;
+				_config.DisableCache();
 				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but this user is not allowed access.  Disabling caching.", e);
 			}
 			catch (PathTooLongException e) {
-				_cacheFolder = null;
+				_config.DisableCache();
 				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but the path was too long for the filesystem.  Disabling caching.", e);
 			}
 			catch (DirectoryNotFoundException e) {
-				_cacheFolder = null;
+				_config.DisableCache();
 				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but cache folder was not found.  Disabling caching.", e);
 			}
 			catch (IOException e) {
@@ -314,7 +200,7 @@ namespace Chattel {
 		/// <param name="id">Asset identifier.</param>
 		private string UuidToCachePath(Guid id) {
 			var noPunctuationAssetId = id.ToString("N");
-			var path = _cacheFolder.FullName;
+			var path = _config.CacheFolder.FullName;
 			for (var index = 0; index < noPunctuationAssetId.Length; index += 2) {
 				path = Path.Combine(path, noPunctuationAssetId.Substring(index, 2));
 			}
@@ -322,4 +208,3 @@ namespace Chattel {
 		}
 	}
 }
-
