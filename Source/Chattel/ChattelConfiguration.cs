@@ -60,6 +60,9 @@ namespace Chattel {
 			}
 
 			// Set up server handlers
+			SerialParallelAssetServers = new List<List<IAssetServer>>();
+
+			// Set up server handlers
 			if (serialParallelServerConfigs != null && serialParallelServerConfigs.Count > 0) {
 				foreach (var parallelConfigs in serialParallelServerConfigs) {
 					var parallelServerConnectors = new List<IAssetServer>();
