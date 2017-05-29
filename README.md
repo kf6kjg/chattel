@@ -2,7 +2,7 @@
 	<tr>
 		<th>
 			<h1 align="center">Chattel</h1>
-			<p align="center">.NET/Mono library for acessing WHIP- and CF-based Halcyon assets</p>
+			<p align="center">.NET/Mono library for accessing WHIP and CloudFiles based Halcyon assets</p>
 		</th>
 		<th align="right">
 			<a href="https://travis-ci.org/kf6kjg/chattel"><img alt="Travis-CI Build Status" src="https://travis-ci.org/kf6kjg/chattel.svg?branch=master"/></a><br/>
@@ -30,8 +30,17 @@ Chattel provides:
 
 How is Chattel different from InWorldz' [whip-dotnet-client](https://github.com/InWorldz/whip-dotnet-client)? Simple: whip-dotnet-client is a very low-level library designed to allow connection to a WHIP server, but it cannot decode the resulting stream into something useful - Chattel can.  Chattel also takes this one step further and allows you connect to other asset servers that are not WHIP-based.
 
+# Series-parallel array of asset servers
+Chattel allows you to query multiple asset servers at the same time, aka in parallel, with the first one to return the asset winning. It also allows you to specify within this parallel list asset servers that should be queried in series until one returns the requested asset.
+
+The benefit of this arrangement only comes if your grid is growing and you've had to change asset servers.  Let's assume that you started your grid with WHIP, but later spun up a CloudFiles server and ported all your assets to the latter, but your WHIP servers are there just in case some asset didn't get ported.  With this set up you could specify that the CloudFiles servers should be queried first, then the old WHIP servers, by setting the CloudFiles server in series with WHIP.
+
+Alternatively, let's say you had multiple grids with different asset servers, but your application requires that you be able to pull assets from all of them.  Simply set each asset server in parallel.  If some of those have legacy asset servers, set the legacy asset servers in series with their primaries.
+
+There are many possibilities and use-cases enabled by this architecture.
+
 # Installation
-Simply use your NuGet package manager to install the lastest release straight from the [NuGet.org package][nugetpackage] built by the [Appveyor integration][appveyor].
+Simply use your NuGet package manager to install the latest release straight from the [NuGet.org package][nugetpackage] built by the [Appveyor integration][appveyor].
 
 # Contributing
 Open source contributions are very welcome - please follow the style you find in the code.
