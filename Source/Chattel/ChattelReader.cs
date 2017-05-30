@@ -51,12 +51,26 @@ namespace Chattel {
 		}
 
 		/// <summary>
+		/// Alias for GetAssetSync
+		/// </summary>
+		/// <returns>The asset.</returns>
+		/// <param name="assetId">Asset identifier.</param>
+		public StratusAsset ReadAssetSync(UUID assetId) {
+			return GetAssetSync(assetId);
+		}
+
+		/// <summary>
 		/// Gets the asset from the server.
 		/// </summary>
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
 		public StratusAsset GetAssetSync(UUID assetId) {
 			StratusAsset result = null;
+
+			// Ask for null, get null.
+			if (assetId.Guid == Guid.Empty) {
+				return null;
+			}
 
 			// Hit up the cache first.
 			if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
