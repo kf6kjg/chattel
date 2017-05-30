@@ -39,7 +39,7 @@ namespace Chattel {
 		internal DirectoryInfo CacheFolder;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Chattel.Chattel"/> class.
+		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.
 		/// If the cachePath is null, empty, or references a folder that doesn't exist or doesn't have write access, the cache will be disabled.
 		/// The serialParallelServerConfigs parameter allows you to specify server groups that shoudl be accessed serially with subgroups that should be accessed in parallel.
 		/// Eg. if you have a new server you want to be hit for all operations, but to fallback to whichever of two older servers returns first, then set up a pattern like [ [ primary ], [ second1, second2 ] ].
@@ -96,17 +96,31 @@ namespace Chattel {
 			}
 		}
 
-		public ChattelConfiguration(IConfigSource configSource) {
-			var config = configSource.Configs["Assets"];
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.  Can only define servers that will be accessed serially.
+		/// The <paramref name="configSource"/> is the whole Nini configuration, but the <paramref name="assetConfig"/> is the block that contains the following entries:
+		/// <list type="bullet">
+		/// 	<item>
+		/// 		<term>CachePath</term>
+		/// 		<description>String. The path to the folder where the disk cache will be stored.  If empty or missing caching is disabled.</description>
+		/// 	</item>
+		/// 	<item>
+		/// 		<term>Servers</term>
+		/// 		<description>String. Comma delimited list of config section names to pull up server parameters.</description>
+		/// 	</item>
+		/// </list>
+		/// </summary>
+		/// <param name="configSource">Config source.</param>
+		/// <param name="assetConfig">Config instance for the asset options.</param>
+		public ChattelConfiguration(IConfigSource configSource, IConfig assetConfig) {
 			// Set up caching
-			var cachePath = config?.GetString("CachePath", string.Empty) ?? string.Empty;
+			var cachePath = assetConfig?.GetString("CachePath", string.Empty) ?? string.Empty;
 
 			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] Assets:CachePath is empty, caching assets disabled.");
+				LOG.Info($"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
 			}
 			else if (!Directory.Exists(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] Assets:CachePath folder does not exist, caching assets disabled.");
+				LOG.Info($"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
 			}
 			else {
 				CacheFolder = new DirectoryInfo(cachePath);
@@ -117,7 +131,7 @@ namespace Chattel {
 			SerialParallelAssetServers = new List<List<IAssetServer>>();
 
 			// Read in a config list that lists the priority order of servers and their settings.
-			var sources = config?.GetString("Servers", string.Empty).Split(',').Where(source => !string.IsNullOrWhiteSpace(source)).Select(source => source.Trim());
+			var sources = assetConfig?.GetString("Servers", string.Empty).Split(',').Where(source => !string.IsNullOrWhiteSpace(source)).Select(source => source.Trim());
 
 			if (sources != null && sources.Count() > 0) {
 				foreach (var source in sources) {
@@ -159,7 +173,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Warn("[ASSET_CONFIG] Assets:Servers empty or not specified. No asset server sections configured.");
+				LOG.Warn("[ASSET_CONFIG] Servers empty or not specified. No asset server sections configured.");
 			}
 		}
 

@@ -50,6 +50,11 @@ namespace Chattel {
 			}
 		}
 
+		/// <summary>
+		/// Gets the asset from the server.
+		/// </summary>
+		/// <returns>The asset.</returns>
+		/// <param name="assetId">Asset identifier.</param>
 		public StratusAsset GetAssetSync(UUID assetId) {
 			StratusAsset result = null;
 
