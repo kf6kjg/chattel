@@ -76,10 +76,10 @@ namespace Chattel {
 		}
 
 		public StratusAsset RequestAssetSync(UUID assetID) {
-			Asset asset = null;
+			Asset whipAsset = null;
 
 			try {
-				asset = _provider.GetAsset(assetID.ToString());
+				whipAsset = _provider.GetAsset(assetID.ToString());
 			}
 			catch (AssetServerError e) {
 				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Error getting asset from server.", e);
@@ -92,18 +92,47 @@ namespace Chattel {
 
 			return new StratusAsset {
 				Id = assetID.Guid,
-				Type = (sbyte)asset.Type,
-				Local = asset.Local,
-				Temporary = asset.Temporary,
-				CreateTime = UnixToUTCDateTime(asset.CreateTime),
-				Name = asset.Name,
-				Description = asset.Description,
-				Data = asset.Data,
+				Type = (sbyte)whipAsset.Type,
+				Local = whipAsset.Local,
+				Temporary = whipAsset.Temporary,
+				CreateTime = UnixToUTCDateTime(whipAsset.CreateTime),
+				Name = whipAsset.Name,
+				Description = whipAsset.Description,
+				Data = whipAsset.Data,
 			};
 		}
 
-		private static DateTime UnixToUTCDateTime(int seconds) {
+		public void StoreAssetSync(StratusAsset asset) {
+			var whipAsset = new Asset(
+				asset.Id.ToString(),
+				(byte)asset.Type,
+				asset.Local,
+				asset.Temporary,
+				(int)UTCDateTimeToEpoch(asset.CreateTime), // At some point this'll need to be corrected to a 64bit timestamp...
+				asset.Name,
+				asset.Description,
+				asset.Data
+			);
+
+			try {
+				_provider.PutAsset(whipAsset);
+			}
+			catch (AssetServerError e) {
+				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Error sending asset to server.", e);
+				throw new AssetWriteException(asset.Id, e);
+			}
+			catch (AuthException e) {
+				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Authentication error sending asset to server.", e);
+				throw new AssetWriteException(asset.Id, e);
+			}
+		}
+
+		private static DateTime UnixToUTCDateTime(long seconds) {
 			return UNIX_EPOCH.AddSeconds(seconds);
+		}
+
+		private static long UTCDateTimeToEpoch(DateTime timestamp) {
+			return (long)(timestamp.Subtract(UNIX_EPOCH)).TotalSeconds;
 		}
 	}
 }
