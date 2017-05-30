@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using log4net;
@@ -154,6 +155,10 @@ namespace Chattel {
 				// This could be temporary.
 				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but there was an IO error.", e);
 			}
+		}
+
+		internal void Purge() {
+			_config.CacheFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
 		}
 
 		/// <summary>

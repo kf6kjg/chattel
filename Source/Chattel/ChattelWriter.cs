@@ -36,10 +36,11 @@ namespace Chattel {
 		private readonly ChattelCache _cache;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		public ChattelWriter(ChattelConfiguration config) {
+		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
+		public ChattelWriter(ChattelConfiguration config, bool purgeCache = false) {
 			if (config == null) {
 				throw new ArgumentNullException(nameof(config));
 			}
@@ -48,6 +49,10 @@ namespace Chattel {
 
 			if (_config.CacheEnabled) {
 				_cache = new ChattelCache(config);
+
+				if (purgeCache) {
+					_cache.Purge();
+				}
 			}
 		}
 
