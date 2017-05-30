@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 
 namespace Chattel {
-	internal struct AssetServerCFConfig : IAssetServerConfig {
+	public struct AssetServerCFConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
 		public AssetServerType Type {
