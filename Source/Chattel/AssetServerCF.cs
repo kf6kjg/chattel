@@ -1,4 +1,4 @@
-// IAssetServer.cs
+// AssetServerCF.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -24,15 +24,19 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using InWorldz.Data.Assets.Stratus;
 using log4net;
 using net.openstack.Core.Domain;
+using net.openstack.Core.Exceptions.Response;
 using OpenMetaverse;
 
 namespace Chattel {
-	public class AssetServerCF : IAssetServer {
+	internal class AssetServerCF : IAssetServer {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;
@@ -92,19 +96,54 @@ namespace Chattel {
 
 				memStream.Position = 0;
 
-				var rawAsset = ProtoBuf.Serializer.Deserialize<StratusAsset>(memStream);
+				var stratusAsset = ProtoBuf.Serializer.Deserialize<StratusAsset>(memStream);
 
-				if (rawAsset?.Data == null) {
+				if (stratusAsset?.Data == null) {
 					throw new InvalidOperationException($"[CF_SERVER] [{_serverHandle}] Asset deserialization failed. Asset ID: {assetID}, Stream Len: {memStream.Length}");
 				}
 
-				return rawAsset;
+				return stratusAsset;
+			}
+		}
+
+		public void StoreAssetSync(StratusAsset asset) {
+			if (asset == null) throw new ArgumentNullException(nameof(asset));
+			if (asset.Id == Guid.Empty) throw new ArgumentException("Assets must not have a zero ID");
+
+			using (var memStream = new MemoryStream()) {
+				try {
+					ProtoBuf.Serializer.Serialize(memStream, asset);
+					memStream.Position = 0;
+
+					var assetIdStr = asset.Id.ToString();
+
+					var mheaders = GenerateStorageHeaders(asset, memStream);
+
+					WarnIfLongOperation("CreateObject",
+						() => _provider.CreateObject(
+							GenerateContainerName(assetIdStr),
+							memStream,
+							GenerateAssetObjectName(assetIdStr),
+							"application/octet-stream",
+							headers: mheaders,
+							useInternalUrl: UseInternalURL,
+							region: DefaultRegion
+						)
+					);
+				}
+				catch (ResponseException e) {
+					if (e.Response.StatusCode == System.Net.HttpStatusCode.PreconditionFailed) {
+						throw new AssetExistsException(asset.Id, e);
+					}
+
+					throw new AssetWriteException(asset.Id, e);
+				}
 			}
 		}
 
 		/// <summary>
 		/// CF containers are PREFIX_#### where we use the first N chars of the hex representation
-		/// of the asset ID to partition the space. The hex alpha chars in the container name are uppercase
+		/// of the asset ID to partition the space. The hex alpha chars in the container name are uppercase.
 		/// </summary>
 		/// <param name="assetId"></param>
 		/// <returns></returns>
@@ -113,7 +152,7 @@ namespace Chattel {
 		}
 
 		/// <summary>
-		/// The object name is defined by the assetId, dashes stripped, with the .asset prefix
+		/// The object name is defined by the assetId, dashes stripped, with the .asset prefix.
 		/// </summary>
 		/// <param name="assetId"></param>
 		/// <returns></returns>
@@ -121,6 +160,53 @@ namespace Chattel {
 			return assetId.Replace("-", string.Empty).ToLower() + ".asset";
 		}
 
+		private Dictionary<string, string> GenerateStorageHeaders(StratusAsset asset, MemoryStream stream) {
+			//the HTTP headers only accept letters and digits
+			var fixedName = new StringBuilder();
+			var appended = false;
+			foreach (var letter in asset.Name) {
+				var c = (char)(0x000000ff & (uint)letter);
+				if (c == 127 || (c < ' ' && c != '\t')) {
+					continue;
+				}
+
+				fixedName.Append(letter);
+				appended = true;
+			}
+
+			if (!appended) {
+				fixedName.Append("empty");
+			}
+
+			var headers = new Dictionary<string, string> {
+				{"ETag", Md5Hash(stream)},
+				{"X-Object-Meta-Temp", asset.Temporary ? "1" : "0"},
+				{"X-Object-Meta-Local", asset.Local ? "1" : "0"},
+				{"X-Object-Meta-Type", asset.Type.ToString()},
+				{"X-Object-Meta-Name", fixedName.ToString()},
+				{"If-None-Match", "*"},
+			};
+
+			stream.Position = 0;
+
+			return headers;
+		}
+
+		private static string Md5Hash(Stream data) {
+			byte[] hash;
+			using (var md5 = MD5.Create()) {
+				hash = md5.ComputeHash(data);
+			}
+			return ByteArrayToHexString(hash);
+		}
+
+		private static string ByteArrayToHexString(byte[] dataMd5) {
+			var sb = new StringBuilder();
+			for (var i = 0; i < dataMd5.Length; i++) {
+				sb.AppendFormat("{0:x2}", dataMd5[i]);
+			}
+			return sb.ToString();
+		}
 
 		private void WarnIfLongOperation(string opName, Action operation) {
 			const long WARNING_TIME = 5000; // ms

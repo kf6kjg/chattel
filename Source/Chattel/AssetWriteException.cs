@@ -1,4 +1,4 @@
-// IAssetServer.cs
+﻿// AssetWriteException.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -23,12 +23,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using InWorldz.Data.Assets.Stratus;
-using OpenMetaverse;
 
 namespace Chattel {
-	internal interface IAssetServer : IDisposable {
-		StratusAsset RequestAssetSync(UUID assetID);
-		void StoreAssetSync(StratusAsset asset);
+	public class AssetWriteException : AssetException {
+		public AssetWriteException(Guid assetId) : base(assetId) {
+
+		}
+
+		public AssetWriteException(Guid assetId, Exception e) : base(assetId, e) {
+
+		}
 	}
 }

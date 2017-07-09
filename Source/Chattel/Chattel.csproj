@@ -83,6 +83,12 @@
     <Compile Include="IAssetServerConfig.cs" />
     <Compile Include="AssetServerWHIPConfig.cs" />
     <Compile Include="AssetServerCFConfig.cs" />
+    <Compile Include="ChattelConfiguration.cs" />
+    <Compile Include="ChattelCache.cs" />
+    <Compile Include="ChattelWriter.cs" />
+    <Compile Include="AssetException.cs" />
+    <Compile Include="AssetExistsException.cs" />
+    <Compile Include="AssetWriteException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

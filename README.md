@@ -20,8 +20,9 @@ Chattel is a library for Mono/.NET programs designed to make accessing assets st
 [appveyor]: https://ci.appveyor.com/project/kf6kjg/chattel
 
 Chattel provides:
-* Read assets from the [WHIP asset server][WHIP].
-* Read assets from [Halcyon][]'s CloudFiles asset server integration.
+* The ability to read and write assets.
+* Integration with the [WHIP asset server][WHIP].
+* Integration with [Halcyon][]'s CloudFiles asset server.
 * Asset servers can be set up in a series-parallel array.
 * Assets can be disk-cached for faster access.
 * Integration with [LibreMetaverse](https://bitbucket.org/cinderblocks/libremetaverse) to allow easy access to assets.
@@ -38,6 +39,8 @@ The benefit of this arrangement only comes if your grid is growing and you've ha
 Alternatively, let's say you had multiple grids with different asset servers, but your application requires that you be able to pull assets from all of them.  Simply set each asset server in parallel.  If some of those have legacy asset servers, set the legacy asset servers in series with their primaries.
 
 There are many possibilities and use-cases enabled by this architecture.
+
+Note that since reading and writing are handled by separate classes, you can configure a different array for writing assets than you use for reading them.
 
 # Installation
 Simply use your NuGet package manager to install the latest release straight from the [NuGet.org package][nugetpackage] built by the [Appveyor integration][appveyor].

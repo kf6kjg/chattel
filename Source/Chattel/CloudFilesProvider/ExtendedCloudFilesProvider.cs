@@ -36,7 +36,7 @@ using net.openstack.Core.Providers;
 using net.openstack.Providers.Rackspace;
 
 namespace InWorldz.Data.Assets.Stratus.CoreExt {
-	public class ExtendedCloudFilesProvider : CloudFilesProvider {
+	internal class ExtendedCloudFilesProvider : CloudFilesProvider {
 		public ExtendedCloudFilesProvider(CloudIdentity defaultIdentity, string defaultRegion, IIdentityProvider identityProvider, IRestService restService)
 				: base(defaultIdentity, defaultRegion, identityProvider, restService) {
 		}

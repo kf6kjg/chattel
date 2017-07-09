@@ -23,23 +23,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using InWorldz.Data.Assets.Stratus;
 using OpenMetaverse;
 
 namespace Chattel {
-	public class ChattelReader {
+	public class ChattelWriter {
 		//private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly ChattelConfiguration _config;
 		private readonly ChattelCache _cache;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
-		public ChattelReader(ChattelConfiguration config, bool purgeCache = false) {
+		public ChattelWriter(ChattelConfiguration config, bool purgeCache = false) {
 			if (config == null) {
 				throw new ArgumentNullException(nameof(config));
 			}
@@ -56,48 +57,59 @@ namespace Chattel {
 		}
 
 		/// <summary>
-		/// Alias for GetAssetSync
+		/// Alias for PutAssetSync
 		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="assetId">Asset identifier.</param>
-		public StratusAsset ReadAssetSync(UUID assetId) {
-			return GetAssetSync(assetId);
+		/// <param name="asset">The asset to store.</param>
+		public void WriteAssetSync(StratusAsset asset) {
+			PutAssetSync(asset);
 		}
 
 		/// <summary>
-		/// Gets the asset from the server.
+		/// Sends the asset to the asset servers.
+		/// Throws AssetExistsException or AggregateException.
 		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="assetId">Asset identifier.</param>
-		public StratusAsset GetAssetSync(UUID assetId) {
+		/// <param name="asset">The asset to store.</param>
+		public void PutAssetSync(StratusAsset asset) {
 			StratusAsset result = null;
 
-			// Ask for null, get null.
-			if (assetId.Guid == Guid.Empty) {
-				return null;
-			}
+			var assetId = new UUID(asset.Id);
 
 			// Hit up the cache first.
 			if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
-				return result;
+				throw new AssetExistsException(assetId.Guid);
 			}
+
+			var exceptions = new List<Exception>();
+			var success = false;
 
 			// Got to go try the servers now.
 			foreach (var parallelServers in _config.SerialParallelAssetServers) {
-				if (parallelServers.Count == 1) {
-					result = parallelServers[0].RequestAssetSync(assetId);
-				}
-				else {
-					result = parallelServers.AsParallel().Select(server => server.RequestAssetSync(assetId)).FirstOrDefault(asset => asset != null);
-				}
+				try {
+					if (parallelServers.Count == 1) {
+						parallelServers[0].StoreAssetSync(asset);
+					}
+					else {
+						parallelServers.AsParallel().ForAll(server => server.StoreAssetSync(asset));
+					}
 
-				if (result != null) {
-					_cache?.CacheAsset(result);
-					return result;
+					_cache?.CacheAsset(asset);
+					success = true;
+					break; // It was successfully stored in the first bank of parallel servers, don't do the next bank.
+				}
+				catch (AssetException e) {
+					exceptions.Add(e);
+				}
+				catch (AggregateException e) {
+					// Unwind the aggregate one layer.
+					foreach (var ex in e.InnerExceptions) {
+						exceptions.Add(ex);
+					}
 				}
 			}
 
-			return null;
+			if (!success) {
+				throw new AggregateException("Unable to store asset in any asset server. See inner exceptions for details.", exceptions);
+			}
 		}
 	}
 }
