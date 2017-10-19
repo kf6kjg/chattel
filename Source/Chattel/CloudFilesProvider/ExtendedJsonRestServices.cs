@@ -58,7 +58,7 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 					// http://stackoverflow.com/a/22976809/138304
 					var maxIdleTime = servicePoint.MaxIdleTime;
 					servicePoint.MaxIdleTime = 0;
-					System.Threading.Thread.Sleep(1000);
+					System.Threading.Thread.Sleep(1);
 					servicePoint.MaxIdleTime = maxIdleTime;
 				}
 
