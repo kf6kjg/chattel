@@ -76,7 +76,7 @@ namespace Chattel {
 			//warm up
 			_provider.GetAccountHeaders(useInternalUrl: UseInternalURL, region: DefaultRegion);
 
-			LOG.Info($"[CF_SERVER] [{_serverHandle}] CF connection prepared for region {DefaultRegion} and prefix {ContainerPrefix} under user {Username}'.");
+			LOG.Info($"[CF_SERVER] [{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
 		}
 
 		public void Dispose() {

@@ -56,7 +56,7 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 					// this is a workaround for issue #333
 					// https://github.com/openstacknetsdk/openstack.net/issues/333
 					// http://stackoverflow.com/a/22976809/138304
-					int maxIdleTime = servicePoint.MaxIdleTime;
+					var maxIdleTime = servicePoint.MaxIdleTime;
 					servicePoint.MaxIdleTime = 0;
 					System.Threading.Thread.Sleep(1000);
 					servicePoint.MaxIdleTime = maxIdleTime;
@@ -72,16 +72,16 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 				Dictionary<string, string> queryStringParameters, RequestSettings settings,
 				Action<long> progressUpdated, bool allowWriteStreamBuffering) {
 			if (url == null)
-				throw new ArgumentNullException("url");
+				throw new ArgumentNullException(nameof(url));
 			if (content == null)
-				throw new ArgumentNullException("content");
+				throw new ArgumentNullException(nameof(content));
 			if (bufferSize <= 0)
-				throw new ArgumentOutOfRangeException("bufferSize");
+				throw new ArgumentOutOfRangeException(nameof(bufferSize));
 			if (maxReadLength < 0)
-				throw new ArgumentOutOfRangeException("maxReadLength");
+				throw new ArgumentOutOfRangeException(nameof(maxReadLength));
 
 			return ExecuteRequest(url, method, responseBuilderCallback, headers, queryStringParameters, settings, (req) => {
-				long bytesWritten = 0;
+				var bytesWritten = 0L;
 
 				if (method == HttpMethod.GET) {
 					req.Timeout = _readRequestTimeout;
@@ -100,7 +100,7 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 					req.ContentLength = maxReadLength > 0 && content.Length > maxReadLength ? maxReadLength : content.Length;
 				}
 
-				using (Stream stream = req.GetRequestStream()) {
+				using (var stream = req.GetRequestStream()) {
 					var buffer = new byte[bufferSize];
 					int count;
 					while (!req.HaveResponse && (count = content.Read(buffer, 0, maxReadLength > 0 ? (int)Math.Min(bufferSize, maxReadLength - bytesWritten) : bufferSize)) > 0) {
