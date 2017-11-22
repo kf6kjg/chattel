@@ -29,6 +29,7 @@
  */
 
 using System;
+using System.Net;
 using ProtoBuf;
 
 namespace InWorldz.Data.Assets.Stratus {
@@ -37,6 +38,35 @@ namespace InWorldz.Data.Assets.Stratus {
 	/// </summary>
 	[ProtoContract]
 	public class StratusAsset {
+		/// <summary>
+		/// Size of the packet header
+		/// </summary>
+		private const short HEADER_SIZE = 39;
+		/// <summary>
+		/// location of the type tag
+		/// </summary>
+		private const short TYPE_TAG_LOC = 32;
+		/// <summary>
+		/// location of the local tag
+		/// </summary>
+		private const short LOCAL_TAG_LOC = 33;
+		/// <summary>
+		/// Location of the temporary tag
+		/// </summary>
+		private const short TEMPORARY_TAG_LOC = 34;
+		/// <summary>
+		/// Location of the create time tag
+		/// </summary>
+		private const short CREATE_TIME_TAG_LOC = 35;
+		/// <summary>
+		/// Location of the size of the name field
+		/// </summary>
+		private const short NAME_SIZE_TAG_LOC = 39;
+		/// <summary>
+		/// Length of the UUID byte array
+		/// </summary>
+		private const short UUID_LEN = 32;
+
 		[ProtoMember(1)]
 		public Guid Id;
 
@@ -67,6 +97,161 @@ namespace InWorldz.Data.Assets.Stratus {
 		public static string GetProto() {
 			return Serializer.GetProto<StratusAsset>();
 		}
+
+		#region Conversions
+
+		public static StratusAsset FromWHIPAsset(Whip.Client.Asset whipAsset) {
+			return new StratusAsset {
+				Id = Guid.Parse(whipAsset.Uuid),
+				Type = (sbyte)whipAsset.Type,
+				Local = whipAsset.Local,
+				Temporary = whipAsset.Temporary,
+				CreateTime = UnixToUTCDateTime(whipAsset.CreateTime),
+				Name = whipAsset.Name,
+				Description = whipAsset.Description,
+				Data = whipAsset.Data,
+			};
+		}
+
+		public static Whip.Client.Asset FromWHIPAsset(StratusAsset asset) {
+			return new Whip.Client.Asset(
+				asset.Id.ToString(),
+				(byte)asset.Type,
+				asset.Local,
+				asset.Temporary,
+				(int)UTCDateTimeToEpoch(asset.CreateTime), // At some point this'll need to be corrected to a 64bit timestamp...
+				asset.Name,
+				asset.Description,
+				asset.Data
+			);
+		}
+
+
+		public static StratusAsset FromWHIPSerialized(byte[] data) {
+			var createUnixTime = NTOHL(data, CREATE_TIME_TAG_LOC);
+
+			var asset = new StratusAsset {
+				Id = ByteStringToGuid(data, 0),
+				Type = (sbyte)data[TYPE_TAG_LOC],
+				Local = data[LOCAL_TAG_LOC] == 1,
+				Temporary = data[TEMPORARY_TAG_LOC] == 1,
+				CreateTime = UnixToUTCDateTime(createUnixTime),
+			};
+
+			// Now the dynamic sized fields
+			var nameFieldSize = data[NAME_SIZE_TAG_LOC];
+			if (nameFieldSize > 0) {
+				asset.Name = System.Text.Encoding.UTF8.GetString(data, NAME_SIZE_TAG_LOC + 1, nameFieldSize);
+			}
+			else {
+				asset.Name = string.Empty;
+			}
+
+			//the description field
+			var descSizeFieldLoc = NAME_SIZE_TAG_LOC + nameFieldSize + 1;
+			var descFieldSize = data[descSizeFieldLoc];
+			if (descFieldSize > 0) {
+				asset.Description = System.Text.Encoding.UTF8.GetString(data, descSizeFieldLoc + 1, descFieldSize);
+			}
+			else {
+				asset.Description = string.Empty;
+			}
+
+			//finally, get the location of the data and it's size
+			var dataSizeFieldLoc = descSizeFieldLoc + descFieldSize + 1;
+			var dataSize = NTOHL(data, dataSizeFieldLoc);
+			var dataLoc = dataSizeFieldLoc + 4;
+
+			//create the array now so that it will be shared between all reqestors
+			if (dataSize > 0) {
+				asset.Data = new byte[dataSize];
+				Buffer.BlockCopy(data, dataLoc, asset.Data, 0, dataSize);
+			}
+			else {
+				asset.Data = new byte[0];
+			}
+
+			return asset;
+		}
+
+		public static byte[] ToWHIPSerialized(StratusAsset asset) {
+			byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(asset.Name);
+			byte[] descBytes = System.Text.Encoding.UTF8.GetBytes(asset.Description);
+
+			if (nameBytes.Length > 255) {
+				throw new ArgumentException($"Serialized asset name would be too long after encoding {asset.Name} {asset.Id}");
+			}
+
+			if (descBytes.Length > 255) {
+				throw new ArgumentException($"Serialized asset description would be too long after encoding {asset.Description} {asset.Id}");
+			}
+
+			//see the packet diagram to understand where the size calculation is coming from
+			var retArray = new byte[HEADER_SIZE + 1 + nameBytes.Length + 1 + descBytes.Length + 4 + asset.Data.Length];
+
+			Buffer.BlockCopy(asset.Id.ToByteArray(), 0, retArray, 0, UUID_LEN);
+			retArray[TYPE_TAG_LOC] = (byte)asset.Type;
+			retArray[LOCAL_TAG_LOC] = (byte)(asset.Local ? 1 : 0);
+			retArray[TEMPORARY_TAG_LOC] = (byte)(asset.Temporary ? 1 : 0);
+			Buffer.BlockCopy(HTONL((int)UTCDateTimeToEpoch(asset.CreateTime)), 0, retArray, CREATE_TIME_TAG_LOC, 4);
+
+			var appendLoc = NAME_SIZE_TAG_LOC;
+			retArray[appendLoc] = (byte)nameBytes.Length;
+			Buffer.BlockCopy(nameBytes, 0, retArray, ++appendLoc, (byte)nameBytes.Length);
+			appendLoc += (byte)nameBytes.Length;
+
+			retArray[appendLoc] = (byte)descBytes.Length;
+			Buffer.BlockCopy(descBytes, 0, retArray, ++appendLoc, (byte)descBytes.Length);
+			appendLoc += (byte)descBytes.Length;
+
+			Buffer.BlockCopy(HTONL(asset.Data.Length), 0, retArray, appendLoc, 4);
+			appendLoc += 4;
+			Buffer.BlockCopy(asset.Data, 0, retArray, appendLoc, asset.Data.Length);
+
+			return retArray;
+		}
+
+		#endregion
+
+		#region Conversion Utilities
+
+		private static Guid ByteStringToGuid(byte[] bytes, int offset) {
+			var idbytes = new byte[UUID_LEN];
+			Buffer.BlockCopy(bytes, offset, idbytes, 0, UUID_LEN);
+			return Guid.Parse(System.Text.Encoding.ASCII.GetString(idbytes));
+		}
+
+		/// <summary>
+		/// Network to host long.  Given an array of bytes converts to a host long
+		/// </summary>
+		/// <param name="bytes">Array of bytes from the network</param>
+		/// <param name="offset">offset in the array to start looking</param>
+		/// <returns>A host endian 32 bit number</returns>
+		private static int NTOHL(byte[] bytes, int offset) {
+			return IPAddress.NetworkToHostOrder(BitConverter.ToInt32(bytes, offset));
+		}
+
+		/// <summary>
+		/// Host to network long.  Given a 32 bit integer, converts to an array of bytes
+		/// </summary>
+		/// <param name="number">The number to convert</param>
+		/// <returns>An array of bytes in network order</returns>
+		private static byte[] HTONL(int number) {
+			return BitConverter.GetBytes(IPAddress.HostToNetworkOrder(number));
+		}
+
+		// Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
+		private static readonly DateTime UNIX_EPOCH = DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", System.Globalization.DateTimeFormatInfo.InvariantInfo).ToUniversalTime();
+
+		private static DateTime UnixToUTCDateTime(long seconds) {
+			return UNIX_EPOCH.AddSeconds(seconds);
+		}
+
+		private static long UTCDateTimeToEpoch(DateTime timestamp) {
+			return (long)(timestamp.Subtract(UNIX_EPOCH)).TotalSeconds;
+		}
+
+		#endregion
 
 		// ----
 		// Below here is where the hybridization with the old Halcyon/OpenSim AssetBase starts.
