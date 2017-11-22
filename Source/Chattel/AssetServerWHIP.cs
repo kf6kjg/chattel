@@ -35,9 +35,6 @@ namespace Chattel {
 	internal class AssetServerWHIP : IAssetServer {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		// Unix-epoch starts at January 1st 1970, 00:00:00 UTC. And all our times in the server are (or at least should be) in UTC.
-		private static readonly DateTime UNIX_EPOCH = DateTime.ParseExact("1970-01-01 00:00:00 +0", "yyyy-MM-dd hh:mm:ss z", DateTimeFormatInfo.InvariantInfo).ToUniversalTime();
-
 		public string Host { get; private set; }
 		public int Port { get; private set; }
 		public string Password { get; private set; }
@@ -90,32 +87,12 @@ namespace Chattel {
 				return null;
 			}
 
-			return new StratusAsset {
-				Id = assetID.Guid,
-				Type = (sbyte)whipAsset.Type,
-				Local = whipAsset.Local,
-				Temporary = whipAsset.Temporary,
-				CreateTime = UnixToUTCDateTime(whipAsset.CreateTime),
-				Name = whipAsset.Name,
-				Description = whipAsset.Description,
-				Data = whipAsset.Data,
-			};
+			return StratusAsset.FromWHIPAsset(whipAsset);
 		}
 
 		public void StoreAssetSync(StratusAsset asset) {
-			var whipAsset = new Asset(
-				asset.Id.ToString(),
-				(byte)asset.Type,
-				asset.Local,
-				asset.Temporary,
-				(int)UTCDateTimeToEpoch(asset.CreateTime), // At some point this'll need to be corrected to a 64bit timestamp...
-				asset.Name,
-				asset.Description,
-				asset.Data
-			);
-
 			try {
-				_provider.PutAsset(whipAsset);
+				_provider.PutAsset(StratusAsset.ToWHIPAsset(asset));
 			}
 			catch (AssetServerError e) {
 				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Error sending asset to server.", e);
@@ -125,14 +102,6 @@ namespace Chattel {
 				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Authentication error sending asset to server.", e);
 				throw new AssetWriteException(asset.Id, e);
 			}
-		}
-
-		private static DateTime UnixToUTCDateTime(long seconds) {
-			return UNIX_EPOCH.AddSeconds(seconds);
-		}
-
-		private static long UTCDateTimeToEpoch(DateTime timestamp) {
-			return (long)(timestamp.Subtract(UNIX_EPOCH)).TotalSeconds;
 		}
 	}
 }

@@ -113,7 +113,7 @@ namespace InWorldz.Data.Assets.Stratus {
 			};
 		}
 
-		public static Whip.Client.Asset FromWHIPAsset(StratusAsset asset) {
+		public static Whip.Client.Asset ToWHIPAsset(StratusAsset asset) {
 			return new Whip.Client.Asset(
 				asset.Id.ToString(),
 				(byte)asset.Type,
