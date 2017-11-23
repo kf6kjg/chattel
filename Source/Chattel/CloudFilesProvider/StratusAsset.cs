@@ -128,6 +128,10 @@ namespace InWorldz.Data.Assets.Stratus {
 
 
 		public static StratusAsset FromWHIPSerialized(byte[] data) {
+			if (data.Length < HEADER_SIZE) {
+				throw new ArgumentOutOfRangeException(nameof(data), "Not enough data given to deserialize an asset.");
+			}
+
 			var createUnixTime = NTOHL(data, CREATE_TIME_TAG_LOC);
 
 			var asset = new StratusAsset {
@@ -139,36 +143,45 @@ namespace InWorldz.Data.Assets.Stratus {
 			};
 
 			// Now the dynamic sized fields
-			var nameFieldSize = data[NAME_SIZE_TAG_LOC];
-			if (nameFieldSize > 0) {
-				asset.Name = System.Text.Encoding.UTF8.GetString(data, NAME_SIZE_TAG_LOC + 1, nameFieldSize);
-			}
-			else {
-				asset.Name = string.Empty;
-			}
+			if (NAME_SIZE_TAG_LOC < data.Length) {
+				var nameFieldSize = data[NAME_SIZE_TAG_LOC];
+				var nameDataLoc = NAME_SIZE_TAG_LOC + 1;
+				if (nameFieldSize > 0 && nameDataLoc < data.Length) {
+					asset.Name = System.Text.Encoding.UTF8.GetString(data, nameDataLoc, Math.Min(nameFieldSize, data.Length - nameDataLoc));
+				}
+				else {
+					asset.Name = string.Empty;
+				}
 
-			//the description field
-			var descSizeFieldLoc = NAME_SIZE_TAG_LOC + nameFieldSize + 1;
-			var descFieldSize = data[descSizeFieldLoc];
-			if (descFieldSize > 0) {
-				asset.Description = System.Text.Encoding.UTF8.GetString(data, descSizeFieldLoc + 1, descFieldSize);
-			}
-			else {
-				asset.Description = string.Empty;
-			}
+				//the description field
+				var descSizeFieldLoc = NAME_SIZE_TAG_LOC + nameFieldSize + 1;
+				if (descSizeFieldLoc < data.Length) {
+					var descFieldSize = data[descSizeFieldLoc];
+					var descDataLoc = descSizeFieldLoc + 1;
+					if (descFieldSize > 0 && descDataLoc < data.Length) {
+						asset.Description = System.Text.Encoding.UTF8.GetString(data, descDataLoc, Math.Min(descFieldSize, data.Length - descDataLoc));
+					}
+					else {
+						asset.Description = string.Empty;
+					}
 
-			//finally, get the location of the data and it's size
-			var dataSizeFieldLoc = descSizeFieldLoc + descFieldSize + 1;
-			var dataSize = NTOHL(data, dataSizeFieldLoc);
-			var dataLoc = dataSizeFieldLoc + 4;
 
-			//create the array now so that it will be shared between all reqestors
-			if (dataSize > 0) {
-				asset.Data = new byte[dataSize];
-				Buffer.BlockCopy(data, dataLoc, asset.Data, 0, dataSize);
-			}
-			else {
-				asset.Data = new byte[0];
+					//finally, get the location of the data and it's size
+					var dataSizeFieldLoc = descSizeFieldLoc + descFieldSize + 1;
+					if (dataSizeFieldLoc + 4 < data.Length) {
+						var dataLoc = dataSizeFieldLoc + 4;
+						var dataSize = Math.Min(NTOHL(data, dataSizeFieldLoc), data.Length - dataLoc);
+
+						//create the array now so that it will be shared between all reqestors
+						if (dataSize > 0) {
+							asset.Data = new byte[dataSize];
+							Buffer.BlockCopy(data, dataLoc, asset.Data, 0, dataSize);
+						}
+						else {
+							asset.Data = new byte[0];
+						}
+					}
+				}
 			}
 
 			return asset;
