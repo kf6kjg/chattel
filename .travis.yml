@@ -2,7 +2,7 @@ language: csharp
 solution: Source/Chattel.sln
 
 mono:
-  - 4.6.0
+  - 4.6.1
 
 cache:
   directories:
@@ -15,6 +15,6 @@ before_script:
   - sed -i "s/1\.0\.\*/$TAG_VERSION/" Source/Chattel/Properties/AssemblyInfo.cs
 
 before_deploy:
-  - mv bin Anaximander2
-  - zip -r Anaximander2-mono.zip Anaximander2 > /dev/null
+  - mv bin Chattel
+  - zip -r Chattel-mono.zip Chattel > /dev/null
 
