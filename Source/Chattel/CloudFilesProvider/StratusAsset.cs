@@ -202,7 +202,7 @@ namespace InWorldz.Data.Assets.Stratus {
 			//see the packet diagram to understand where the size calculation is coming from
 			var retArray = new byte[HEADER_SIZE + 1 + nameBytes.Length + 1 + descBytes.Length + 4 + asset.Data.Length];
 
-			Buffer.BlockCopy(asset.Id.ToByteArray(), 0, retArray, 0, UUID_LEN);
+			Buffer.BlockCopy(System.Text.Encoding.ASCII.GetBytes(asset.Id.ToString("N")), 0, retArray, 0, UUID_LEN);
 			retArray[TYPE_TAG_LOC] = (byte)asset.Type;
 			retArray[LOCAL_TAG_LOC] = (byte)(asset.Local ? 1 : 0);
 			retArray[TEMPORARY_TAG_LOC] = (byte)(asset.Temporary ? 1 : 0);
