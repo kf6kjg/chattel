@@ -55,6 +55,8 @@ namespace Chattel {
 			}
 		}
 
+		public bool HasUpstream => (_config?.SerialParallelAssetServers.Count ?? 0) > 0;
+
 		/// <summary>
 		/// Alias for GetAssetSync
 		/// </summary>
