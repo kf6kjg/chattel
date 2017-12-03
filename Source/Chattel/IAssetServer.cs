@@ -24,11 +24,10 @@
 // THE SOFTWARE.
 using System;
 using InWorldz.Data.Assets.Stratus;
-using OpenMetaverse;
 
 namespace Chattel {
 	internal interface IAssetServer : IDisposable {
-		StratusAsset RequestAssetSync(UUID assetID);
+		StratusAsset RequestAssetSync(Guid assetID);
 		void StoreAssetSync(StratusAsset asset);
 	}
 }

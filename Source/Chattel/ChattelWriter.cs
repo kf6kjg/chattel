@@ -26,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using InWorldz.Data.Assets.Stratus;
-using OpenMetaverse;
 
 namespace Chattel {
 	public class ChattelWriter {
@@ -74,11 +73,9 @@ namespace Chattel {
 		public void PutAssetSync(StratusAsset asset) {
 			StratusAsset result = null;
 
-			var assetId = new UUID(asset.Id);
-
 			// Hit up the cache first.
-			if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
-				throw new AssetExistsException(assetId.Guid);
+			if (_cache?.TryGetCachedAsset(asset.Id, out result) ?? false) {
+				throw new AssetExistsException(asset.Id);
 			}
 
 			var exceptions = new List<Exception>();

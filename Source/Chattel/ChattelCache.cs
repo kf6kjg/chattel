@@ -29,7 +29,6 @@ using System.Linq;
 using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using log4net;
-using OpenMetaverse;
 using ProtoBuf;
 
 namespace Chattel {
@@ -52,7 +51,7 @@ namespace Chattel {
 			_config = config;
 		}
 
-		internal bool TryGetCachedAsset(UUID assetId, out StratusAsset asset) {
+		internal bool TryGetCachedAsset(Guid assetId, out StratusAsset asset) {
 			if (!_config.CacheEnabled) {
 				asset = null;
 				return false;
@@ -159,15 +158,6 @@ namespace Chattel {
 
 		internal void Purge() {
 			_config.CacheFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
-		}
-
-		/// <summary>
-		/// Converts a UUID to a path based on the cache location.
-		/// </summary>
-		/// <returns>The path.</returns>
-		/// <param name="id">Asset identifier.</param>
-		private string UuidToCachePath(UUID id) {
-			return UuidToCachePath(id.Guid);
 		}
 
 		/// <summary>

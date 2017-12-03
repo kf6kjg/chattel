@@ -33,7 +33,6 @@ using InWorldz.Data.Assets.Stratus;
 using log4net;
 using net.openstack.Core.Domain;
 using net.openstack.Core.Exceptions.Response;
-using OpenMetaverse;
 
 namespace Chattel {
 	internal class AssetServerCF : IAssetServer {
@@ -83,7 +82,7 @@ namespace Chattel {
 			_provider = null;
 		}
 
-		public StratusAsset RequestAssetSync(UUID assetID) {
+		public StratusAsset RequestAssetSync(Guid assetID) {
 			string assetIdStr = assetID.ToString();
 
 			using (var memStream = new MemoryStream()) {
