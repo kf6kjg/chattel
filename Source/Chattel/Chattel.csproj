@@ -57,23 +57,11 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="mscorlib" />
-    <Reference Include="XmlRpcCs">
-      <HintPath>..\packages\XmlRpcCs.2.1.1.2\lib\net461\XmlRpcCs.dll</HintPath>
-    </Reference>
     <Reference Include="InWorldz.Whip.Client">
       <HintPath>..\packages\InWorldz.Whip.Client.1.1.0.6\lib\net461\InWorldz.Whip.Client.dll</HintPath>
     </Reference>
-    <Reference Include="LibreMetaverse.Types">
-      <HintPath>..\packages\LibreMetaverse.Types.1.2.1.151\lib\net461\LibreMetaverse.Types.dll</HintPath>
-    </Reference>
-    <Reference Include="LibreMetaverse.StructuredData">
-      <HintPath>..\packages\LibreMetaverse.StructuredData.1.2.1.151\lib\net461\LibreMetaverse.StructuredData.dll</HintPath>
-    </Reference>
     <Reference Include="System.Reflection.TypeExtensions">
       <HintPath>..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="LibreMetaverse">
-      <HintPath>..\packages\LibreMetaverse.1.2.1.151\lib\net461\LibreMetaverse.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

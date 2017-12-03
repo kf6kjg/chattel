@@ -274,10 +274,10 @@ namespace InWorldz.Data.Assets.Stratus {
 			get {
 				return
 						IsTextualAsset && (
-						Type != (sbyte)OpenMetaverse.AssetType.Notecard
-						&& Type != (sbyte)OpenMetaverse.AssetType.CallingCard
-						&& Type != (sbyte)OpenMetaverse.AssetType.LSLText
-						&& Type != (sbyte)OpenMetaverse.AssetType.Landmark);
+						Type != (sbyte)AssetType.Notecard
+						&& Type != (sbyte)AssetType.CallingCard
+						&& Type != (sbyte)AssetType.LSLText
+						&& Type != (sbyte)AssetType.Landmark);
 			}
 		}
 
@@ -290,47 +290,99 @@ namespace InWorldz.Data.Assets.Stratus {
 		public bool IsBinaryAsset {
 			get {
 				return
-						(Type == (sbyte)OpenMetaverse.AssetType.Animation ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Gesture ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Simstate ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Unknown ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Object ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Sound ||
-						 Type == (sbyte)OpenMetaverse.AssetType.SoundWAV ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Texture ||
-						 Type == (sbyte)OpenMetaverse.AssetType.TextureTGA ||
-						 Type == (sbyte)OpenMetaverse.AssetType.Folder ||
-						 Type == (sbyte)OpenMetaverse.FolderType.Root ||
-						 Type == (sbyte)OpenMetaverse.FolderType.LostAndFound ||
-						 Type == (sbyte)OpenMetaverse.FolderType.Snapshot ||
-						 Type == (sbyte)OpenMetaverse.FolderType.Trash ||
-						 Type == (sbyte)OpenMetaverse.AssetType.ImageJPEG ||
-						 Type == (sbyte)OpenMetaverse.AssetType.ImageTGA ||
-						 Type == (sbyte)OpenMetaverse.AssetType.LSLBytecode);
+						(Type == (sbyte)AssetType.Animation ||
+						 Type == (sbyte)AssetType.Gesture ||
+						 Type == (sbyte)AssetType.Simstate ||
+						 Type == (sbyte)AssetType.Unknown ||
+						 Type == (sbyte)AssetType.Object ||
+						 Type == (sbyte)AssetType.Sound ||
+						 Type == (sbyte)AssetType.SoundWAV ||
+						 Type == (sbyte)AssetType.Texture ||
+						 Type == (sbyte)AssetType.TextureTGA ||
+						 Type == (sbyte)AssetType.Folder ||
+						 Type == (sbyte)FolderType.Root ||
+						 Type == (sbyte)FolderType.LostAndFound ||
+						 Type == (sbyte)FolderType.Snapshot ||
+						 Type == (sbyte)FolderType.Trash ||
+						 Type == (sbyte)AssetType.ImageJPEG ||
+						 Type == (sbyte)AssetType.ImageTGA ||
+						 Type == (sbyte)AssetType.LSLBytecode);
 			}
 		}
 
 		public bool IsImageAsset {
 			get {
 				return (
-						 Type == (sbyte)OpenMetaverse.AssetType.Texture ||
-						 Type == (sbyte)OpenMetaverse.AssetType.TextureTGA ||
-						 Type == (sbyte)OpenMetaverse.AssetType.ImageJPEG ||
-						 Type == (sbyte)OpenMetaverse.AssetType.ImageTGA
+						 Type == (sbyte)AssetType.Texture ||
+						 Type == (sbyte)AssetType.TextureTGA ||
+						 Type == (sbyte)AssetType.ImageJPEG ||
+						 Type == (sbyte)AssetType.ImageTGA
 						 );
 			}
 		}
 
 		// ----
-		// And below here is where pure custom stuff lives.
+		// And some stuff taken from LibreMetaverse
 		// ----
 
-		public OpenMetaverse.Assets.AssetTexture ToTexture() {
-			if (IsImageAsset) {
-				return new OpenMetaverse.Assets.AssetTexture(new OpenMetaverse.UUID(Id), Data);
-			}
+		internal enum AssetType : sbyte {
+			Unknown = -1,
+			Texture,
+			Sound,
+			CallingCard,
+			Landmark,
+			Clothing = 5,
+			Object,
+			Notecard,
+			Folder,
+			LSLText = 10,
+			LSLBytecode,
+			TextureTGA,
+			Bodypart,
+			SoundWAV = 17,
+			ImageTGA,
+			ImageJPEG,
+			Animation,
+			Gesture,
+			Simstate,
+			Link = 24,
+			LinkFolder,
+			MarketplaceFolder,
+			Mesh = 49
+		}
 
-			return null;
+		internal enum FolderType : sbyte {
+			None = -1,
+			Texture,
+			Sound,
+			CallingCard,
+			Landmark,
+			Clothing = 5,
+			Object,
+			Notecard,
+			Root,
+			[Obsolete("No longer used, please use FolderType.Root")]
+			OldRoot,
+			LSLText,
+			BodyPart = 13,
+			Trash,
+			Snapshot,
+			LostAndFound,
+			Animation = 20,
+			Gesture,
+			Favorites = 23,
+			EnsembleStart = 26,
+			EnsembleEnd = 45,
+			CurrentOutfit,
+			Outfit,
+			MyOutfits,
+			Mesh,
+			Inbox,
+			Outbox,
+			BasicRoot,
+			MarketplaceListings,
+			MarkplaceStock,
+			Suitcase = 100
 		}
 	}
 }
