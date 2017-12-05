@@ -77,6 +77,13 @@ namespace ChattelAssetTools {
 			;
 		}
 
+		public static bool IsTextureAsset(this StratusAsset asset) {
+			return
+				asset.Type == (sbyte)AssetType.Texture ||
+				asset.Type == (sbyte)AssetType.TextureTGA
+			;
+		}
+
 		public static System.Drawing.Bitmap ToBitmap(this StratusAsset asset)
 		{
 			if (asset.Type == (sbyte)AssetType.Texture || asset.Type == (sbyte)AssetType.ImageJPEG) { // TODO: figure out Texture vs ImageJPEG
