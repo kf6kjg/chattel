@@ -27,10 +27,6 @@ using InWorldz.Data.Assets.Stratus;
 
 namespace ChattelAssetTools {
 	public static class StratusAssetExtensions {
-		static StratusAssetExtensions() {
-			CSJ2K.Util.BitmapImageCreator.Register();
-		}
-
 		public static bool ContainsReferences(this StratusAsset asset) {
 			return
 				asset.IsTextualAsset() && (
@@ -84,14 +80,22 @@ namespace ChattelAssetTools {
 			;
 		}
 
-		public static System.Drawing.Bitmap ToBitmap(this StratusAsset asset)
+		/// <summary>
+		/// Converts the underlying data to the image type T specified.
+		/// If the underlying image data cannot be converted to the specified type an InvalidCastException will be thrown.
+		/// Currently limited to assets of type Texture as C# doesn't have TGA support natively and I've not gone looking for a lib.
+		/// </summary>
+		/// <returns>The image in the type specified..</returns>
+		/// <param name="asset">Asset.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T ToImage<T>(this StratusAsset asset)
 		{
-			if (asset.Type == (sbyte)AssetType.Texture || asset.Type == (sbyte)AssetType.ImageJPEG) { // TODO: figure out Texture vs ImageJPEG
+			if (asset.Type == (sbyte)AssetType.Texture) {
 				var jp2k = CSJ2K.J2kImage.FromBytes(asset.Data);
-				return jp2k.As<System.Drawing.Bitmap>();
+				return jp2k.As<T>();
 			}
 
-			return null;
+			return default(T);
 		}
 
 		// ----
