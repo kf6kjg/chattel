@@ -1,7 +1,7 @@
-﻿// MyClass.cs
+﻿// StratusAssetExtensions.cs
 //
 // Author:
-//       Ricky C <>
+//       Ricky C <ricky@rwcproductions.com>
 //
 // Copyright (c) 2017 
 //
