@@ -90,9 +90,20 @@ namespace ChattelAssetTools {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T ToImage<T>(this StratusAsset asset)
 		{
-			if (asset.Type == (sbyte)AssetType.Texture) {
-				var jp2k = CSJ2K.J2kImage.FromBytes(asset.Data);
-				return jp2k.As<T>();
+			switch(asset.Type) {
+				case (sbyte)AssetType.Texture:
+					return CSJ2K.J2kImage.FromBytes(asset.Data).As<T>();
+				case (sbyte)AssetType.ImageJPEG:
+					System.Drawing.Image image;
+					using (var stream = new System.IO.MemoryStream(asset.Data)) {
+						image = System.Drawing.Image.FromStream(stream);
+					}
+
+					if (!image.GetType().IsAssignableFrom(typeof(T))) {
+						throw new InvalidCastException($"Cannot cast to '{typeof(T).Name}'; type must be assignable from '{image.GetType().Name}'");
+					}
+
+					return (T)(object)image;
 			}
 
 			return default(T);
