@@ -22,46 +22,64 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using InWorldz.Data.Assets.Stratus;
 
 namespace ChattelAssetTools {
 	public static class StratusAssetExtensions {
-		public static bool ContainsReferences(this StratusAsset asset) {
+		public static bool MightContainReferences(this StratusAsset asset) {
 			return
-				asset.IsTextualAsset() && (
-					asset.Type != (sbyte)AssetType.Notecard &&
-					asset.Type != (sbyte)AssetType.CallingCard &&
-					asset.Type != (sbyte)AssetType.LSLText &&
-					asset.Type != (sbyte)AssetType.Landmark
-				)
+				asset.IsBinaryAsset() ||
+				asset.Type == (sbyte)AssetType.Notecard ||
+				asset.Type != (sbyte)AssetType.CallingCard || // unsure if it can
+				asset.Type != (sbyte)AssetType.LSLText ||
+				asset.Type != (sbyte)AssetType.Landmark // unsure if it can
 			;
 		}
 
 		public static bool IsTextualAsset(this StratusAsset asset) {
-			return !asset.IsBinaryAsset();
+			return 
+				asset.Type == (sbyte)AssetType.LSLText ||
+				asset.Type == (sbyte)AssetType.Landmark ||
+				asset.Type == (sbyte)AssetType.Clothing ||
+				asset.Type == (sbyte)AssetType.Bodypart ||
+				asset.Type == (sbyte)AssetType.Gesture ||
+				asset.Type == (sbyte)AssetType.Notecard
+			;
+		}
+
+		public static bool HasAssetData(this StratusAsset asset) {
+			return asset.Data != null && asset.Data.Length > 0;
+		}
+
+		public static bool IsLink(this StratusAsset asset) {
+			return
+				asset.Type == (sbyte)AssetType.Link ||
+				asset.Type == (sbyte)AssetType.LinkFolder
+			;
+		}
+
+		public static bool IsFolder(this StratusAsset asset) {
+			return
+				asset.Type == (sbyte)AssetType.Folder ||
+				asset.Type == (sbyte)AssetType.RootFolder ||
+				asset.Type == (sbyte)AssetType.TrashFolder ||
+				asset.Type == (sbyte)AssetType.SnapshotFolder ||
+				asset.Type == (sbyte)AssetType.MarketplaceFolder ||
+				asset.Type == (sbyte)AssetType.LostAndFoundFolder ||
+				asset.Type == (sbyte)AssetType.LinkFolder
+			;
 		}
 
 		public static bool IsBinaryAsset(this StratusAsset asset) {
-			return
-				asset.Type == (sbyte) AssetType.Animation ||
-				asset.Type == (sbyte) AssetType.Gesture ||
-				asset.Type == (sbyte) AssetType.Simstate ||
-				asset.Type == (sbyte) AssetType.Unknown ||
-				asset.Type == (sbyte) AssetType.Object ||
-				asset.Type == (sbyte) AssetType.Sound ||
-				asset.Type == (sbyte) AssetType.SoundWAV ||
-				asset.Type == (sbyte) AssetType.Texture ||
-				asset.Type == (sbyte) AssetType.TextureTGA ||
-				asset.Type == (sbyte) AssetType.Folder ||
-				asset.Type == (sbyte) FolderType.Root ||
-				asset.Type == (sbyte) FolderType.LostAndFound ||
-				asset.Type == (sbyte) FolderType.Snapshot ||
-				asset.Type == (sbyte) FolderType.Trash ||
-				asset.Type == (sbyte) AssetType.ImageJPEG ||
-				asset.Type == (sbyte) AssetType.ImageTGA ||
-				asset.Type == (sbyte) AssetType.LSLBytecode
-			;
+			return !(
+				asset.Type == (sbyte)AssetType.Unknown ||
+				asset.Type == (sbyte)AssetType.CallingCard || // No data.
+				asset.IsLink() ||
+				asset.IsFolder() ||
+				asset.IsTextualAsset()
+			);
 		}
 
 		public static bool IsImageAsset(this StratusAsset asset) {
@@ -70,6 +88,13 @@ namespace ChattelAssetTools {
 				asset.Type == (sbyte)AssetType.TextureTGA ||
 				asset.Type == (sbyte)AssetType.ImageJPEG ||
 				asset.Type == (sbyte)AssetType.ImageTGA
+			;
+		}
+
+		public static bool IsAudioAsset(this StratusAsset asset) {
+			return
+				asset.Type == (sbyte)AssetType.Sound ||
+				asset.Type == (sbyte)AssetType.SoundWAV
 			;
 		}
 
@@ -88,9 +113,8 @@ namespace ChattelAssetTools {
 		/// <returns>The image in the type specified..</returns>
 		/// <param name="asset">Asset.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T ToImage<T>(this StratusAsset asset)
-		{
-			switch(asset.Type) {
+		public static T ToImage<T>(this StratusAsset asset) {
+			switch (asset.Type) {
 				case (sbyte)AssetType.Texture:
 					return CSJ2K.J2kImage.FromBytes(asset.Data).As<T>();
 				case (sbyte)AssetType.ImageJPEG:
