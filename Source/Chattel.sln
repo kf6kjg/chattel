@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel", "Chattel\Chattel.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetTools", "Chattel-AssetTools\Chattel-AssetTools.csproj", "{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetToolsTests", "Chattel-AssetToolsTests\Chattel-AssetToolsTests.csproj", "{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -24,6 +26,10 @@ Global
 		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Debug|x64.Build.0 = Debug|Any CPU
 		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Release|x64.ActiveCfg = Release|Any CPU
 		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Release|x64.Build.0 = Release|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
