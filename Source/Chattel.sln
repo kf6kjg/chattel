@@ -231,7 +231,7 @@ Global
 		$0.DotNetNamingPolicy = $32
 		$0.TextStylePolicy = $33
 		$33.inheritsSet = null
-		$33.scope = text/x-markdown
+		$33.scope = text/x-csharp
 		outputpath = ..\..\Anaximander\build\bin
 	EndGlobalSection
 EndGlobal

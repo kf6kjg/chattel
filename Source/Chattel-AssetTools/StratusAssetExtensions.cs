@@ -39,7 +39,7 @@ namespace ChattelAssetTools {
 		}
 
 		public static bool IsTextualAsset(this StratusAsset asset) {
-			return 
+			return
 				asset.Type == (sbyte)AssetType.LSLText ||
 				asset.Type == (sbyte)AssetType.Landmark ||
 				asset.Type == (sbyte)AssetType.Clothing ||
