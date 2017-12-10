@@ -28,36 +28,25 @@ using InWorldz.Data.Assets.Stratus;
 
 namespace ChattelAssetTools {
 	public static class StratusAssetExtensions {
-		public static bool MightContainReferences(this StratusAsset asset) {
-			return
-				asset.IsBinaryAsset() ||
-				asset.Type == (sbyte)AssetType.Notecard ||
-				asset.Type != (sbyte)AssetType.CallingCard || // unsure if it can
-				asset.Type != (sbyte)AssetType.LSLText ||
-				asset.Type != (sbyte)AssetType.Landmark // unsure if it can
-			;
-		}
-
-		public static bool IsTextualAsset(this StratusAsset asset) {
-			return
-				asset.Type == (sbyte)AssetType.LSLText ||
-				asset.Type == (sbyte)AssetType.Landmark ||
-				asset.Type == (sbyte)AssetType.Clothing ||
-				asset.Type == (sbyte)AssetType.Bodypart ||
-				asset.Type == (sbyte)AssetType.Gesture ||
-				asset.Type == (sbyte)AssetType.Notecard
-			;
-		}
-
 		public static bool HasAssetData(this StratusAsset asset) {
 			return asset.Data != null && asset.Data.Length > 0;
 		}
 
-		public static bool IsLink(this StratusAsset asset) {
+		public static bool IsAudioAsset(this StratusAsset asset) {
 			return
-				asset.Type == (sbyte)AssetType.Link ||
-				asset.Type == (sbyte)AssetType.LinkFolder
+				asset.Type == (sbyte)AssetType.Sound ||
+				asset.Type == (sbyte)AssetType.SoundWAV
 			;
+		}
+
+		public static bool IsBinaryAsset(this StratusAsset asset) {
+			return !(
+				asset.Type == (sbyte)AssetType.Unknown ||
+				asset.Type == (sbyte)AssetType.CallingCard || // No data.
+				asset.IsLink() ||
+				asset.IsFolder() ||
+				asset.IsTextualAsset()
+			);
 		}
 
 		public static bool IsFolder(this StratusAsset asset) {
@@ -72,16 +61,6 @@ namespace ChattelAssetTools {
 			;
 		}
 
-		public static bool IsBinaryAsset(this StratusAsset asset) {
-			return !(
-				asset.Type == (sbyte)AssetType.Unknown ||
-				asset.Type == (sbyte)AssetType.CallingCard || // No data.
-				asset.IsLink() ||
-				asset.IsFolder() ||
-				asset.IsTextualAsset()
-			);
-		}
-
 		public static bool IsImageAsset(this StratusAsset asset) {
 			return
 				asset.Type == (sbyte)AssetType.Texture ||
@@ -91,10 +70,21 @@ namespace ChattelAssetTools {
 			;
 		}
 
-		public static bool IsAudioAsset(this StratusAsset asset) {
+		public static bool IsLink(this StratusAsset asset) {
 			return
-				asset.Type == (sbyte)AssetType.Sound ||
-				asset.Type == (sbyte)AssetType.SoundWAV
+				asset.Type == (sbyte)AssetType.Link ||
+				asset.Type == (sbyte)AssetType.LinkFolder
+			;
+		}
+
+		public static bool IsTextualAsset(this StratusAsset asset) {
+			return
+				asset.Type == (sbyte)AssetType.LSLText ||
+				asset.Type == (sbyte)AssetType.Landmark ||
+				asset.Type == (sbyte)AssetType.Clothing ||
+				asset.Type == (sbyte)AssetType.Bodypart ||
+				asset.Type == (sbyte)AssetType.Gesture ||
+				asset.Type == (sbyte)AssetType.Notecard
 			;
 		}
 
@@ -103,6 +93,30 @@ namespace ChattelAssetTools {
 				asset.Type == (sbyte)AssetType.Texture ||
 				asset.Type == (sbyte)AssetType.TextureTGA
 			;
+		}
+
+		/// <summary>
+		/// Based on the asset type determines whether or not the asset data has a chance of having references to other asset IDs or not.
+		/// </summary>
+		/// <returns><c>true</c>, if its possible that the data contains asset ID references, <c>false</c> otherwise.</returns>
+		/// <param name="asset">Asset.</param>
+		public static bool MightContainReferences(this StratusAsset asset) {
+			// Assume that if you don't know what it is that it might contain references to other assets.
+
+			return !(
+				asset.Type == (sbyte)AssetType.Animation || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.CallingCard || // No data.
+				asset.Type == (sbyte)AssetType.ImageJPEG || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.ImageTGA || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.Landmark || // No IDs ever.
+				asset.Type == (sbyte)AssetType.Mesh || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.Sound || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.SoundWAV || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.Texture || // Raw data with no IDs.
+				asset.Type == (sbyte)AssetType.TextureTGA || // Raw data with no IDs.
+				asset.IsLink() ||
+				asset.IsFolder()
+			);
 		}
 
 		/// <summary>
