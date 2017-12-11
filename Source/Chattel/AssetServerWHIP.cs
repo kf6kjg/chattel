@@ -29,7 +29,6 @@ using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using InWorldz.Whip.Client;
 using log4net;
-using OpenMetaverse;
 
 namespace Chattel {
 	internal class AssetServerWHIP : IAssetServer {
@@ -72,7 +71,7 @@ namespace Chattel {
 			_provider = null;
 		}
 
-		public StratusAsset RequestAssetSync(UUID assetID) {
+		public StratusAsset RequestAssetSync(Guid assetID) {
 			Asset whipAsset = null;
 
 			try {

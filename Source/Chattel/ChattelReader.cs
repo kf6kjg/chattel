@@ -25,7 +25,6 @@
 using System;
 using System.Linq;
 using InWorldz.Data.Assets.Stratus;
-using OpenMetaverse;
 
 namespace Chattel {
 	public class ChattelReader {
@@ -62,7 +61,7 @@ namespace Chattel {
 		/// </summary>
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
-		public StratusAsset ReadAssetSync(UUID assetId) {
+		public StratusAsset ReadAssetSync(Guid assetId) {
 			return GetAssetSync(assetId);
 		}
 
@@ -71,11 +70,11 @@ namespace Chattel {
 		/// </summary>
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
-		public StratusAsset GetAssetSync(UUID assetId) {
+		public StratusAsset GetAssetSync(Guid assetId) {
 			StratusAsset result = null;
 
 			// Ask for null, get null.
-			if (assetId.Guid == Guid.Empty) {
+			if (assetId == Guid.Empty) {
 				return null;
 			}
 

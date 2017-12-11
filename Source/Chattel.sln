@@ -8,6 +8,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{A0E051A9-185
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel", "Chattel\Chattel.csproj", "{2EEF5095-2220-4A49-BFF1-4022C62FD762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetTools", "Chattel-AssetTools\Chattel-AssetTools.csproj", "{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetToolsTests", "Chattel-AssetToolsTests\Chattel-AssetToolsTests.csproj", "{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -18,6 +22,14 @@ Global
 		{2EEF5095-2220-4A49-BFF1-4022C62FD762}.Debug|x64.Build.0 = Debug|Any CPU
 		{2EEF5095-2220-4A49-BFF1-4022C62FD762}.Release|x64.ActiveCfg = Release|Any CPU
 		{2EEF5095-2220-4A49-BFF1-4022C62FD762}.Release|x64.Build.0 = Release|Any CPU
+		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Debug|x64.Build.0 = Debug|Any CPU
+		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Release|x64.ActiveCfg = Release|Any CPU
+		{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}.Release|x64.Build.0 = Release|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
@@ -54,30 +66,25 @@ Global
 		$2.BeforeDelegateDeclarationParentheses = False
 		$2.NewParentheses = False
 		$2.SpacesBeforeBrackets = False
-		$2.inheritsSet = Mono
-		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
 		$2.NewLinesForBracesInTypes = False
 		$2.NewLinesForBracesInMethods = False
-		$2.NewLineForElse = True
-		$2.NewLineForCatch = True
-		$2.NewLineForFinally = True
-		$2.NewLineForClausesInQuery = True
-		$2.SpacingAfterMethodDeclarationName = False
-		$2.SpaceAfterMethodCallName = False
-		$2.SpaceBeforeOpenSquareBracket = False
-		$2.IndentSwitchSection = True
+		$2.NewLinesForBracesInProperties = False
+		$2.NewLinesForBracesInAccessors = False
+		$2.NewLinesForBracesInAnonymousMethods = False
+		$2.NewLinesForBracesInControlBlocks = False
+		$2.NewLinesForBracesInAnonymousTypes = False
+		$2.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$2.NewLinesForBracesInLambdaExpressionBody = False
+		$2.NewLineForMembersInObjectInit = False
+		$2.NewLineForMembersInAnonymousTypes = False
 		$0.TextStylePolicy = $3
-		$3.FileWidth = 120
 		$3.TabWidth = 2
 		$3.IndentWidth = 2
 		$3.EolMarker = Unix
-		$3.inheritsSet = Mono
-		$3.inheritsScope = text/plain
 		$3.scope = text/plain
 		$0.StandardHeader = $4
 		$4.Text = @${FileName}\n \nAuthor:\n      ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
-		$4.IncludeInNewFiles = True
 		$0.NameConventionPolicy = $5
 		$5.Rules = $6
 		$6.NamingRule = $7
@@ -210,28 +217,21 @@ Global
 		$28.inheritsSet = null
 		$28.scope = application/config+xml
 		$0.XmlFormattingPolicy = $29
-		$29.inheritsSet = Mono
 		$29.scope = application/xml
-		$29.inheritsScope = application/xml
 		$0.TextStylePolicy = $30
-		$30.FileWidth = 120
 		$30.TabWidth = 2
 		$30.IndentWidth = 2
 		$30.NoTabsAfterNonTabs = True
 		$30.EolMarker = Unix
-		$30.inheritsSet = Mono
-		$30.inheritsScope = text/plain
 		$30.scope = application/xml
 		$0.XmlFormattingPolicy = $31
 		$31.inheritsSet = Mono
 		$31.inheritsScope = application/xml
 		$31.scope = application/xml
 		$0.DotNetNamingPolicy = $32
-		$32.DirectoryNamespaceAssociation = None
-		$32.ResourceNamePolicy = FileFormatDefault
 		$0.TextStylePolicy = $33
 		$33.inheritsSet = null
-		$33.scope = text/x-markdown
+		$33.scope = text/x-csharp
 		outputpath = ..\..\Anaximander\build\bin
 	EndGlobalSection
 EndGlobal
