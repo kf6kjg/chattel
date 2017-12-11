@@ -128,6 +128,10 @@ namespace ChattelAssetTools {
 		/// <param name="asset">Asset.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T ToImage<T>(this StratusAsset asset) {
+			if (!asset.HasAssetData()) {
+				return default(T);
+			}
+
 			switch (asset.Type) {
 				case (sbyte)AssetType.Texture:
 					return CSJ2K.J2kImage.FromBytes(asset.Data).As<T>();
