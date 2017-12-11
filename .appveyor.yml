@@ -56,13 +56,13 @@ deploy:
 - provider: NuGet
   name: nuget_release
   api_key:
-    secure: "+hm1BCQ/EJVCH+54NubYH/vrBBwGlTV2xzAzle4wj72453ao/QRoA6YwVAS6F15C"
+    secure: +hm1BCQ/EJVCH+54NubYH/vrBBwGlTV2xzAzle4wj72453ao/QRoA6YwVAS6F15C
   skip_symbols: true
   on:
     appveyor_repo_tag: true
 - provider: GitHub
   auth_token:
-    secure: "tZGZ+LdhQz6wpgiCc15gbkDyu7l2Y3VzKPAzu9vhCiMdfuppmZwGYo/3luQSWBtq"
+    secure: gpjXQ5PG/MFMyNox2AU7el54GG6t8zZe+E1Kqy0d58rZ5EsbHc0YcQj0Te/9lfib
   artifact: Chattel-dotnet
   draft: true
   prerelease: false
