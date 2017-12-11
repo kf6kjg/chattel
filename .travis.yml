@@ -27,5 +27,5 @@ deploy:
   file: Chattel-mono.zip
   draft: true
   on:
-    repo: kf6kjg/Chattel
+    repo: kf6kjg/chattel
     tags: true
