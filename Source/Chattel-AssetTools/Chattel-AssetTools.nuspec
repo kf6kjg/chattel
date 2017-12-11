@@ -2,6 +2,7 @@
 <package >
   <metadata>
     <id>Chattel-AssetTools</id>
+    <version>$version$</version>
     <title>Chattel Asset Reader Asset Tools</title>
     <authors>Ricky Curtice</authors>
     <owners>Ricky Curtice</owners>

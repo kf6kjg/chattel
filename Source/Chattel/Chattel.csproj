@@ -86,6 +86,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Chattel.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CloudFilesProvider\" />
