@@ -1,14 +1,37 @@
-version: 1.0.0.{build}
+init:
+- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { $env:TAG_VERSION = "$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER" } else { $env:TAG_VERSION = "v1.0.0.$env:APPVEYOR_BUILD_NUMBER-alpha" }
+- ps: $env:TAG_VERSION = $env:TAG_VERSION -replace 'v',''
+- ps: Write-Host "Setting version to '$env:TAG_VERSION'"
+- ps: Update-AppveyorBuild -Version "$env:TAG_VERSION"
 
 image: Visual Studio 2017
 
 configuration: Release
 
+pull_requests:
+  do_not_increment_build_number: true
+
+nuget:
+  disable_publish_on_pr: true
+
 skip_commits:
   files:
-    - .gitignore
-    - LICENSE
-    - README.md
+  - .gitignore
+  - LICENSE
+  - README.md
+
+cache:
+- Source\packages -> Source\**\packages.config
+- '%LocalAppData%\NuGet\Cache'
+
+assembly_info:
+  patch: true
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+before_build:
+- nuget restore Source\Chattel.sln
 
 build:
   parallel: true
@@ -16,22 +39,33 @@ build:
   publish_nuget: true
   publish_nuget_symbols: false
 
-cache:
-  - Source\packages -> Source\**\packages.config
+after_build:
+- rename bin Chattel-dotnet
 
-before_build:
-  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { $env:TAG_VERSION = "$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER" } else { $env:TAG_VERSION = "v1.0.0.$env:APPVEYOR_BUILD_NUMBER" }
-  - ps: $env:TAG_VERSION = $env:TAG_VERSION -replace 'v',''
-  - ps: Write-Host "Setting version to '$env:TAG_VERSION'"
-  - ps: (Get-Content Source\Chattel\Properties\AssemblyInfo.cs) -replace '1\.0\.\*', "$env:TAG_VERSION" | Set-Content Source\Chattel\Properties\AssemblyInfo.cs
-  - ps: (Get-Content Source\Chattel\Chattel.nuspec) -replace '0\.0\.0', "$env:TAG_VERSION" | Set-Content Source\Chattel\Chattel.nuspec
-  - nuget restore Source\Chattel.sln
+test:
+  assemblies:
+    only:
+    - Chattel-AssetToolsTests.dll
+
+artifacts:
+- path: Chattel-dotnet
+  name: Chattel-dotnet
+  type: zip
 
 deploy:
-  - provider: NuGet
-    name: nuget_release
-    api_key:
-      secure: +hm1BCQ/EJVCH+54NubYH/vrBBwGlTV2xzAzle4wj72453ao/QRoA6YwVAS6F15C
-    skip_symbols: true
-    on:
-      appveyor_repo_tag: true
+- provider: NuGet
+  name: nuget_release
+  api_key:
+    secure: "+hm1BCQ/EJVCH+54NubYH/vrBBwGlTV2xzAzle4wj72453ao/QRoA6YwVAS6F15C"
+  skip_symbols: true
+  on:
+    appveyor_repo_tag: true
+- provider: GitHub
+  auth_token:
+    secure: "tZGZ+LdhQz6wpgiCc15gbkDyu7l2Y3VzKPAzu9vhCiMdfuppmZwGYo/3luQSWBtq"
+  artifact: Chattel-dotnet
+  draft: true
+  prerelease: false
+  on:
+    appveyor_repo_tag: true
+

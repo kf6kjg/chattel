@@ -2,19 +2,30 @@ language: csharp
 solution: Source/Chattel.sln
 
 mono:
-  - 4.6.1
+- 4.6.1
 
 cache:
   directories:
-    - Source\packages
+  - Source\packages
 
 before_script:
-  - if [ "$TRAVIS_TAG" ]; then export TAG_VERSION="$TRAVIS_TAG.$TRAVIS_BUILD_NUMBER"; else export TAG_VERSION="v1.0.0.$TRAVIS_BUILD_NUMBER"; fi
-  - export TAG_VERSION=`echo $TAG_VERSION | sed 's/v//'`
-  - echo "Setting version to '$TAG_VERSION'"
-  - sed -i "s/1\.0\.\*/$TAG_VERSION/" Source/Chattel/Properties/AssemblyInfo.cs
+- if [ "$TRAVIS_TAG" ]; then export TAG_VERSION="$TRAVIS_TAG.$TRAVIS_BUILD_NUMBER"; else export TAG_VERSION="v1.0.0.$TRAVIS_BUILD_NUMBER"; fi
+- export TAG_VERSION=`echo $TAG_VERSION | sed 's/v//'`
+- echo "Setting version to '$TAG_VERSION'"
+- sed -i "s/1\.0\.\*/$TAG_VERSION/" Source/Chattel/Properties/AssemblyInfo.cs
+- sed -i "s/1\.0\.\*/$TAG_VERSION/" Source/Chattel-AssetTools/Properties/AssemblyInfo.cs
 
 before_deploy:
-  - mv bin Chattel
-  - zip -r Chattel-mono.zip Chattel > /dev/null
+- mv bin Chattel-mono
+- zip -r Chattel-mono.zip Chattel-mono > /dev/null
 
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: "KwxP3gWGI0Aw+lbAPO6jTSfvv4M+744W3JgLbiYGvITmd9ONGza45LNW2bUasu16D50dE5DmB0v22wvRWHlfChzYYLarzis/BYIjU6RDRMnQW2FKkQqdjg1GJVC5EXpnGhXUwuBekfLM2XnCLr4FcgTDUM3logWiqz0z3w5a4AC3Q9FC3w+tqsSe3kieKuWs54qeP9g8o1mi6oOFPA58E/1tBPBLXfhfE3NznQ4Z65zWVKPV8hmGO+787uF2QPc7TjuVbRCpwb/YwFfusbIg8Jv1em4ej2VJL/soLDWNMrUj/r+DCfALblgtclxTxax08iitSYaM0TjBK85CtDmHinaOIde72nL3IefTPJEupbB784Kplro1MgJTM9d0sWNUmicn5KxWWIK5thOax6qxhciG8NNO1nPTnV91/7KUeOIefNKYDivxfdfgYLuDBQmUgvy6H6ajrlUQU5JJ5BSxBKMdOjLQpsyTyCHLN6HYKErPinJWTldNmULwkQ54A2qVakzusb3en6gZMWHRurfWflwlVv02LQNuGKg8Ma7DDfLVxiiAhPrUmNn1EZ9/zuoelnRjlmyOMxzF12ppx5/t7+CT9F09leXom8CKCJDI5UK3W/N3N6Mms+52wO5LyDndv6kTooUZYhpzUzjAIh5/tqsnVzJfFDMmZ9VxcQgDsPA="
+  file: Chattel-mono.zip
+  draft: true
+  on:
+    repo: kf6kjg/Chattel
+    tags: true

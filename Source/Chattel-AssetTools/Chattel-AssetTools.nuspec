@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Chattel</id>
-    <title>Chattel Asset Reader</title>
+    <id>Chattel-AssetTools</id>
+    <title>Chattel Asset Reader Asset Tools</title>
     <authors>Ricky Curtice</authors>
     <owners>Ricky Curtice</owners>
     <licenseUrl>https://github.com/kf6kjg/chattel/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/kf6kjg/chattel</projectUrl>
-    <description>Chattel is a library for connecting to, and gathering assets from, asset servers for Halcyon-based virtual world grids</description>
-    <copyright>Copyright 2017</copyright>
-    <tags>Halcyon InWorldz WHIP </tags>
+    <description>Extends Chattel with extra sugar for the StratusAsset.</description>
+    <copyright>Copyright 2018</copyright>
+    <tags>Halcyon InWorldz WHIP Chattel</tags>
     <releaseNotes>See https://github.com/kf6kjg/chattel/releases for release notes.</releaseNotes>
   </metadata>
 </package>
