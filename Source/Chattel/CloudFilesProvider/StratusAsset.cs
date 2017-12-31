@@ -29,6 +29,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Net;
 using ProtoBuf;
 
@@ -37,7 +38,7 @@ namespace InWorldz.Data.Assets.Stratus {
 	/// An asset in protobuf format for storage inside a stratus engine
 	/// </summary>
 	[ProtoContract]
-	public class StratusAsset {
+	public class StratusAsset : IEquatable<StratusAsset> {
 		/// <summary>
 		/// Size of the packet header
 		/// </summary>
@@ -262,6 +263,23 @@ namespace InWorldz.Data.Assets.Stratus {
 
 		private static long UTCDateTimeToEpoch(DateTime timestamp) {
 			return (long)(timestamp.Subtract(UNIX_EPOCH)).TotalSeconds;
+		}
+
+		#endregion
+
+		#region Comparison
+
+		public bool Equals(StratusAsset other) {
+			return Id == other.Id &&
+				Type == other.Type &&
+				Local == other.Local &&
+				Temporary == other.Temporary &&
+				CreateTime == other.CreateTime &&
+				Name == other.Name &&
+				Description == other.Description &&
+				StorageFlags == other.StorageFlags &&
+				Data.SequenceEqual(other.Data)
+			;
 		}
 
 		#endregion
