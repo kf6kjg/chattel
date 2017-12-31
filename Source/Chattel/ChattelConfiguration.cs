@@ -87,7 +87,7 @@ namespace Chattel {
 						}
 					}
 
-					if (parallelServerConnectors.Count > 0) {
+					if (parallelServerConnectors.Any()) {
 						serialParallelAssetServers.Add(parallelServerConnectors);
 					}
 				}
@@ -133,44 +133,61 @@ namespace Chattel {
 			SerialParallelAssetServers = serialParallelAssetServers;
 
 			// Read in a config list that lists the priority order of servers and their settings.
-			var sources = assetConfig?.GetString("Servers", string.Empty).Split(',').Where(source => !string.IsNullOrWhiteSpace(source)).Select(source => source.Trim());
+			var serialParallelServerSources = assetConfig?
+				.GetString("Servers", string.Empty)
+				.Split(',')
+				.Where(parallelSources => !string.IsNullOrWhiteSpace(parallelSources))
+				.Select(parallelSources => parallelSources
+					.Split('&')
+					.Where(source => !string.IsNullOrWhiteSpace(source))
+					.Select(source => source.Trim())
+				)
+				.Where(parallelSources => parallelSources.Any())
+			;
 
-			if (sources != null && sources.Any()) {
-				foreach (var source in sources) {
-					var sourceConfig = configSource.Configs[source];
-					IAssetServer serverConnector = null;
-					var type = sourceConfig?.GetString("Type", string.Empty).ToLower();
-					try {
-						switch (type) {
-							case "whip":
-								serverConnector = new AssetServerWHIP(
-									source,
-									sourceConfig.GetString("Host", string.Empty),
-									sourceConfig.GetInt("Port", 32700),
-									sourceConfig.GetString("Password", "changeme") // Yes, that's the default password for WHIP.
-								);
-								break;
-							case "cf":
-								serverConnector = new AssetServerCF(
-									source,
-									sourceConfig.GetString("Username", string.Empty),
-									sourceConfig.GetString("APIKey", string.Empty),
-									sourceConfig.GetString("DefaultRegion", string.Empty),
-									sourceConfig.GetBoolean("UseInternalURL", true),
-									sourceConfig.GetString("ContainerPrefix", string.Empty)
-								);
-								break;
-							default:
-								LOG.Warn($"[ASSET_CONFIG] Unknown asset server type in section [{source}].");
-								break;
+			if (serialParallelServerSources != null && serialParallelServerSources.Any()) {
+				foreach (var parallelSources in serialParallelServerSources) {
+					var parallelServerConnectors = new List<IAssetServer>();
+					foreach (var source in parallelSources) {
+						var sourceConfig = configSource.Configs[source];
+						IAssetServer serverConnector = null;
+						var type = sourceConfig?.GetString("Type", string.Empty).ToLower();
+						try {
+							switch (type) {
+								case "whip":
+									serverConnector = new AssetServerWHIP(
+										source,
+										sourceConfig.GetString("Host", string.Empty),
+										sourceConfig.GetInt("Port", 32700),
+										sourceConfig.GetString("Password", "changeme") // Yes, that's the default password for WHIP.
+									);
+									break;
+								case "cf":
+									serverConnector = new AssetServerCF(
+										source,
+										sourceConfig.GetString("Username", string.Empty),
+										sourceConfig.GetString("APIKey", string.Empty),
+										sourceConfig.GetString("DefaultRegion", string.Empty),
+										sourceConfig.GetBoolean("UseInternalURL", true),
+										sourceConfig.GetString("ContainerPrefix", string.Empty)
+									);
+									break;
+								default:
+									LOG.Warn($"[ASSET_CONFIG] Unknown asset server type in section [{source}].");
+									break;
+							}
+						}
+						catch (SocketException e) {
+							LOG.Error($"[ASSET_CONFIG] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
+						}
+
+						if (serverConnector != null) {
+							parallelServerConnectors.Add(serverConnector);
 						}
 					}
-					catch (SocketException e) {
-						LOG.Error($"[ASSET_CONFIG] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
-					}
 
-					if (serverConnector != null) {
-						serialParallelAssetServers.Add(new List<IAssetServer> { serverConnector });
+					if (parallelServerConnectors.Any()) {
+						serialParallelAssetServers.Add(parallelServerConnectors);
 					}
 				}
 			}
