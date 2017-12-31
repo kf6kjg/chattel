@@ -21,7 +21,7 @@ skip_commits:
   - README.md
 
 cache:
-- Source\packages -> **\packages.config
+- packages -> **\packages.config
 - '%LocalAppData%\NuGet\Cache'
 
 assembly_info:
