@@ -6,11 +6,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{A0E051A9-185
 		..\bin\Anaximander.exe.config = ..\bin\Anaximander.exe.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel", "Chattel\Chattel.csproj", "{2EEF5095-2220-4A49-BFF1-4022C62FD762}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel", "Source\Chattel\Chattel.csproj", "{2EEF5095-2220-4A49-BFF1-4022C62FD762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetTools", "Chattel-AssetTools\Chattel-AssetTools.csproj", "{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetTools", "Source\Chattel-AssetTools\Chattel-AssetTools.csproj", "{267F30EF-CF58-4AC5-AB1D-6F7DA7CBAF6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetToolsTests", "Chattel-AssetToolsTests\Chattel-AssetToolsTests.csproj", "{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chattel-AssetToolsTests", "Source\Chattel-AssetToolsTests\Chattel-AssetToolsTests.csproj", "{1FF15D36-7DDC-499F-8217-F9BD6D9E06F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03AA7B61-BF02-4491-BDE0-3FBD8A06324E}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		.appveyor.yml = .appveyor.yml
+		.travis.yml = .travis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,17 +74,6 @@ Global
 		$2.NewParentheses = False
 		$2.SpacesBeforeBrackets = False
 		$2.scope = text/x-csharp
-		$2.NewLinesForBracesInTypes = False
-		$2.NewLinesForBracesInMethods = False
-		$2.NewLinesForBracesInProperties = False
-		$2.NewLinesForBracesInAccessors = False
-		$2.NewLinesForBracesInAnonymousMethods = False
-		$2.NewLinesForBracesInControlBlocks = False
-		$2.NewLinesForBracesInAnonymousTypes = False
-		$2.NewLinesForBracesInObjectCollectionArrayInitializers = False
-		$2.NewLinesForBracesInLambdaExpressionBody = False
-		$2.NewLineForMembersInObjectInit = False
-		$2.NewLineForMembersInAnonymousTypes = False
 		$0.TextStylePolicy = $3
 		$3.TabWidth = 2
 		$3.IndentWidth = 2
@@ -232,6 +228,6 @@ Global
 		$0.TextStylePolicy = $33
 		$33.inheritsSet = null
 		$33.scope = text/x-csharp
-		outputpath = ..\..\Anaximander\build\bin
+		outputpath = bin
 	EndGlobalSection
 EndGlobal

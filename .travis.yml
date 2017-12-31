@@ -1,12 +1,12 @@
 language: csharp
-solution: Source/Chattel.sln
+solution: Chattel.sln
 
 mono:
 - 4.6.1
 
 cache:
   directories:
-  - Source\packages
+  - packages
 
 before_script:
 - if [ "$TRAVIS_TAG" ]; then export TAG_VERSION="$TRAVIS_TAG.$TRAVIS_BUILD_NUMBER"; else export TAG_VERSION="v1.0.0.$TRAVIS_BUILD_NUMBER"; fi

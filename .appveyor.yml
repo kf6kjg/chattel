@@ -21,7 +21,7 @@ skip_commits:
   - README.md
 
 cache:
-- Source\packages -> Source\**\packages.config
+- Source\packages -> **\packages.config
 - '%LocalAppData%\NuGet\Cache'
 
 assembly_info:
@@ -31,9 +31,10 @@ assembly_info:
   assembly_informational_version: '{version}'
 
 before_build:
-- nuget restore Source\Chattel.sln
+- nuget restore Chattel.sln
 
 build:
+  project: Chattel.sln
   parallel: true
   verbosity: minimal
   publish_nuget: true
