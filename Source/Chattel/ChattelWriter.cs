@@ -55,7 +55,7 @@ namespace Chattel {
 			}
 		}
 
-		public bool HasUpstream => (_config?.SerialParallelAssetServers.Count ?? 0) > 0;
+		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
 
 		/// <summary>
 		/// Alias for PutAssetSync
@@ -84,8 +84,8 @@ namespace Chattel {
 			// Got to go try the servers now.
 			foreach (var parallelServers in _config.SerialParallelAssetServers) {
 				try {
-					if (parallelServers.Count == 1) {
-						parallelServers[0].StoreAssetSync(asset);
+					if (parallelServers.Count() == 1) {
+						parallelServers.First().StoreAssetSync(asset);
 					}
 					else {
 						parallelServers.AsParallel().ForAll(server => server.StoreAssetSync(asset));

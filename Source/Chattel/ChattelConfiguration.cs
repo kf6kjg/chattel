@@ -34,19 +34,19 @@ namespace Chattel {
 	public class ChattelConfiguration {
 		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		internal List<List<IAssetServer>> SerialParallelAssetServers;
+		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
 
 		internal DirectoryInfo CacheFolder;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.
 		/// If the cachePath is null, empty, or references a folder that doesn't exist or doesn't have write access, the cache will be disabled.
-		/// The serialParallelServerConfigs parameter allows you to specify server groups that shoudl be accessed serially with subgroups that should be accessed in parallel.
+		/// The serialParallelServerConfigs parameter allows you to specify server groups that should be accessed serially with subgroups that should be accessed in parallel.
 		/// Eg. if you have a new server you want to be hit for all operations, but to fallback to whichever of two older servers returns first, then set up a pattern like [ [ primary ], [ second1, second2 ] ].
 		/// </summary>
 		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
 		/// <param name="serialParallelServerConfigs">Serially-accessed parallel server configs.</param>
-		public ChattelConfiguration(string cachePath = null, List<List<IAssetServerConfig>> serialParallelServerConfigs = null) {
+		public ChattelConfiguration(string cachePath = null, IEnumerable<IEnumerable<IAssetServerConfig>> serialParallelServerConfigs = null) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
 				LOG.Info($"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
@@ -60,10 +60,11 @@ namespace Chattel {
 			}
 
 			// Set up server handlers
-			SerialParallelAssetServers = new List<List<IAssetServer>>();
+			var serialParallelAssetServers = new List<List<IAssetServer>>();
+			SerialParallelAssetServers = serialParallelAssetServers;
 
 			// Set up server handlers
-			if (serialParallelServerConfigs != null && serialParallelServerConfigs.Count > 0) {
+			if (serialParallelServerConfigs != null && serialParallelServerConfigs.Any()) {
 				foreach (var parallelConfigs in serialParallelServerConfigs) {
 					var parallelServerConnectors = new List<IAssetServer>();
 					foreach (var config in parallelConfigs) {
@@ -87,7 +88,7 @@ namespace Chattel {
 					}
 
 					if (parallelServerConnectors.Count > 0) {
-						SerialParallelAssetServers.Add(parallelServerConnectors);
+						serialParallelAssetServers.Add(parallelServerConnectors);
 					}
 				}
 			}
@@ -128,12 +129,13 @@ namespace Chattel {
 			}
 
 			// Set up server handlers
-			SerialParallelAssetServers = new List<List<IAssetServer>>();
+			var serialParallelAssetServers = new List<List<IAssetServer>>();
+			SerialParallelAssetServers = serialParallelAssetServers;
 
 			// Read in a config list that lists the priority order of servers and their settings.
 			var sources = assetConfig?.GetString("Servers", string.Empty).Split(',').Where(source => !string.IsNullOrWhiteSpace(source)).Select(source => source.Trim());
 
-			if (sources != null && sources.Count() > 0) {
+			if (sources != null && sources.Any()) {
 				foreach (var source in sources) {
 					var sourceConfig = configSource.Configs[source];
 					IAssetServer serverConnector = null;
@@ -168,7 +170,7 @@ namespace Chattel {
 					}
 
 					if (serverConnector != null) {
-						SerialParallelAssetServers.Add(new List<IAssetServer> { serverConnector });
+						serialParallelAssetServers.Add(new List<IAssetServer> { serverConnector });
 					}
 				}
 			}
