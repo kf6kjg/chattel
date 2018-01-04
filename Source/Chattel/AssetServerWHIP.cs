@@ -24,15 +24,12 @@
 // THE SOFTWARE.
 
 using System;
-using System.Globalization;
-using System.Reflection;
 using InWorldz.Data.Assets.Stratus;
 using InWorldz.Whip.Client;
-using log4net;
 
 namespace Chattel {
 	internal class AssetServerWHIP : IAssetServer {
-		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public string Host { get; private set; }
 		public int Port { get; private set; }

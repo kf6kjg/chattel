@@ -26,17 +26,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using InWorldz.Data.Assets.Stratus;
-using log4net;
 using net.openstack.Core.Domain;
 using net.openstack.Core.Exceptions.Response;
 
 namespace Chattel {
 	internal class AssetServerCF : IAssetServer {
-		private static readonly ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;
 		private const int DEFAULT_WRITE_TIMEOUT = 10 * 1000;
