@@ -48,11 +48,7 @@ namespace Chattel {
 		/// <param name="config">Instance of the configuration class.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
 		public ChattelReader(ChattelConfiguration config, bool purgeCache = false) {
-			if (config == null) {
-				throw new ArgumentNullException(nameof(config));
-			}
-
-			_config = config;
+			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (_config.CacheEnabled) {
 				_cache = new ChattelCache(config);

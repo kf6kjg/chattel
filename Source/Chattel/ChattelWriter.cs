@@ -41,11 +41,7 @@ namespace Chattel {
 		/// <param name="config">Instance of the configuration class.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
 		public ChattelWriter(ChattelConfiguration config, bool purgeCache = false) {
-			if (config == null) {
-				throw new ArgumentNullException(nameof(config));
-			}
-
-			_config = config;
+			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (_config.CacheEnabled) {
 				_cache = new ChattelCache(config);
@@ -73,10 +69,9 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="asset">The asset to store.</param>
 		public void PutAssetSync(StratusAsset asset) {
-			StratusAsset result = null;
 
 			// Hit up the cache first.
-			if (_cache?.TryGetCachedAsset(asset.Id, out result) ?? false) {
+			if (_cache?.TryGetCachedAsset(asset.Id, out StratusAsset result) ?? false) {
 				throw new AssetExistsException(asset.Id);
 			}
 
