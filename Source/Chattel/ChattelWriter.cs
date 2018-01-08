@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
@@ -34,6 +35,8 @@ namespace Chattel {
 
 		private readonly ChattelConfiguration _config;
 		private readonly ChattelCache _cache;
+
+		private readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, ReaderWriterLockSlim> _activeWriteLocks = new System.Collections.Concurrent.ConcurrentDictionary<Guid, ReaderWriterLockSlim>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
@@ -69,10 +72,33 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="asset">The asset to store.</param>
 		public void PutAssetSync(StratusAsset asset) {
+			if (asset == null || asset.Id == Guid.Empty) {
+				return;
+			}
+
+			// Handle parallel calls with the same asset ID.
+			var firstLock = new ReaderWriterLockSlim();
+			firstLock.EnterWriteLock();
+			var activeLock = _activeWriteLocks.GetOrAdd(asset.Id, firstLock);
+			if (firstLock != activeLock) {
+				// There's another thread currently adding this exact ID, so we need to wait on it so that we return when it's actually ready for a GET.
+				activeLock.EnterReadLock();
+				activeLock.ExitReadLock();
+				return;
+			}
 
 			// Hit up the cache first.
-			if (_cache?.TryGetCachedAsset(asset.Id, out StratusAsset result) ?? false) {
-				throw new AssetExistsException(asset.Id);
+			try {
+				if (_cache?.TryGetCachedAsset(asset.Id, out StratusAsset result) ?? false) {
+					_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
+					firstLock.ExitWriteLock();
+					throw new AssetExistsException(asset.Id);
+				}
+			}
+			catch (Exception) {
+				_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
+				firstLock.ExitWriteLock();
+				throw;
 			}
 
 			var exceptions = new List<Exception>();
@@ -101,6 +127,14 @@ namespace Chattel {
 						exceptions.Add(ex);
 					}
 				}
+				catch (Exception e) {
+					exceptions.Add(e);
+				}
+			}
+
+			{
+				_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
+				firstLock.ExitWriteLock();
 			}
 
 			if (!success) {
