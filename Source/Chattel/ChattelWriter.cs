@@ -34,7 +34,7 @@ namespace Chattel {
 		//private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly ChattelConfiguration _config;
-		private readonly ChattelCache _cache;
+		private readonly IChattelCache _cache;
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, ReaderWriterLockSlim> _activeWriteLocks = new System.Collections.Concurrent.ConcurrentDictionary<Guid, ReaderWriterLockSlim>();
 
@@ -42,16 +42,17 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
+		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
-		public ChattelWriter(ChattelConfiguration config, bool purgeCache = false) {
+		public ChattelWriter(ChattelConfiguration config, IChattelCache cache = null, bool purgeCache = false) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (_config.CacheEnabled) {
-				_cache = new ChattelCache(config);
+				_cache = cache ?? new ChattelCache(config);
+			}
 
-				if (purgeCache) {
-					_cache.Purge();
-				}
+			if (purgeCache) {
+				_cache?.Purge();
 			}
 		}
 

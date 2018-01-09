@@ -82,6 +82,7 @@
     <Compile Include="AssetException.cs" />
     <Compile Include="AssetExistsException.cs" />
     <Compile Include="AssetWriteException.cs" />
+    <Compile Include="IChattelCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿// Chattel.cs
+﻿// ChattelCache.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -31,7 +31,7 @@ using InWorldz.Data.Assets.Stratus;
 using ProtoBuf;
 
 namespace Chattel {
-	internal class ChattelCache {
+	internal class ChattelCache : IChattelCache {
 		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private readonly ChattelConfiguration _config;
@@ -50,7 +50,7 @@ namespace Chattel {
 			_config = config;
 		}
 
-		internal bool TryGetCachedAsset(Guid assetId, out StratusAsset asset) {
+		public bool TryGetCachedAsset(Guid assetId, out StratusAsset asset) {
 			if (!_config.CacheEnabled) {
 				asset = null;
 				return false;
@@ -113,7 +113,7 @@ namespace Chattel {
 			return false;
 		}
 
-		internal void CacheAsset(StratusAsset asset) {
+		public void CacheAsset(StratusAsset asset) {
 			if (!_config.CacheEnabled || asset == null) { // Caching is disabled or stupidity.
 				return;
 			}
@@ -155,8 +155,12 @@ namespace Chattel {
 			}
 		}
 
-		internal void Purge() {
+		public void Purge() {
 			_config.CacheFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
+		}
+
+		public void Purge(Guid assetId) {
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
