@@ -40,17 +40,11 @@
     <Reference Include="Marvin.JsonPatch">
       <HintPath>..\packages\Marvin.JsonPatch.Signed.0.7.0\lib\portable-net40+win+wpa81\Marvin.JsonPatch.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Flurl">
       <HintPath>..\packages\Flurl.Signed.2.3.0\lib\portable40-net40+sl5+win8+wp8+wpa81\Flurl.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="openstacknet">
-      <HintPath>..\packages\openstack.net.1.7.7\lib\net45\openstacknet.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\packages\protobuf-net.2.3.2\lib\net40\protobuf-net.dll</HintPath>
@@ -62,6 +56,10 @@
     </Reference>
     <Reference Include="System.Reflection.TypeExtensions">
       <HintPath>..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="openstacknet">
+      <HintPath>..\..\packages\openstack.net.1.7.7\lib\net45\openstacknet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +81,7 @@
     <Compile Include="AssetExistsException.cs" />
     <Compile Include="AssetWriteException.cs" />
     <Compile Include="IChattelCache.cs" />
+    <Compile Include="LibLog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

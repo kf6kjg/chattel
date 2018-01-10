@@ -31,7 +31,7 @@ using Nini.Config;
 
 namespace Chattel {
 	public class ChattelConfiguration {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
 
 		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
 
@@ -48,14 +48,14 @@ namespace Chattel {
 		public ChattelConfiguration(string cachePath = null, IEnumerable<IEnumerable<IAssetServerConfig>> serialParallelServerConfigs = null) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
 			}
 			else if (!Directory.Exists(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
 			}
 			else {
 				CacheFolder = new DirectoryInfo(cachePath);
-				LOG.Info($"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
 			}
 
 			// Set up server handlers
@@ -77,7 +77,7 @@ namespace Chattel {
 								serverConnector = new AssetServerCF((AssetServerCFConfig)config);
 								break;
 							default:
-								LOG.Warn($"[ASSET_CONFIG] Unknown asset server type {config.Type} with name {config.Name}.");
+								LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_CONFIG] Unknown asset server type {config.Type} with name {config.Name}.");
 								break;
 						}
 
@@ -92,7 +92,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Warn("[ASSET_CONFIG] Servers empty or not specified. No asset servers connectors configured.");
+				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_CONFIG] Servers empty or not specified. No asset servers connectors configured.");
 			}
 		}
 
@@ -117,14 +117,14 @@ namespace Chattel {
 			var cachePath = assetConfig?.GetString("CachePath", string.Empty) ?? string.Empty;
 
 			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
 			}
 			else if (!Directory.Exists(cachePath)) {
-				LOG.Info($"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
 			}
 			else {
 				CacheFolder = new DirectoryInfo(cachePath);
-				LOG.Info($"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
+				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
 			}
 
 			// Set up server handlers
@@ -172,12 +172,12 @@ namespace Chattel {
 									);
 									break;
 								default:
-									LOG.Warn($"[ASSET_CONFIG] Unknown asset server type in section [{source}].");
+									LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_CONFIG] Unknown asset server type in section [{source}].");
 									break;
 							}
 						}
 						catch (SocketException e) {
-							LOG.Error($"[ASSET_CONFIG] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
+							LOG.Log(Logging.LogLevel.Error, () => $"[ASSET_CONFIG] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
 						}
 
 						if (serverConnector != null) {
@@ -191,7 +191,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Warn("[ASSET_CONFIG] Servers empty or not specified. No asset server sections configured.");
+				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_CONFIG] Servers empty or not specified. No asset server sections configured.");
 			}
 		}
 

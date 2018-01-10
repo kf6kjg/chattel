@@ -1,4 +1,4 @@
-// AssetServerWHIP.cs
+﻿// AssetServerWHIP.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -29,7 +29,7 @@ using InWorldz.Whip.Client;
 
 namespace Chattel {
 	internal class AssetServerWHIP : IAssetServer {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerWHIP>();
 
 		public string Host { get; private set; }
 		public int Port { get; private set; }
@@ -53,7 +53,7 @@ namespace Chattel {
 			_provider.Start(); // TODO: this needs to be started when needed, and shutdown after no usage for a period of time.  Noted that the library doesn't like repeated start stops, it seems to not keep up the auth info, so the whole _whipServer instance would need to be scrapped and reinitialized.
 			var status = _provider.GetServerStatus();
 
-			LOG.Info($"[WHIP_SERVER] [{_serverHandle}] WHIP connection prepared for host {Host}:{Port}\n'{status}'.");
+			LOG.Log(Logging.LogLevel.Info, () => $"[WHIP_SERVER] [{_serverHandle}] WHIP connection prepared for host {Host}:{Port}\n'{status}'.");
 		}
 
 		public void Dispose() {
@@ -75,11 +75,11 @@ namespace Chattel {
 				whipAsset = _provider.GetAsset(assetID.ToString());
 			}
 			catch (AssetServerError e) {
-				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Error getting asset from server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Error getting asset from server.", e);
 				return null;
 			}
 			catch (AuthException e) {
-				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Authentication error getting asset from server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Authentication error getting asset from server.", e);
 				return null;
 			}
 
@@ -91,11 +91,11 @@ namespace Chattel {
 				_provider.PutAsset(StratusAsset.ToWHIPAsset(asset));
 			}
 			catch (AssetServerError e) {
-				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Error sending asset to server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Error sending asset to server.", e);
 				throw new AssetWriteException(asset.Id, e);
 			}
 			catch (AuthException e) {
-				LOG.Error($"[WHIP_SERVER] [{_serverHandle}] Authentication error sending asset to server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Authentication error sending asset to server.", e);
 				throw new AssetWriteException(asset.Id, e);
 			}
 		}

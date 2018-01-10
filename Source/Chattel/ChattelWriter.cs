@@ -31,7 +31,7 @@ using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
 	public class ChattelWriter {
-		//private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		//private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelWriter>();
 
 		private readonly ChattelConfiguration _config;
 		private readonly IChattelCache _cache;

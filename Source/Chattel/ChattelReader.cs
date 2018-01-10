@@ -33,7 +33,7 @@ using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
 	public class ChattelReader {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelReader>();
 
 		public delegate void AssetHandler(StratusAsset asset);
 
@@ -169,7 +169,7 @@ namespace Chattel {
 					}
 
 					if (exceptions.Count > 0) {
-						LOG.Error($"Exceptions ({exceptions.Count}) were thrown by handler(s) listening for asset {assetId}", new AggregateException(exceptions));
+						LOG.Log(Logging.LogLevel.Error, () => $"Exceptions ({exceptions.Count}) were thrown by handler(s) listening for asset {assetId}", new AggregateException(exceptions));
 					}
 
 					return; // We're done here.

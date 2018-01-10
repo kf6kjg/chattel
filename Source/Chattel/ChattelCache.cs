@@ -32,7 +32,7 @@ using ProtoBuf;
 
 namespace Chattel {
 	internal class ChattelCache : IChattelCache {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelCache>();
 
 		private readonly ChattelConfiguration _config;
 
@@ -60,7 +60,7 @@ namespace Chattel {
 			var path = UuidToCachePath(assetId);
 
 			if (_assetsBeingWritten.TryGetValue(path, out asset)) {
-				LOG.Debug($"[ASSET_READER] Attempted to read an asset from cache, but another thread is writing it.  Shortcutting read of {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"Attempted to read an asset from cache, but another thread is writing it. Shortcutting read of {path}");
 				// Asset is currently being pushed to disk, so might as well return it now since I have it in memory.
 				return true;
 			}
@@ -75,24 +75,24 @@ namespace Chattel {
 			}
 			catch (PathTooLongException e) {
 				_config.DisableCache();
-				LOG.Error("[ASSET_READER] Attempted to read a cached asset, but the path was too long for the filesystem.  Disabling caching.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a cached asset, but the path was too long for the filesystem.  Disabling caching.", e);
 			}
 			catch (DirectoryNotFoundException) {
 				// Kinda expected if that's an item that's not been cached.
 			}
 			catch (UnauthorizedAccessException e) {
 				_config.DisableCache();
-				LOG.Error("[ASSET_READER] Attempted to read a cached asset, but this user is not allowed access.  Disabling caching.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a cached asset, but this user is not allowed access.  Disabling caching.", e);
 			}
 			catch (FileNotFoundException) {
 				// Kinda expected if that's an item that's not been cached.
 			}
 			catch (IOException e) {
 				// This could be temporary.
-				LOG.Warn("[ASSET_READER] Attempted to read a cached asset, but there was an IO error.", e);
+				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_READER] Attempted to read a cached asset, but there was an IO error.", e);
 			}
 			catch (ProtoException e) {
-				LOG.Warn($"[ASSET_READER] Attempted to read a cached asset, but there was a protobuf decoding error.  Removing the offending cache file as it is either corrupt or from an older installation: {path}", e);
+				LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_READER] Attempted to read a cached asset, but there was a protobuf decoding error.  Removing the offending cache file as it is either corrupt or from an older installation: {path}", e);
 				removeFile = true;
 			}
 
@@ -121,7 +121,7 @@ namespace Chattel {
 			var path = UuidToCachePath(asset.Id);
 
 			if (!_assetsBeingWritten.TryAdd(path, asset)) {
-				LOG.Debug($"[ASSET_READER] Attempted to write an asset to cache, but another thread is already doing so.  Skipping write of {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Attempted to write an asset to cache, but another thread is already doing so.  Skipping write of {path}");
 				// Can't add it, which means it's already being written to disk by another thread.  No need to continue.
 				return;
 			}
@@ -135,23 +135,23 @@ namespace Chattel {
 				// Writing is done, remove it from the work list.
 				StratusAsset temp;
 				_assetsBeingWritten.TryRemove(path, out temp);
-				LOG.Debug($"[ASSET_READER] Wrote an asset to cache: {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Wrote an asset to cache: {path}");
 			}
 			catch (UnauthorizedAccessException e) {
 				_config.DisableCache();
-				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but this user is not allowed access.  Disabling caching.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but this user is not allowed access.  Disabling caching.", e);
 			}
 			catch (PathTooLongException e) {
 				_config.DisableCache();
-				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but the path was too long for the filesystem.  Disabling caching.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but the path was too long for the filesystem.  Disabling caching.", e);
 			}
 			catch (DirectoryNotFoundException e) {
 				_config.DisableCache();
-				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but cache folder was not found.  Disabling caching.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but cache folder was not found.  Disabling caching.", e);
 			}
 			catch (IOException e) {
 				// This could be temporary.
-				LOG.Error("[ASSET_READER] Attempted to write an asset to cache, but there was an IO error.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but there was an IO error.", e);
 			}
 		}
 

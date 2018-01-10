@@ -1,4 +1,4 @@
-// AssetServerCF.cs
+﻿// AssetServerCF.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -34,7 +34,7 @@ using net.openstack.Core.Exceptions.Response;
 
 namespace Chattel {
 	internal class AssetServerCF : IAssetServer {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerCF>();
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;
 		private const int DEFAULT_WRITE_TIMEOUT = 10 * 1000;
@@ -73,7 +73,7 @@ namespace Chattel {
 			//warm up
 			_provider.GetAccountHeaders(useInternalUrl: UseInternalURL, region: DefaultRegion);
 
-			LOG.Info($"[CF_SERVER] [{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
+			LOG.Log(Logging.LogLevel.Info, () => $"[CF_SERVER] [{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
 		}
 
 		public void Dispose() {
@@ -214,7 +214,7 @@ namespace Chattel {
 			stopwatch.Stop();
 
 			if (stopwatch.ElapsedMilliseconds >= WARNING_TIME) {
-				LOG.Warn($"[CF_SERVER] [{_serverHandle}] Slow CF operation {opName} took {stopwatch.ElapsedMilliseconds} ms.");
+				LOG.Log(Logging.LogLevel.Warn, () => $"[CF_SERVER] [{_serverHandle}] Slow CF operation {opName} took {stopwatch.ElapsedMilliseconds} ms.");
 			}
 		}
 	}
