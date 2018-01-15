@@ -105,6 +105,16 @@ namespace Chattel {
 			var exceptions = new List<Exception>();
 			var success = false;
 
+			try {
+				_cache?.CacheAsset(asset);
+
+				// Set success if there're no upstream servers.
+				success |= !HasUpstream;
+			}
+			catch (Exception e) {
+				exceptions.Add(e);
+			}
+
 			// Got to go try the servers now.
 			foreach (var parallelServers in _config.SerialParallelAssetServers) {
 				try {
@@ -114,8 +124,6 @@ namespace Chattel {
 					else {
 						parallelServers.AsParallel().ForAll(server => server.StoreAssetSync(asset));
 					}
-
-					_cache?.CacheAsset(asset);
 					success = true;
 					break; // It was successfully stored in the first bank of parallel servers, don't do the next bank.
 				}
