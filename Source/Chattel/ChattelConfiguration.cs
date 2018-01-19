@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,11 +32,19 @@ using Nini.Config;
 
 namespace Chattel {
 	public class ChattelConfiguration {
+		public const string DEFAULT_DB_FOLDER_PATH = "cache";
+		public const string DEFAULT_WRITECACHE_FILE_PATH = "whip_lru.whipwcache";
+		public const uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
+
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
 
 		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
 
-		internal DirectoryInfo CacheFolder;
+		public DirectoryInfo CacheFolder { get; private set; }
+
+		public FileInfo WriteCacheFile { get; private set; }
+
+		public uint WriteCacheRecordCount { get; internal set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.
@@ -45,17 +54,26 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
 		/// <param name="serialParallelServerConfigs">Serially-accessed parallel server configs.</param>
-		public ChattelConfiguration(string cachePath = null, IEnumerable<IEnumerable<IAssetServerConfig>> serialParallelServerConfigs = null) {
+		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IEnumerable<IEnumerable<IAssetServerConfig>> serialParallelServerConfigs = null) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"Cache path is empty, caching assets disabled.");
 			}
 			else if (!Directory.Exists(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"Cache path folder does not exist, caching assets disabled.");
 			}
 			else {
 				CacheFolder = new DirectoryInfo(cachePath);
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
+				LOG.Log(Logging.LogLevel.Info, () => $"Caching assets enabled at {CacheFolder.FullName}");
+			}
+
+			if (string.IsNullOrWhiteSpace(writeCachePath) || !CacheEnabled || writeCacheRecordCount <= 0) {
+				LOG.Log(Logging.LogLevel.Warn, () => $"Write cache file path is empty, write cache record count is zero, or caching is disabled. Crash recovery will be compromised.");
+			}
+			else {
+				WriteCacheFile = new FileInfo(writeCachePath);
+				WriteCacheRecordCount = writeCacheRecordCount;
+				LOG.Log(Logging.LogLevel.Info, () => $"Write cache enabled at {WriteCacheFile.FullName} with {WriteCacheRecordCount} records.");
 			}
 
 			// Set up server handlers
@@ -77,7 +95,7 @@ namespace Chattel {
 								serverConnector = new AssetServerCF((AssetServerCFConfig)config);
 								break;
 							default:
-								LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_CONFIG] Unknown asset server type {config.Type} with name {config.Name}.");
+								LOG.Log(Logging.LogLevel.Warn, () => $"Unknown asset server type {config.Type} with name {config.Name}.");
 								break;
 						}
 
@@ -92,7 +110,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_CONFIG] Servers empty or not specified. No asset servers connectors configured.");
+				LOG.Log(Logging.LogLevel.Warn, () => "Servers empty or not specified. No asset servers connectors configured.");
 			}
 		}
 
@@ -114,17 +132,30 @@ namespace Chattel {
 		/// <param name="assetConfig">Config instance for the asset options.</param>
 		public ChattelConfiguration(IConfigSource configSource, IConfig assetConfig) {
 			// Set up caching
-			var cachePath = assetConfig?.GetString("CachePath", string.Empty) ?? string.Empty;
+			var cachePath = assetConfig?.GetString("CachePath", DEFAULT_DB_FOLDER_PATH) ?? DEFAULT_DB_FOLDER_PATH;
 
 			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath is empty, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"CachePath is empty, caching assets disabled.");
 			}
 			else if (!Directory.Exists(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] CachePath folder does not exist, caching assets disabled.");
+				LOG.Log(Logging.LogLevel.Info, () => $"CachePath folder does not exist, caching assets disabled.");
 			}
 			else {
 				CacheFolder = new DirectoryInfo(cachePath);
-				LOG.Log(Logging.LogLevel.Info, () => $"[ASSET_CONFIG] Caching assets enabled at {CacheFolder.FullName}");
+				LOG.Log(Logging.LogLevel.Info, () => $"Caching assets enabled at {CacheFolder.FullName}");
+			}
+
+			// Set up caching
+			var writeCachePath = assetConfig?.GetString("WriteCacheFilePath", string.Empty) ?? string.Empty;
+			var writeCacheRecordCount = (uint)Math.Max(0, assetConfig?.GetLong("WriteCacheRecordCount", DEFAULT_WRITECACHE_RECORD_COUNT) ?? DEFAULT_WRITECACHE_RECORD_COUNT);
+
+			if (string.IsNullOrWhiteSpace(writeCachePath) || writeCacheRecordCount <= 0 || !CacheEnabled) {
+				LOG.Log(Logging.LogLevel.Warn, () => $"WriteCacheFilePath is empty, WriteCacheRecordCount is zero, or caching is disabled. Crash recovery will be compromised.");
+			}
+			else {
+				WriteCacheFile = new FileInfo(writeCachePath);
+				WriteCacheRecordCount = writeCacheRecordCount;
+				LOG.Log(Logging.LogLevel.Info, () => $"Write cache enabled at {WriteCacheFile.FullName} with {WriteCacheRecordCount} records.");
 			}
 
 			// Set up server handlers
@@ -172,12 +203,12 @@ namespace Chattel {
 									);
 									break;
 								default:
-									LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_CONFIG] Unknown asset server type in section [{source}].");
+									LOG.Log(Logging.LogLevel.Warn, () => $"Unknown asset server type in section [{source}].");
 									break;
 							}
 						}
 						catch (SocketException e) {
-							LOG.Log(Logging.LogLevel.Error, () => $"[ASSET_CONFIG] Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
+							LOG.Log(Logging.LogLevel.Error, () => $"Asset server of type '{type}' defined in section [{source}] failed setup. Skipping server.", e);
 						}
 
 						if (serverConnector != null) {
@@ -191,7 +222,7 @@ namespace Chattel {
 				}
 			}
 			else {
-				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_CONFIG] Servers empty or not specified. No asset server sections configured.");
+				LOG.Log(Logging.LogLevel.Warn, () => "Servers empty or not specified. No asset server sections configured.");
 			}
 		}
 

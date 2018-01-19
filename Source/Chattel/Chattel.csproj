@@ -79,6 +79,9 @@
     <Compile Include="AssetWriteException.cs" />
     <Compile Include="IChattelCache.cs" />
     <Compile Include="LibLog.cs" />
+    <Compile Include="WriteCacheNode.cs" />
+    <Compile Include="ChattelConfigurationException.cs" />
+    <Compile Include="WriteCacheNodesFull.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
