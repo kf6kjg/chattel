@@ -130,6 +130,7 @@ namespace Chattel {
 				// Hit up the cache first.
 				if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
 					handler(result);
+					return;
 				}
 
 				var listeners = new Queue<AssetHandler>();
