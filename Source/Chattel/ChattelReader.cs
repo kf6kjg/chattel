@@ -109,13 +109,21 @@ namespace Chattel {
 			return null;
 		}
 
+		[Flags]
+		public enum CacheRule : uint {
+			Normal = 0,
+			SkipRead,
+			SkipWrite,
+		}
+
 		/// <summary>
 		/// Gets the asset from the server.
 		/// </summary>
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
 		/// <param name="handler">Callback delegate to hand the asset to.</param>
-		public void GetAssetAsync(Guid assetId, AssetHandler handler) {
+		/// <param name="cacheRule">Bitfield controlling how the cache is to be handled.</param>
+		public void GetAssetAsync(Guid assetId, AssetHandler handler, CacheRule cacheRule = CacheRule.Normal) {
 			// Ask for null, get null.
 			if (assetId == Guid.Empty) {
 				handler(null);
@@ -128,7 +136,7 @@ namespace Chattel {
 
 			while (true) {
 				// Hit up the cache first.
-				if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
+				if (!cacheRule.HasFlag(CacheRule.SkipRead) && (_cache?.TryGetCachedAsset(assetId, out result) ?? false)) {
 					handler(result);
 					return;
 				}
@@ -148,7 +156,9 @@ namespace Chattel {
 						}
 
 						if (result != null) {
-							_cache?.CacheAsset(result);
+							if (!cacheRule.HasFlag(CacheRule.SkipWrite)) {
+								_cache?.CacheAsset(result);
+							}
 							break;
 						}
 					}
