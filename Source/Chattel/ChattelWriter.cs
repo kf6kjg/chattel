@@ -55,7 +55,7 @@ namespace Chattel {
 		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
 		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
-		internal ChattelWriter(ChattelConfiguration config, IChattelCache cache = null, bool purgeCache = false) {
+		public ChattelWriter(ChattelConfiguration config, IChattelCache cache = null, bool purgeCache = false) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (config.CacheEnabled) {
@@ -138,8 +138,10 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="asset">The asset to store.</param>
 		public void PutAssetSync(StratusAsset asset) {
-			if (asset == null || asset.Id == Guid.Empty) {
-				return;
+			asset = asset ?? throw new ArgumentNullException(nameof(asset));
+
+			if (asset.Id == Guid.Empty) {
+				throw new ArgumentException("Asset cannot have zero ID.", nameof(asset));
 			}
 
 			// Handle parallel calls with the same asset ID.

@@ -33,7 +33,7 @@ using Nini.Config;
 namespace Chattel {
 	public class ChattelConfiguration {
 		public const string DEFAULT_DB_FOLDER_PATH = "cache";
-		public const string DEFAULT_WRITECACHE_FILE_PATH = "whip_lru.whipwcache";
+		public const string DEFAULT_WRITECACHE_FILE_PATH = "chattel.wcache";
 		public const uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
 
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
