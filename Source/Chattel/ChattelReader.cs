@@ -144,7 +144,6 @@ namespace Chattel {
 				var listeners = new Queue<AssetHandler>();
 				if (_idsBeingFetched.TryAdd(assetId, listeners)) {
 					listeners.Enqueue(handler);
-					StratusAsset asset = null;
 
 					// Got to go try the servers now.
 					foreach (var parallelServers in _config.SerialParallelAssetServers) {
@@ -169,7 +168,7 @@ namespace Chattel {
 					lock (listeners) { // Prevent new listeners from being added.
 						Parallel.ForEach(listeners, waiting_handler => {
 							try {
-								waiting_handler(asset);
+								waiting_handler(result);
 							}
 							catch (Exception e) {
 								exceptions.Enqueue(e);
