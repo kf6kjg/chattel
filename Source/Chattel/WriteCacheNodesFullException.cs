@@ -1,4 +1,4 @@
-﻿// WriteCacheNodesFull.cs
+﻿// WriteCacheNodesFullException.cs
 //
 // Author:
 //       Ricky C <>
@@ -26,10 +26,10 @@
 using System;
 
 namespace Chattel {
-	public class WriteCacheNodesFull : Exception {
-		public WriteCacheNodesFull(string message) : base(message) {
+	public class WriteCacheNodesFullException : Exception {
+		public WriteCacheNodesFullException(string message) : base(message) {
 		}
-		public WriteCacheNodesFull(string message, Exception e) : base(message, e) {
+		public WriteCacheNodesFullException(string message, Exception e) : base(message, e) {
 		}
 	}
 }
