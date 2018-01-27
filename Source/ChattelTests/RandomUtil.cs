@@ -1,9 +1,9 @@
-﻿// AssemblyInfo.cs
+﻿// RandomUtil.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
 //
-// Copyright (c) 2016 Richard Curtice
+// Copyright (c) 2018 Richard Curtice
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
-// Information about this assembly is defined by the following attributes.
-// Change them to the values specific to your project.
+using System;
+using System.Text;
 
-[assembly: AssemblyTitle("Chattel")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RWC Productions")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Richard Curtice")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+namespace ChattelTests {
+	public static class RandomUtil {
+		public static Random Rnd = new Random();
 
-// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
-// The form "{Major}.{Minor}.*" will automatically update the build and revision,
-// and "{Major}.{Minor}.{Build}.*" will update just the revision.
+		public static bool NextBool() {
+			return Rnd.Next() > (int.MaxValue / 2);
+		}
 
-[assembly: AssemblyVersion("1.0.*")]
+		public static byte NextByte() {
+			var data = new byte[1];
+			Rnd.NextBytes(data);
+			return data[0];
+		}
 
-// The following attributes are used to specify the signing key for the assembly,
-// if desired. See the Mono documentation for more information about signing.
+		public static sbyte NextSByte() {
+			var data = new byte[1];
+			Rnd.NextBytes(data);
+			return (sbyte)data[0];
+		}
 
-//[assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile("")]
+		public static uint NextUInt() {
+			var data = new byte[sizeof(uint)];
+			Rnd.NextBytes(data);
+			return BitConverter.ToUInt32(data, 0);
+		}
 
-// Allow unit testing internals
-[assembly: InternalsVisibleTo("ChattelTests")]
+		public static ulong NextULong() {
+			var data = new byte[sizeof(ulong)];
+			Rnd.NextBytes(data);
+			return BitConverter.ToUInt64(data, 0);
+		}
+
+		public static string StringUTF8(uint length) {
+			var data = new byte[sizeof(uint) * length];
+			Rnd.NextBytes(data);
+			return Encoding.UTF8.GetString(data).Substring(0, (int)length);
+		}
+	}
+}
