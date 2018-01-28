@@ -31,8 +31,8 @@ using InWorldz.Data.Assets.Stratus;
 using ProtoBuf;
 
 namespace Chattel {
-	internal class ChattelCache : IChattelCache {
-		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelCache>();
+	internal class AssetCacheSimpleFolderTree : IChattelCache {
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetCacheSimpleFolderTree>();
 
 		private readonly ChattelConfiguration _config;
 
@@ -42,12 +42,8 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		internal ChattelCache(ChattelConfiguration config) {
-			if (config == null) {
-				throw new ArgumentNullException(nameof(config));
-			}
-
-			_config = config;
+		internal AssetCacheSimpleFolderTree(ChattelConfiguration config) {
+			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
 
 		public bool TryGetCachedAsset(Guid assetId, out StratusAsset asset) {
@@ -133,8 +129,7 @@ namespace Chattel {
 					Serializer.Serialize(file, asset);
 				}
 				// Writing is done, remove it from the work list.
-				StratusAsset temp;
-				_assetsBeingWritten.TryRemove(path, out temp);
+				_assetsBeingWritten.TryRemove(path, out StratusAsset temp);
 				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Wrote an asset to cache: {path}");
 			}
 			catch (UnauthorizedAccessException e) {

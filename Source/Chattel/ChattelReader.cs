@@ -52,7 +52,7 @@ namespace Chattel {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (_config.CacheEnabled) {
-				_cache = cache ?? new ChattelCache(config);
+				_cache = cache ?? new AssetCacheSimpleFolderTree(config);
 			}
 
 			if (purgeCache) {
@@ -130,7 +130,8 @@ namespace Chattel {
 			}
 
 			// TODO: see if https://github.com/Reactive-Extensions/Rx.NET would do a better job, but they have to finish releasing 4.0 first.
-			// BUG: if first caller throws in the below code, all other listeners will never be called. Also it might be beneficial to move the listener processsing to another thread, but then you potentially lose parallism across multiple asset IDs.
+
+			// It might be beneficial to move the listener processsing to another thread, but then you potentially lose parallism across multiple asset IDs.
 
 			StratusAsset result = null;
 

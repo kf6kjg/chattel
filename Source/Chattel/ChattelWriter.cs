@@ -59,7 +59,7 @@ namespace Chattel {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (config.CacheEnabled) {
-				_cache = cache ?? new ChattelCache(config);
+				_cache = cache ?? new AssetCacheSimpleFolderTree(config);
 			}
 
 			if (purgeCache) {
