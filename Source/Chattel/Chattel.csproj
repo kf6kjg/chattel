@@ -88,6 +88,7 @@
     <Compile Include="WriteCacheNode.cs" />
     <Compile Include="ChattelConfigurationException.cs" />
     <Compile Include="WriteCacheNodesFullException.cs" />
+    <Compile Include="WriteCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
