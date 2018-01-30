@@ -37,7 +37,7 @@ namespace Chattel {
 	internal class WriteCache {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelWriter>();
 
-		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1");
+		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1"); // This is a remnant from the history of this file's origins.
 
 		private FileInfo _fileInfo;
 
@@ -47,14 +47,15 @@ namespace Chattel {
 
 		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer = null, IChattelCache cache = null) {
 			_fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
-			if (recordCount < 1) {
-				throw new ArgumentOutOfRangeException(nameof(recordCount), "Having less than one record makes no sense.");
+			if (recordCount < 2) {
+				throw new ArgumentOutOfRangeException(nameof(recordCount), "Having less than two record makes no sense and causes errors.");
 			}
 
 			// If the file doesn't exist, create it and zero the needed records.
 			if (!_fileInfo.Exists) {
 				LOG.Log(Logging.LogLevel.Info, () => $"Write cache file doesn't exist, creating and formatting file '{_fileInfo.FullName}'");
 				Initialize(recordCount);
+				_fileInfo.Refresh();
 				LOG.Log(Logging.LogLevel.Debug, () => $"Write cache formatting complete.");
 			}
 
