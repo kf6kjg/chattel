@@ -32,9 +32,12 @@ namespace ChattelTests {
 
 		public static readonly string LOG_CONFIG_PATH;
 
+		public static readonly string WRITE_CACHE_PATH;
+
 		static Constants() {
 			EXECUTABLE_DIRECTORY = TestContext.CurrentContext.TestDirectory;
 			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTest.config");
+			WRITE_CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.wcache");
 		}
 	}
 }

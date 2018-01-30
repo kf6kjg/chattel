@@ -39,6 +39,7 @@
     <Compile Include="RandomUtil.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="TestWriteCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">
