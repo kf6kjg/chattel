@@ -25,7 +25,9 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using Chattel;
+using InWorldz.Data.Assets.Stratus;
 using NUnit.Framework;
 
 #pragma warning disable RECS0026 // Possible unassigned object created by 'new'
@@ -62,7 +64,7 @@ namespace ChattelTests {
 		#region Ctor
 
 		[Test]
-		public void TestCtorMinimal_DoesntThrow() {
+		public void TestCtor_Minimal_DoesntThrow() {
 			Assert.DoesNotThrow(() => new WriteCache(
 				WriteCacheFileInfo,
 				2,
@@ -72,7 +74,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtorNullFile_ArgumentNullException() {
+		public void TestCtor_NullFile_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new WriteCache(
 				null,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -82,7 +84,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtorZeroRecords_ArgumentOutOfRangeException() {
+		public void TestCtor_ZeroRecords_ArgumentOutOfRangeException() {
 			Assert.Throws<ArgumentOutOfRangeException>(() => new WriteCache(
 				WriteCacheFileInfo,
 				0,
@@ -221,6 +223,211 @@ namespace ChattelTests {
 		}
 
 		// TODO: test for cases where the write cache has pending entries.  Should use a mocked ChattelWriter and IChattelCache.
+
+		#endregion
+
+		#region ClearNode
+
+		[Test]
+		public void TestClearNode_Null_ArgumentNullException() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			Assert.Throws<ArgumentNullException>(() => wc.ClearNode(null));
+		}
+
+		[Test]
+		public void TestClearNode_DoesntThrow() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var node = wc.WriteNode(new StratusAsset {
+				Id = Guid.NewGuid(),
+			});
+
+			Assert.DoesNotThrow(() => wc.ClearNode(node));
+		}
+
+		[Test]
+		public void TestClearNode_SetFileByteCorrectly() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var node = wc.WriteNode(new StratusAsset {
+				Id = Guid.NewGuid(),
+			});
+
+			wc.ClearNode(node);
+
+			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+				try {
+					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
+
+					// Check each row.
+					var buffer = new byte[1];
+					fs.Read(buffer, 0, buffer.Length);
+					Assert.AreEqual(0, buffer[0]);
+				}
+				finally {
+					fs.Close();
+				}
+			}
+		}
+
+		[Test]
+		public void TestClearNode_LeftGuidIntact() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var id = Guid.NewGuid();
+
+			var node = wc.WriteNode(new StratusAsset {
+				Id = id,
+			});
+
+			wc.ClearNode(node);
+
+			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+				try {
+					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
+
+					// Check each row.
+					var buffer = new byte[WriteCacheNode.BYTE_SIZE];
+					fs.Read(buffer, 0, buffer.Length);
+					Assert.AreEqual(id.ToByteArray(), buffer.Skip(1));
+				}
+				finally {
+					fs.Close();
+				}
+			}
+		}
+
+		#endregion
+
+		#region WriteNode
+
+		[Test]
+		public void TestWriteNode_Null_ArgumentNullException() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			Assert.Throws<ArgumentNullException>(() => wc.WriteNode(null));
+		}
+
+		[Test]
+		public void TestWriteNode_DoesntThrow() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			Assert.DoesNotThrow(() => wc.WriteNode(new StratusAsset {
+				Id = Guid.NewGuid(),
+			}));
+		}
+
+
+		[Test]
+		public void TestWriteNode_SetFileByteCorrectly() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var node = wc.WriteNode(new StratusAsset {
+				Id = Guid.NewGuid(),
+			});
+
+			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+				try {
+					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
+
+					// Check each row.
+					var buffer = new byte[1];
+					fs.Read(buffer, 0, buffer.Length);
+					Assert.AreEqual(1, buffer[0]);
+				}
+				finally {
+					fs.Close();
+				}
+			}
+		}
+
+		[Test]
+		public void TestWriteNode_WroteCorrectGuid() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var id = Guid.NewGuid();
+
+			var node = wc.WriteNode(new StratusAsset {
+				Id = id,
+			});
+
+			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+				try {
+					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
+
+					// Check each row.
+					var buffer = new byte[WriteCacheNode.BYTE_SIZE];
+					fs.Read(buffer, 0, buffer.Length);
+					Assert.AreEqual(id.ToByteArray(), buffer.Skip(1));
+				}
+				finally {
+					fs.Close();
+				}
+			}
+		}
+
+		[Test]
+		public void TestWriteNode_TwiceDoesntReturnSameNode() {
+			var wc = new WriteCache(
+				WriteCacheFileInfo,
+				WRITE_CACHE_MAX_RECORD_COUNT,
+				null,
+				null
+			);
+
+			var id = Guid.NewGuid();
+
+			var node1 = wc.WriteNode(new StratusAsset {
+				Id = id,
+			});
+
+			var node2 = wc.WriteNode(new StratusAsset {
+				Id = id,
+			});
+
+			Assert.AreNotSame(node1, node2);
+		}
 
 		#endregion
 	}
