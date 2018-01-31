@@ -146,9 +146,9 @@ namespace ChattelAssetTools {
 					}
 
 					return (T)(object)image;
+				default:
+					return default(T);
 			}
-
-			return default(T);
 		}
 
 		// ----

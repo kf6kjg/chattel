@@ -48,7 +48,7 @@ namespace Chattel {
 		/// <param name="config">Instance of the configuration class.</param>
 		/// <param name="cache">Instance of the IChattelCache interface.  If left null, then the default ChattelCache will be instantiated.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
-		public ChattelReader(ChattelConfiguration config, IChattelCache cache = null, bool purgeCache = false) {
+		public ChattelReader(ChattelConfiguration config, IChattelCache cache, bool purgeCache) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (_config.CacheEnabled) {
@@ -58,6 +58,15 @@ namespace Chattel {
 			if (purgeCache) {
 				_cache?.Purge();
 			}
+		}
+
+		public ChattelReader(ChattelConfiguration config, IChattelCache cache) : this(config, cache, false) {
+		}
+
+		public ChattelReader(ChattelConfiguration config, bool purgeCache) : this(config, config.CacheEnabled ? new AssetCacheSimpleFolderTree(config) : null, purgeCache)  {
+		}
+
+		public ChattelReader(ChattelConfiguration config) : this(config, new AssetCacheSimpleFolderTree(config), false) {
 		}
 
 		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;

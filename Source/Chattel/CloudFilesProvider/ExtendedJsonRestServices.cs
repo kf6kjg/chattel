@@ -71,14 +71,18 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 				Stream content, int bufferSize, long maxReadLength, Dictionary<string, string> headers,
 				Dictionary<string, string> queryStringParameters, RequestSettings settings,
 				Action<long> progressUpdated, bool allowWriteStreamBuffering) {
-			if (url == null)
+			if (url == null) {
 				throw new ArgumentNullException(nameof(url));
-			if (content == null)
+			}
+			if (content == null) {
 				throw new ArgumentNullException(nameof(content));
-			if (bufferSize <= 0)
+			}
+			if (bufferSize <= 0) {
 				throw new ArgumentOutOfRangeException(nameof(bufferSize));
-			if (maxReadLength < 0)
+			}
+			if (maxReadLength < 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxReadLength));
+			}
 
 			return ExecuteRequest(url, method, responseBuilderCallback, headers, queryStringParameters, settings, (req) => {
 				var bytesWritten = 0L;
@@ -108,8 +112,7 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 
 						stream.Write(buffer, 0, count);
 
-						if (progressUpdated != null)
-							progressUpdated(bytesWritten);
+						progressUpdated?.Invoke(bytesWritten);
 
 						if (maxReadLength > 0 && bytesWritten >= maxReadLength)
 							break;

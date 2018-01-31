@@ -94,9 +94,11 @@ namespace ChattelTests {
 			}
 
 			public void StoreAssetSync(StratusAsset asset) {
+				// It's a mock, the data can go visit Mars for all we care.
 			}
 
 			void IDisposable.Dispose() {
+				// Likewise, nothing to see here, move along.
 			}
 		}
 
