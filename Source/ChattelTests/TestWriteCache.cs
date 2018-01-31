@@ -24,10 +24,12 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Chattel;
 using InWorldz.Data.Assets.Stratus;
+using NSubstitute;
 using NUnit.Framework;
 
 #pragma warning disable RECS0026 // Possible unassigned object created by 'new'
@@ -36,7 +38,7 @@ namespace ChattelTests {
 	[TestFixture]
 	public class TestWriteCache {
 		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
-		private readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1");
+		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1");
 
 		public static readonly FileInfo WriteCacheFileInfo = new FileInfo(Constants.WRITE_CACHE_PATH);
 
@@ -49,6 +51,53 @@ namespace ChattelTests {
 			}
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 			WriteCacheFileInfo.Refresh();
+		}
+
+		internal static void CreateWriteCache(FileInfo wcache, IEnumerable<Tuple<Guid, bool>> nodes) {
+			using (var fs = new FileStream(wcache.FullName, FileMode.Create, FileAccess.Write)) {
+				try {
+					fs.SetLength(WRITE_CACHE_MAGIC_NUMBER.Length + 2 * WriteCacheNode.BYTE_SIZE);
+					fs.Seek(0, SeekOrigin.Begin);
+
+					// Write the header
+					fs.Write(WRITE_CACHE_MAGIC_NUMBER, 0, WRITE_CACHE_MAGIC_NUMBER.Length);
+
+					// Write rows.
+					foreach (var node in nodes) {
+						fs.WriteByte(node.Item2 ? (byte)0 : (byte)1);
+						fs.Write(node.Item1.ToByteArray(), 0, 16);
+					}
+				}
+				finally {
+					fs.Close();
+				}
+			}
+
+			wcache.Refresh();
+		}
+
+		public class MockServerConfig : IAssetServerConfig {
+			public Type Type => typeof(MockServer);
+
+			public string Name => "MockServer";
+		}
+
+		public class MockServer : IAssetServer {
+			public MockServerConfig Config { get; }
+
+			public MockServer(MockServerConfig config) {
+				Config = config;
+			}
+
+			public StratusAsset RequestAssetSync(Guid assetID) {
+				return null;
+			}
+
+			public void StoreAssetSync(StratusAsset asset) {
+			}
+
+			void IDisposable.Dispose() {
+			}
 		}
 
 		[SetUp]
@@ -222,7 +271,181 @@ namespace ChattelTests {
 			}
 		}
 
-		// TODO: test for cases where the write cache has pending entries.  Should use a mocked ChattelWriter and IChattelCache.
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_NullWriter_NullCache_ChattelConfigurationException() {
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+			};
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				null,
+				null
+			));
+		}
+
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_NullWriter_MockCache_ChattelConfigurationException() {
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+			};
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			var cache = Substitute.For<IChattelCache>();
+
+			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				null,
+				cache
+			));
+		}
+
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_MockWriter_NullCache_ChattelConfigurationException() {
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+				new Tuple<Guid, bool>(Guid.NewGuid(), false),
+			};
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			var cache = Substitute.For<IChattelCache>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(), cache, false);
+
+			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				writer,
+				null
+			));
+		}
+
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_CallsCacheGet() {
+			var firstId = Guid.NewGuid();
+			var lastId = Guid.NewGuid();
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(firstId, false),
+				new Tuple<Guid, bool>(Guid.Empty, true),
+				new Tuple<Guid, bool>(lastId, true),
+			};
+
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			var cache = Substitute.For<IChattelCache>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+
+			cache.TryGetCachedAsset(firstId, out var asset1).Returns(false);
+
+			new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				writer,
+				cache
+			);
+
+			cache.Received().TryGetCachedAsset(firstId, out var assetJunk1);
+			cache.DidNotReceive().TryGetCachedAsset(Guid.Empty, out var assetJunk2);
+			cache.DidNotReceive().TryGetCachedAsset(lastId, out var assetJunk3);
+		}
+
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_CallsWriterPut() {
+			var firstId = Guid.NewGuid();
+			var lastId = Guid.NewGuid();
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(firstId, false),
+				new Tuple<Guid, bool>(Guid.Empty, true),
+				new Tuple<Guid, bool>(lastId, true),
+			};
+
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			var cache = Substitute.For<IChattelCache>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+
+			var firstAsset = new StratusAsset {
+				Id = firstId,
+			};
+
+			var lastAsset = new StratusAsset {
+				Id = lastId,
+			};
+
+			cache.TryGetCachedAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
+			cache.TryGetCachedAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
+
+			cache.CacheAsset(firstAsset);
+			cache.CacheAsset(lastAsset);
+
+			new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				writer,
+				cache
+			);
+
+			writer.Received().PutAssetSync(firstAsset);
+			writer.DidNotReceive().PutAssetSync(lastAsset);
+		}
+
+		[Test]
+		public void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_ClearsWriteCache() {
+			var firstId = Guid.NewGuid();
+			var lastId = Guid.NewGuid();
+			var records = new Tuple<Guid, bool>[] {
+				new Tuple<Guid, bool>(firstId, false),
+				new Tuple<Guid, bool>(Guid.Empty, true),
+				new Tuple<Guid, bool>(lastId, true),
+			};
+
+			CreateWriteCache(WriteCacheFileInfo, records);
+
+			var cache = Substitute.For<IChattelCache>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+
+			var firstAsset = new StratusAsset {
+				Id = firstId,
+			};
+
+			var lastAsset = new StratusAsset {
+				Id = lastId,
+			};
+
+			cache.TryGetCachedAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
+			cache.TryGetCachedAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
+
+			cache.CacheAsset(firstAsset);
+			cache.CacheAsset(lastAsset);
+
+			new WriteCache(
+				WriteCacheFileInfo,
+				(uint)records.Length,
+				writer,
+				cache
+			);
+
+			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+				try {
+					// Skip the header
+					fs.Seek(WRITE_CACHE_MAGIC_NUMBER.Length, SeekOrigin.Begin);
+
+					// Check each row.
+					for (var recordIndex = 0; recordIndex < WRITE_CACHE_MAX_RECORD_COUNT; ++recordIndex) {
+						var buffer = new byte[WriteCacheNode.BYTE_SIZE];
+						fs.Read(buffer, 0, buffer.Length);
+						Assert.AreEqual(0, buffer[0], $"Record #{recordIndex + 1} is not marked as available!");
+					}
+				}
+				finally {
+					fs.Close();
+				}
+			}
+		}
 
 		#endregion
 
