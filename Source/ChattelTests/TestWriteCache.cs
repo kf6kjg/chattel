@@ -64,7 +64,7 @@ namespace ChattelTests {
 		#region Ctor
 
 		[Test]
-		public void TestCtor_Minimal_DoesntThrow() {
+		public void TestWriteCache_Ctor_Minimal_DoesntThrow() {
 			Assert.DoesNotThrow(() => new WriteCache(
 				WriteCacheFileInfo,
 				2,
@@ -74,7 +74,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_NullFile_ArgumentNullException() {
+		public void TestWriteCache_Ctor_NullFile_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new WriteCache(
 				null,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -84,7 +84,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_ZeroRecords_ArgumentOutOfRangeException() {
+		public void TestWriteCache_Ctor_ZeroRecords_ArgumentOutOfRangeException() {
 			Assert.Throws<ArgumentOutOfRangeException>(() => new WriteCache(
 				WriteCacheFileInfo,
 				0,
@@ -95,7 +95,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestCtor_CreatesWriteCacheFile() {
+		public void TestWriteCache_Ctor_CreatesWriteCacheFile() {
 			Assert.DoesNotThrow(() => new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -107,7 +107,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_CreatesWriteCacheFileWithCorrectMagicNumber() {
+		public void TestWriteCache_Ctor_CreatesWriteCacheFileWithCorrectMagicNumber() {
 			new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -125,7 +125,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_CreatesWriteCacheFileWithCorrectRecordCount() {
+		public void TestWriteCache_Ctor_CreatesWriteCacheFileWithCorrectRecordCount() {
 			new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -140,7 +140,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_CreatesWriteCacheFileWithRecordsAllAvailable() {
+		public void TestWriteCache_Ctor_CreatesWriteCacheFileWithRecordsAllAvailable() {
 			new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -167,7 +167,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_UpdatesWriteCacheFileWithCorrectRecordCount() {
+		public void TestWriteCache_Ctor_UpdatesWriteCacheFileWithCorrectRecordCount() {
 			new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT / 2,
@@ -189,7 +189,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestCtor_UpdatesWriteCacheFileWithRecordsAllAvailable() {
+		public void TestWriteCache_Ctor_UpdatesWriteCacheFileWithRecordsAllAvailable() {
 			new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT / 2,
@@ -229,7 +229,7 @@ namespace ChattelTests {
 		#region ClearNode
 
 		[Test]
-		public void TestClearNode_Null_ArgumentNullException() {
+		public void TestWriteCache_ClearNode_Null_ArgumentNullException() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -241,7 +241,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestClearNode_DoesntThrow() {
+		public void TestWriteCache_ClearNode_DoesntThrow() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -257,7 +257,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestClearNode_SetFileByteCorrectly() {
+		public void TestWriteCache_ClearNode_SetFileByteCorrectly() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -287,7 +287,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestClearNode_LeftGuidIntact() {
+		public void TestWriteCache_ClearNode_LeftGuidIntact() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -323,7 +323,7 @@ namespace ChattelTests {
 		#region WriteNode
 
 		[Test]
-		public void TestWriteNode_Null_ArgumentNullException() {
+		public void TestWriteCache_WriteNode_Null_ArgumentNullException() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -335,7 +335,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestWriteNode_DoesntThrow() {
+		public void TestWriteCache_WriteNode_DoesntThrow() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -350,7 +350,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestWriteNode_SetFileByteCorrectly() {
+		public void TestWriteCache_WriteNode_SetFileByteCorrectly() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -378,7 +378,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestWriteNode_WroteCorrectGuid() {
+		public void TestWriteCache_WriteNode_WroteCorrectGuid() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,
@@ -408,7 +408,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestWriteNode_TwiceDoesntReturnSameNode() {
+		public void TestWriteCache_WriteNode_TwiceDoesntReturnSameNode() {
 			var wc = new WriteCache(
 				WriteCacheFileInfo,
 				WRITE_CACHE_MAX_RECORD_COUNT,

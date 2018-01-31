@@ -34,7 +34,7 @@ namespace ChattelAssetToolsTests {
 		#region HasAssetData
 
 		[Test]
-		public void TestHasAssetData_Empty() {
+		public void TestStratusAsset_HasAssetData_Empty() {
 			var asset = new StratusAsset {
 				Data = new byte[] { }
 			};
@@ -43,7 +43,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestHasAssetData_Null() {
+		public void TestStratusAsset_HasAssetData_Null() {
 			var asset = new StratusAsset {
 				Data = null
 			};
@@ -52,7 +52,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestHasAssetData_One() {
+		public void TestStratusAsset_HasAssetData_One() {
 			var asset = new StratusAsset {
 				Data = new byte[] { 1 }
 			};
@@ -65,7 +65,7 @@ namespace ChattelAssetToolsTests {
 		#region IsAudioAsset
 
 		[Test]
-		public void TestIsAudioAsset_1Unknown() {
+		public void TestStratusAsset_IsAudioAsset__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -74,7 +74,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset00Texture() {
+		public void TestStratusAsset_IsAudioAsset_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -83,7 +83,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset01Sound() {
+		public void TestStratusAsset_IsAudioAsset_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -92,7 +92,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset02CallingCard() {
+		public void TestStratusAsset_IsAudioAsset_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -101,7 +101,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset03Landmark() {
+		public void TestStratusAsset_IsAudioAsset_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -110,7 +110,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset05Clothing() {
+		public void TestStratusAsset_IsAudioAsset_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -119,7 +119,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset06Object() {
+		public void TestStratusAsset_IsAudioAsset_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -128,7 +128,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset07Notecard() {
+		public void TestStratusAsset_IsAudioAsset_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -137,7 +137,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset10LSLText() {
+		public void TestStratusAsset_IsAudioAsset_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -146,7 +146,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset11LSLBytecode() {
+		public void TestStratusAsset_IsAudioAsset_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -155,7 +155,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset12TextureTGA() {
+		public void TestStratusAsset_IsAudioAsset_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -164,7 +164,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset13Bodypart() {
+		public void TestStratusAsset_IsAudioAsset_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -173,7 +173,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset17SoundWAV() {
+		public void TestStratusAsset_IsAudioAsset_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -182,7 +182,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset18ImageTGA() {
+		public void TestStratusAsset_IsAudioAsset_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -191,7 +191,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset19ImageJPEG() {
+		public void TestStratusAsset_IsAudioAsset_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -200,7 +200,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset20Animation() {
+		public void TestStratusAsset_IsAudioAsset_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -209,7 +209,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset21Gesture() {
+		public void TestStratusAsset_IsAudioAsset_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -218,7 +218,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset22Simstate() {
+		public void TestStratusAsset_IsAudioAsset_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -227,7 +227,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset24Link() {
+		public void TestStratusAsset_IsAudioAsset_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -236,7 +236,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset25LinkFolder() {
+		public void TestStratusAsset_IsAudioAsset_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -245,7 +245,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsAudioAsset49Mesh() {
+		public void TestStratusAsset_IsAudioAsset_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -258,7 +258,7 @@ namespace ChattelAssetToolsTests {
 		#region IsBinaryAsset
 
 		[Test]
-		public void TestIsBinaryAsset_1Unknown() {
+		public void TestStratusAsset_IsBinaryAsset__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -267,7 +267,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset00Texture() {
+		public void TestStratusAsset_IsBinaryAsset_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -276,7 +276,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset01Sound() {
+		public void TestStratusAsset_IsBinaryAsset_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -285,7 +285,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset02CallingCard() {
+		public void TestStratusAsset_IsBinaryAsset_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -294,7 +294,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset03Landmark() {
+		public void TestStratusAsset_IsBinaryAsset_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -303,7 +303,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset05Clothing() {
+		public void TestStratusAsset_IsBinaryAsset_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -312,7 +312,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset06Object() {
+		public void TestStratusAsset_IsBinaryAsset_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -321,7 +321,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset07Notecard() {
+		public void TestStratusAsset_IsBinaryAsset_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -330,7 +330,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset10LSLText() {
+		public void TestStratusAsset_IsBinaryAsset_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -339,7 +339,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset11LSLBytecode() {
+		public void TestStratusAsset_IsBinaryAsset_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -348,7 +348,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset12TextureTGA() {
+		public void TestStratusAsset_IsBinaryAsset_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -357,7 +357,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset13Bodypart() {
+		public void TestStratusAsset_IsBinaryAsset_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -366,7 +366,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset17SoundWAV() {
+		public void TestStratusAsset_IsBinaryAsset_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -375,7 +375,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset18ImageTGA() {
+		public void TestStratusAsset_IsBinaryAsset_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -384,7 +384,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset19ImageJPEG() {
+		public void TestStratusAsset_IsBinaryAsset_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -393,7 +393,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset20Animation() {
+		public void TestStratusAsset_IsBinaryAsset_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -402,7 +402,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset21Gesture() {
+		public void TestStratusAsset_IsBinaryAsset_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -411,7 +411,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset22Simstate() {
+		public void TestStratusAsset_IsBinaryAsset_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -420,7 +420,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset24Link() {
+		public void TestStratusAsset_IsBinaryAsset_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -429,7 +429,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset25LinkFolder() {
+		public void TestStratusAsset_IsBinaryAsset_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -438,7 +438,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsBinaryAsset49Mesh() {
+		public void TestStratusAsset_IsBinaryAsset_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -451,7 +451,7 @@ namespace ChattelAssetToolsTests {
 		#region IsFolder
 
 		[Test]
-		public void TestIsFolder_1Unknown() {
+		public void TestStratusAsset_IsFolder__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -460,7 +460,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder00Texture() {
+		public void TestStratusAsset_IsFolder_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -469,7 +469,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder01Sound() {
+		public void TestStratusAsset_IsFolder_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -478,7 +478,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder02CallingCard() {
+		public void TestStratusAsset_IsFolder_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -487,7 +487,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder03Landmark() {
+		public void TestStratusAsset_IsFolder_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -496,7 +496,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder05Clothing() {
+		public void TestStratusAsset_IsFolder_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -505,7 +505,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder06Object() {
+		public void TestStratusAsset_IsFolder_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -514,7 +514,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder07Notecard() {
+		public void TestStratusAsset_IsFolder_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -523,7 +523,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder10LSLText() {
+		public void TestStratusAsset_IsFolder_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -532,7 +532,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder11LSLBytecode() {
+		public void TestStratusAsset_IsFolder_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -541,7 +541,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder12TextureTGA() {
+		public void TestStratusAsset_IsFolder_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -550,7 +550,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder13Bodypart() {
+		public void TestStratusAsset_IsFolder_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -559,7 +559,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder17SoundWAV() {
+		public void TestStratusAsset_IsFolder_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -568,7 +568,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder18ImageTGA() {
+		public void TestStratusAsset_IsFolder_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -577,7 +577,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder19ImageJPEG() {
+		public void TestStratusAsset_IsFolder_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -586,7 +586,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder20Animation() {
+		public void TestStratusAsset_IsFolder_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -595,7 +595,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder21Gesture() {
+		public void TestStratusAsset_IsFolder_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -604,7 +604,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder22Simstate() {
+		public void TestStratusAsset_IsFolder_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -613,7 +613,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder24Link() {
+		public void TestStratusAsset_IsFolder_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -622,7 +622,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder25LinkFolder() {
+		public void TestStratusAsset_IsFolder_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -631,7 +631,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsFolder49Mesh() {
+		public void TestStratusAsset_IsFolder_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -644,7 +644,7 @@ namespace ChattelAssetToolsTests {
 		#region IsImageAsset
 
 		[Test]
-		public void TestIsImageAsset_1Unknown() {
+		public void TestStratusAsset_IsImageAsset__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -653,7 +653,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset00Texture() {
+		public void TestStratusAsset_IsImageAsset_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -662,7 +662,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset01Sound() {
+		public void TestStratusAsset_IsImageAsset_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -671,7 +671,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset02CallingCard() {
+		public void TestStratusAsset_IsImageAsset_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -680,7 +680,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset03Landmark() {
+		public void TestStratusAsset_IsImageAsset_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -689,7 +689,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset05Clothing() {
+		public void TestStratusAsset_IsImageAsset_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -698,7 +698,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset06Object() {
+		public void TestStratusAsset_IsImageAsset_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -707,7 +707,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset07Notecard() {
+		public void TestStratusAsset_IsImageAsset_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -716,7 +716,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset10LSLText() {
+		public void TestStratusAsset_IsImageAsset_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -725,7 +725,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset11LSLBytecode() {
+		public void TestStratusAsset_IsImageAsset_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -734,7 +734,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset12TextureTGA() {
+		public void TestStratusAsset_IsImageAsset_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -743,7 +743,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset13Bodypart() {
+		public void TestStratusAsset_IsImageAsset_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -752,7 +752,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset17SoundWAV() {
+		public void TestStratusAsset_IsImageAsset_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -761,7 +761,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset18ImageTGA() {
+		public void TestStratusAsset_IsImageAsset_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -770,7 +770,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset19ImageJPEG() {
+		public void TestStratusAsset_IsImageAsset_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -779,7 +779,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset20Animation() {
+		public void TestStratusAsset_IsImageAsset_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -788,7 +788,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset21Gesture() {
+		public void TestStratusAsset_IsImageAsset_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -797,7 +797,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset22Simstate() {
+		public void TestStratusAsset_IsImageAsset_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -806,7 +806,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset24Link() {
+		public void TestStratusAsset_IsImageAsset_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -815,7 +815,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset25LinkFolder() {
+		public void TestStratusAsset_IsImageAsset_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -824,7 +824,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsImageAsset49Mesh() {
+		public void TestStratusAsset_IsImageAsset_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -837,7 +837,7 @@ namespace ChattelAssetToolsTests {
 		#region IsLink
 
 		[Test]
-		public void TestIsLink_1Unknown() {
+		public void TestStratusAsset_IsLink__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -846,7 +846,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink00Texture() {
+		public void TestStratusAsset_IsLink_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -855,7 +855,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink01Sound() {
+		public void TestStratusAsset_IsLink_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -864,7 +864,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink02CallingCard() {
+		public void TestStratusAsset_IsLink_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -873,7 +873,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink03Landmark() {
+		public void TestStratusAsset_IsLink_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -882,7 +882,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink05Clothing() {
+		public void TestStratusAsset_IsLink_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -891,7 +891,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink06Object() {
+		public void TestStratusAsset_IsLink_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -900,7 +900,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink07Notecard() {
+		public void TestStratusAsset_IsLink_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -909,7 +909,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink10LSLText() {
+		public void TestStratusAsset_IsLink_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -918,7 +918,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink11LSLBytecode() {
+		public void TestStratusAsset_IsLink_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -927,7 +927,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink12TextureTGA() {
+		public void TestStratusAsset_IsLink_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -936,7 +936,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink13Bodypart() {
+		public void TestStratusAsset_IsLink_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -945,7 +945,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink17SoundWAV() {
+		public void TestStratusAsset_IsLink_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -954,7 +954,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink18ImageTGA() {
+		public void TestStratusAsset_IsLink_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -963,7 +963,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink19ImageJPEG() {
+		public void TestStratusAsset_IsLink_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -972,7 +972,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink20Animation() {
+		public void TestStratusAsset_IsLink_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -981,7 +981,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink21Gesture() {
+		public void TestStratusAsset_IsLink_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -990,7 +990,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink22Simstate() {
+		public void TestStratusAsset_IsLink_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -999,7 +999,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink24Link() {
+		public void TestStratusAsset_IsLink_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -1008,7 +1008,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink25LinkFolder() {
+		public void TestStratusAsset_IsLink_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -1017,7 +1017,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsLink49Mesh() {
+		public void TestStratusAsset_IsLink_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -1030,7 +1030,7 @@ namespace ChattelAssetToolsTests {
 		#region IsTextualAsset
 
 		[Test]
-		public void TestIsTextualAsset_1Unknown() {
+		public void TestStratusAsset_IsTextualAsset__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -1039,7 +1039,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset00Texture() {
+		public void TestStratusAsset_IsTextualAsset_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -1048,7 +1048,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset01Sound() {
+		public void TestStratusAsset_IsTextualAsset_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -1057,7 +1057,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset02CallingCard() {
+		public void TestStratusAsset_IsTextualAsset_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -1066,7 +1066,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset03Landmark() {
+		public void TestStratusAsset_IsTextualAsset_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -1075,7 +1075,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset05Clothing() {
+		public void TestStratusAsset_IsTextualAsset_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -1084,7 +1084,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset06Object() {
+		public void TestStratusAsset_IsTextualAsset_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -1093,7 +1093,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset07Notecard() {
+		public void TestStratusAsset_IsTextualAsset_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -1102,7 +1102,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset10LSLText() {
+		public void TestStratusAsset_IsTextualAsset_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -1111,7 +1111,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset11LSLBytecode() {
+		public void TestStratusAsset_IsTextualAsset_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -1120,7 +1120,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset12TextureTGA() {
+		public void TestStratusAsset_IsTextualAsset_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -1129,7 +1129,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset13Bodypart() {
+		public void TestStratusAsset_IsTextualAsset_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -1138,7 +1138,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset17SoundWAV() {
+		public void TestStratusAsset_IsTextualAsset_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -1147,7 +1147,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset18ImageTGA() {
+		public void TestStratusAsset_IsTextualAsset_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -1156,7 +1156,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset19ImageJPEG() {
+		public void TestStratusAsset_IsTextualAsset_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -1165,7 +1165,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset20Animation() {
+		public void TestStratusAsset_IsTextualAsset_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -1174,7 +1174,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset21Gesture() {
+		public void TestStratusAsset_IsTextualAsset_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -1183,7 +1183,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset22Simstate() {
+		public void TestStratusAsset_IsTextualAsset_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -1192,7 +1192,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset24Link() {
+		public void TestStratusAsset_IsTextualAsset_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -1201,7 +1201,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset25LinkFolder() {
+		public void TestStratusAsset_IsTextualAsset_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -1210,7 +1210,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextualAsset49Mesh() {
+		public void TestStratusAsset_IsTextualAsset_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -1223,7 +1223,7 @@ namespace ChattelAssetToolsTests {
 		#region IsTextureAsset
 
 		[Test]
-		public void TestIsTextureAsset_1Unknown() {
+		public void TestStratusAsset_IsTextureAsset__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -1232,7 +1232,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset00Texture() {
+		public void TestStratusAsset_IsTextureAsset_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -1241,7 +1241,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset01Sound() {
+		public void TestStratusAsset_IsTextureAsset_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -1250,7 +1250,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset02CallingCard() {
+		public void TestStratusAsset_IsTextureAsset_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -1259,7 +1259,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset03Landmark() {
+		public void TestStratusAsset_IsTextureAsset_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -1268,7 +1268,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset05Clothing() {
+		public void TestStratusAsset_IsTextureAsset_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -1277,7 +1277,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset06Object() {
+		public void TestStratusAsset_IsTextureAsset_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -1286,7 +1286,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset07Notecard() {
+		public void TestStratusAsset_IsTextureAsset_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -1295,7 +1295,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset10LSLText() {
+		public void TestStratusAsset_IsTextureAsset_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -1304,7 +1304,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset11LSLBytecode() {
+		public void TestStratusAsset_IsTextureAsset_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -1313,7 +1313,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset12TextureTGA() {
+		public void TestStratusAsset_IsTextureAsset_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -1322,7 +1322,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset13Bodypart() {
+		public void TestStratusAsset_IsTextureAsset_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -1331,7 +1331,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset17SoundWAV() {
+		public void TestStratusAsset_IsTextureAsset_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -1340,7 +1340,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset18ImageTGA() {
+		public void TestStratusAsset_IsTextureAsset_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -1349,7 +1349,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset19ImageJPEG() {
+		public void TestStratusAsset_IsTextureAsset_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -1358,7 +1358,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset20Animation() {
+		public void TestStratusAsset_IsTextureAsset_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -1367,7 +1367,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset21Gesture() {
+		public void TestStratusAsset_IsTextureAsset_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -1376,7 +1376,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset22Simstate() {
+		public void TestStratusAsset_IsTextureAsset_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -1385,7 +1385,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset24Link() {
+		public void TestStratusAsset_IsTextureAsset_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -1394,7 +1394,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset25LinkFolder() {
+		public void TestStratusAsset_IsTextureAsset_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -1403,7 +1403,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestIsTextureAsset49Mesh() {
+		public void TestStratusAsset_IsTextureAsset_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};
@@ -1416,7 +1416,7 @@ namespace ChattelAssetToolsTests {
 		#region MightContainReferences
 
 		[Test]
-		public void TestMightContainReferences_1Unknown() {
+		public void TestStratusAsset_MightContainReferences__1Unknown() {
 			var asset = new StratusAsset {
 				Type = -1 // Unknown
 			};
@@ -1425,7 +1425,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences00Texture() {
+		public void TestStratusAsset_MightContainReferences_00Texture() {
 			var asset = new StratusAsset {
 				Type = 0 // Texture
 			};
@@ -1434,7 +1434,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences01Sound() {
+		public void TestStratusAsset_MightContainReferences_01Sound() {
 			var asset = new StratusAsset {
 				Type = 1 // Sound
 			};
@@ -1443,7 +1443,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences02CallingCard() {
+		public void TestStratusAsset_MightContainReferences_02CallingCard() {
 			var asset = new StratusAsset {
 				Type = 2
 			};
@@ -1452,7 +1452,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences03Landmark() {
+		public void TestStratusAsset_MightContainReferences_03Landmark() {
 			var asset = new StratusAsset {
 				Type = 3
 			};
@@ -1461,7 +1461,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences05Clothing() {
+		public void TestStratusAsset_MightContainReferences_05Clothing() {
 			var asset = new StratusAsset {
 				Type = 5
 			};
@@ -1470,7 +1470,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences06Object() {
+		public void TestStratusAsset_MightContainReferences_06Object() {
 			var asset = new StratusAsset {
 				Type = 6 // Object
 			};
@@ -1479,7 +1479,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences07Notecard() {
+		public void TestStratusAsset_MightContainReferences_07Notecard() {
 			var asset = new StratusAsset {
 				Type = 7 // Notecard
 			};
@@ -1488,7 +1488,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences10LSLText() {
+		public void TestStratusAsset_MightContainReferences_10LSLText() {
 			var asset = new StratusAsset {
 				Type = 10 // LSLText
 			};
@@ -1497,7 +1497,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences11LSLBytecode() {
+		public void TestStratusAsset_MightContainReferences_11LSLBytecode() {
 			var asset = new StratusAsset {
 				Type = 11 // LSLBytecode
 			};
@@ -1506,7 +1506,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences12TextureTGA() {
+		public void TestStratusAsset_MightContainReferences_12TextureTGA() {
 			var asset = new StratusAsset {
 				Type = 12 // TextureTGA
 			};
@@ -1515,7 +1515,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences13Bodypart() {
+		public void TestStratusAsset_MightContainReferences_13Bodypart() {
 			var asset = new StratusAsset {
 				Type = 13 // Bodypart
 			};
@@ -1524,7 +1524,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences17SoundWAV() {
+		public void TestStratusAsset_MightContainReferences_17SoundWAV() {
 			var asset = new StratusAsset {
 				Type = 17 // SoundWAV
 			};
@@ -1533,7 +1533,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences18ImageTGA() {
+		public void TestStratusAsset_MightContainReferences_18ImageTGA() {
 			var asset = new StratusAsset {
 				Type = 18 // ImageTGA
 			};
@@ -1542,7 +1542,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences19ImageJPEG() {
+		public void TestStratusAsset_MightContainReferences_19ImageJPEG() {
 			var asset = new StratusAsset {
 				Type = 19 // ImageJPEG
 			};
@@ -1551,7 +1551,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences20Animation() {
+		public void TestStratusAsset_MightContainReferences_20Animation() {
 			var asset = new StratusAsset {
 				Type = 20 // Animation
 			};
@@ -1560,7 +1560,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences21Gesture() {
+		public void TestStratusAsset_MightContainReferences_21Gesture() {
 			var asset = new StratusAsset {
 				Type = 21 // Gesture
 			};
@@ -1569,7 +1569,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences22Simstate() {
+		public void TestStratusAsset_MightContainReferences_22Simstate() {
 			var asset = new StratusAsset {
 				Type = 22 // Simstate
 			};
@@ -1578,7 +1578,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences24Link() {
+		public void TestStratusAsset_MightContainReferences_24Link() {
 			var asset = new StratusAsset {
 				Type = 24
 			};
@@ -1587,7 +1587,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences25LinkFolder() {
+		public void TestStratusAsset_MightContainReferences_25LinkFolder() {
 			var asset = new StratusAsset {
 				Type = 25
 			};
@@ -1596,7 +1596,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestMightContainReferences49Mesh() {
+		public void TestStratusAsset_MightContainReferences_49Mesh() {
 			var asset = new StratusAsset {
 				Type = 49
 			};

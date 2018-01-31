@@ -31,24 +31,24 @@ namespace ChattelTests {
 	[TestFixture]
 	public class TestWriteCacheNode {
 		[Test]
-		public void TestThrowsOnNewWithNullArray() {
+		public void TestWriteCacheNode_Ctor_nullArray_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new WriteCacheNode(null, 0));
 		}
 
 		[Test]
-		public void TestThrowsOnNewWithTooShortArray() {
+		public void TestWriteCacheNode_Ctor_TooShortArray_ArgumentOutOfRangeException() {
 			var buffer = new byte[0];
 			Assert.Throws<ArgumentOutOfRangeException>(() => new WriteCacheNode(buffer, 0));
 		}
 
 		[Test]
-		public void TestAcceptsNewWithExtraLongArray() {
+		public void TestWriteCacheNode_Ctor_ExtraLongArray_DoesntThrow() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE * 2];
 			Assert.DoesNotThrow(() => new WriteCacheNode(buffer, 0));
 		}
 
 		[Test]
-		public void TestFileOffsetCorrect() {
+		public void TestWriteCacheNode_FileOffset_Correct() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			var offset = ulong.MaxValue;
 			var node = new WriteCacheNode(buffer, offset);
@@ -56,38 +56,38 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestIsAvailableCorrectTrue() {
+		public void TestWriteCacheNode_IsAvailable0_True() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			buffer[0] = 0;
 			var node = new WriteCacheNode(buffer, 0);
-			Assert.AreEqual(true, node.IsAvailable);
+			Assert.True(node.IsAvailable);
 		}
 
 		[Test]
-		public void TestIsAvailableCorrectFalse1() {
+		public void TestWriteCacheNode_IsAvailable1_False() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			buffer[0] = 1;
 			var node = new WriteCacheNode(buffer, 0);
-			Assert.AreEqual(false, node.IsAvailable);
+			Assert.False(node.IsAvailable);
 		}
 
 		[Test]
-		public void TestIsAvailableCorrectFalse255() {
+		public void TestWriteCacheNode_IsAvailable255_False() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			buffer[0] = 255;
 			var node = new WriteCacheNode(buffer, 0);
-			Assert.AreEqual(false, node.IsAvailable);
+			Assert.False(node.IsAvailable);
 		}
 
 		[Test]
-		public void TestAssetIdCorrectZeros() {
+		public void TestWriteCacheNode_AssetId_CorrectZeros() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			var node = new WriteCacheNode(buffer, 0);
 			Assert.AreEqual(Guid.Empty, node.AssetId);
 		}
 
 		[Test]
-		public void TestAssetIdCorrectRandom() {
+		public void TestWriteCacheNode_AssetId_CorrectRandom() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 			var guid = Guid.NewGuid();
 			Buffer.BlockCopy(guid.ToByteArray(), 0, buffer, 1, 16);
@@ -96,7 +96,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestToByteArrayCorrectRandom() {
+		public void TestWriteCacheNode_ToByteArray_CorrectRandom() {
 			var buffer = new byte[WriteCacheNode.BYTE_SIZE];
 
 			var guid = Guid.NewGuid();
