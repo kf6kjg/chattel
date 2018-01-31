@@ -85,19 +85,7 @@ namespace Chattel {
 				foreach (var parallelConfigs in serialParallelServerConfigs) {
 					var parallelServerConnectors = new List<IAssetServer>();
 					foreach (var config in parallelConfigs) {
-						IAssetServer serverConnector = null;
-
-						switch (config.Type) {
-							case AssetServerType.WHIP:
-								serverConnector = new AssetServerWHIP((AssetServerWHIPConfig)config);
-								break;
-							case AssetServerType.CF:
-								serverConnector = new AssetServerCF((AssetServerCFConfig)config);
-								break;
-							default:
-								LOG.Log(Logging.LogLevel.Warn, () => $"Unknown asset server type {config.Type} with name {config.Name}.");
-								break;
-						}
+						var serverConnector = (IAssetServer) config.Type.GetConstructor(new Type[] { config.GetType() }).Invoke(new object[] { config });
 
 						if (serverConnector != null) {
 							parallelServerConnectors.Add(serverConnector);

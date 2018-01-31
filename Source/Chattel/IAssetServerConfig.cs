@@ -23,14 +23,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 namespace Chattel {
 	public interface IAssetServerConfig {
-		AssetServerType Type { get; }
+		Type Type { get; }
 		string Name { get; }
-	}
-
-	public enum AssetServerType {
-		WHIP,
-		CF
 	}
 }

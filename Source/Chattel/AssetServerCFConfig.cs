@@ -23,13 +23,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 namespace Chattel {
 	public struct AssetServerCFConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
-		public AssetServerType Type {
+		public Type Type {
 			get {
-				return AssetServerType.CF;
+				return typeof(AssetServerCF);
 			}
 		}
 
