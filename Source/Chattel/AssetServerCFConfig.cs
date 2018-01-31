@@ -29,11 +29,7 @@ namespace Chattel {
 	public struct AssetServerCFConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
-		public Type Type {
-			get {
-				return typeof(AssetServerCF);
-			}
-		}
+		public Type Type => typeof(AssetServerCF);
 
 		public string Username { get; set; }
 

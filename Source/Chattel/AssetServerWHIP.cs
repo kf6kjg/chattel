@@ -37,7 +37,7 @@ namespace Chattel {
 
 		private string _serverHandle { get; set; }
 
-		private RemoteServer _provider = null;
+		private RemoteServer _provider;
 
 		public AssetServerWHIP(AssetServerWHIPConfig config) : this(config.Name, config.Host, config.Port, config.Password) {
 		}
@@ -54,18 +54,6 @@ namespace Chattel {
 			var status = _provider.GetServerStatus();
 
 			LOG.Log(Logging.LogLevel.Info, () => $"[WHIP_SERVER] [{_serverHandle}] WHIP connection prepared for host {Host}:{Port}\n'{status}'.");
-		}
-
-		public void Dispose() {
-			try {
-				_provider?.Stop();
-			}
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-			catch {
-				// Nothing to do here.
-			}
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-			_provider = null;
 		}
 
 		public StratusAsset RequestAssetSync(Guid assetID) {
@@ -99,5 +87,36 @@ namespace Chattel {
 				throw new AssetWriteException(asset.Id, e);
 			}
 		}
+
+		#region IDisposable Support
+
+		private bool disposedValue; // To detect redundant calls
+
+		protected virtual void Dispose(bool disposing) {
+			if (!disposedValue) {
+				if (disposing) {
+					try {
+						_provider?.Stop();
+					}
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+					catch {
+						// Nothing to do here.
+					}
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+				}
+
+				_provider = null;
+
+				disposedValue = true;
+			}
+		}
+
+		// This code added to correctly implement the disposable pattern.
+		public void Dispose() {
+			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+			Dispose(true);
+		}
+
+		#endregion
 	}
 }

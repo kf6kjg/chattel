@@ -29,11 +29,7 @@ namespace Chattel {
 	public struct AssetServerWHIPConfig : IAssetServerConfig {
 		public string Name { get; set; }
 
-		public Type Type {
-			get {
-				return typeof(AssetServerWHIP);
-			}
-		}
+		public Type Type => typeof(AssetServerWHIP);
 
 		public string Host { get; set; }
 

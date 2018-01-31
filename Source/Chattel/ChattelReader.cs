@@ -121,8 +121,8 @@ namespace Chattel {
 		[Flags]
 		public enum CacheRule : uint {
 			Normal = 0,
-			SkipRead,
-			SkipWrite,
+			SkipRead = 1,
+			SkipWrite = 2,
 		}
 
 		/// <summary>

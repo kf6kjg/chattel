@@ -52,7 +52,7 @@ namespace Chattel {
 
 		private string _serverHandle { get; set;}
 
-		private InWorldz.Data.Assets.Stratus.CoreExt.ExtendedCloudFilesProvider _provider = null;
+		private InWorldz.Data.Assets.Stratus.CoreExt.ExtendedCloudFilesProvider _provider;
 
 		public AssetServerCF(AssetServerCFConfig config) : this(config.Name, config.Username, config.APIKey, config.DefaultRegion, config.UseInternalURL, config.ContainerPrefix) {
 		}
@@ -74,10 +74,6 @@ namespace Chattel {
 			_provider.GetAccountHeaders(useInternalUrl: UseInternalURL, region: DefaultRegion);
 
 			LOG.Log(Logging.LogLevel.Info, () => $"[CF_SERVER] [{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
-		}
-
-		public void Dispose() {
-			_provider = null;
 		}
 
 		public StratusAsset RequestAssetSync(Guid assetID) {
@@ -104,8 +100,10 @@ namespace Chattel {
 		}
 
 		public void StoreAssetSync(StratusAsset asset) {
-			if (asset == null) throw new ArgumentNullException(nameof(asset));
-			if (asset.Id == Guid.Empty) throw new ArgumentException("Assets must not have a zero ID");
+			asset = asset ?? throw new ArgumentNullException(nameof(asset));
+			if (asset.Id == Guid.Empty) {
+				throw new ArgumentException("Assets must not have a zero ID");
+			}
 
 			using (var memStream = new MemoryStream()) {
 				try {
@@ -145,7 +143,7 @@ namespace Chattel {
 		/// <param name="assetId"></param>
 		/// <returns></returns>
 		private string GenerateContainerName(string assetId) {
-			return ContainerPrefix + assetId.Substring(0, CONTAINER_UUID_PREFIX_LEN).ToUpper();
+			return ContainerPrefix + assetId.Substring(0, CONTAINER_UUID_PREFIX_LEN).ToUpper(System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -217,5 +215,29 @@ namespace Chattel {
 				LOG.Log(Logging.LogLevel.Warn, () => $"[CF_SERVER] [{_serverHandle}] Slow CF operation {opName} took {stopwatch.ElapsedMilliseconds} ms.");
 			}
 		}
+
+		#region IDisposable Support
+
+		private bool disposedValue; // To detect redundant calls
+
+		protected virtual void Dispose(bool disposing) {
+			if (!disposedValue) {
+				if (disposing) {
+					// dispose managed state (managed objects).
+				}
+
+				_provider = null;
+
+				disposedValue = true;
+			}
+		}
+
+		// This code added to correctly implement the disposable pattern.
+		public void Dispose() {
+			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+			Dispose(true);
+		}
+
+		#endregion
 	}
 }

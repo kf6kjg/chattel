@@ -96,8 +96,6 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 					req.ReadWriteTimeout = _writeRequestTimeout;
 				}
 
-				//Console.WriteLine("TO----> " + req.Timeout.ToString() );
-
 				if (settings.ChunkRequest || maxReadLength > 0) {
 					req.SendChunked = settings.ChunkRequest;
 					req.AllowWriteStreamBuffering = allowWriteStreamBuffering;
@@ -114,8 +112,9 @@ namespace InWorldz.Data.Assets.Stratus.CoreExt {
 
 						progressUpdated?.Invoke(bytesWritten);
 
-						if (maxReadLength > 0 && bytesWritten >= maxReadLength)
+						if (maxReadLength > 0 && bytesWritten >= maxReadLength) {
 							break;
+						}
 					}
 				}
 
