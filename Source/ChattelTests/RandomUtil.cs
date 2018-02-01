@@ -28,7 +28,7 @@ using System.Text;
 
 namespace ChattelTests {
 	public static class RandomUtil {
-		public static Random Rnd = new Random();
+		public static readonly Random Rnd = new Random();
 
 		public static bool NextBool() {
 			return Rnd.Next() > (int.MaxValue / 2);

@@ -169,7 +169,7 @@ namespace Chattel {
 					foreach (var source in parallelSources) {
 						var sourceConfig = configSource.Configs[source];
 						IAssetServer serverConnector = null;
-						var type = sourceConfig?.GetString("Type", string.Empty).ToLower();
+						var type = sourceConfig?.GetString("Type", string.Empty).ToLower(System.Globalization.CultureInfo.InvariantCulture);
 						try {
 							switch (type) {
 								case "whip":

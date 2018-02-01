@@ -152,7 +152,7 @@ namespace Chattel {
 		/// <param name="assetId"></param>
 		/// <returns></returns>
 		private static string GenerateAssetObjectName(string assetId) {
-			return assetId.Replace("-", string.Empty).ToLower() + ".asset";
+			return assetId.Replace("-", string.Empty).ToLower(System.Globalization.CultureInfo.InvariantCulture) + ".asset";
 		}
 
 		private Dictionary<string, string> GenerateStorageHeaders(StratusAsset asset, MemoryStream stream) {
