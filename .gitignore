@@ -254,3 +254,9 @@ paket-files/
 *.sln.iml
 
 *.usertasks
+
+*.covdb
+*.covdb.*
+*.covreport
+*.covreport.*
+covem.report

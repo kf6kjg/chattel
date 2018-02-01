@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		.appveyor.yml = .appveyor.yml
 		.travis.yml = .travis.yml
+		Chattel.covcfg = Chattel.covcfg
+		covem.sh = covem.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChattelTests", "Source\ChattelTests\ChattelTests.csproj", "{20548DEB-3F25-49AC-A666-6D835323B188}"
