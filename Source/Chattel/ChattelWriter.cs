@@ -48,7 +48,7 @@ namespace Chattel {
 		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
 		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
 		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
-		public ChattelWriter(ChattelConfiguration config, IChattelCache cache = null, bool purgeCache = false) {
+		public ChattelWriter(ChattelConfiguration config, IChattelCache cache, bool purgeCache) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
 			if (config.CacheEnabled) {
@@ -62,6 +62,32 @@ namespace Chattel {
 			if (config.CacheEnabled && config.WriteCacheFile != null) {
 				_writeCache = new WriteCache(config.WriteCacheFile, config.WriteCacheRecordCount, this, cache);
 			}
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
+		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
+		public ChattelWriter(ChattelConfiguration config, IChattelCache cache) : this(config, cache, false) {
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
+		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
+		public ChattelWriter(ChattelConfiguration config, bool purgeCache) : this(config, null, purgeCache) {
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
+		public ChattelWriter(ChattelConfiguration config) : this(config, null, false) {
 		}
 
 		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;

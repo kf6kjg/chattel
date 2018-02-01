@@ -39,13 +39,13 @@ namespace Chattel {
 
 		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1"); // This is a remnant from the history of this file's origins.
 
-		private FileInfo _fileInfo;
+		private readonly FileInfo _fileInfo;
 
 		private readonly WriteCacheNode[] _writeCacheNodes;
 		private readonly object _writeCacheNodeLock = new object();
 		private WriteCacheNode _nextAvailableWriteCacheNode;
 
-		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer = null, IChattelCache cache = null) {
+		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer, IChattelCache cache) {
 			_fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
 			if (recordCount < 2) {
 				throw new ArgumentOutOfRangeException(nameof(recordCount), "Having less than two record makes no sense and causes errors.");
@@ -113,6 +113,9 @@ namespace Chattel {
 
 			// Bootstrap the system.
 			GetNextAvailableNode();
+		}
+
+		public WriteCache(FileInfo fileInfo, uint recordCount) : this(fileInfo, recordCount, null, null) {
 		}
 
 		private void Initialize(uint recordCount) {

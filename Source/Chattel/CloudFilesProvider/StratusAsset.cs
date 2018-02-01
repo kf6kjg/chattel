@@ -38,7 +38,11 @@ namespace InWorldz.Data.Assets.Stratus {
 	/// An asset in protobuf format for storage inside a stratus engine
 	/// </summary>
 	[ProtoContract]
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+	// As this is a wierd class that is used more like a strcut than a class, GetHashCode doesn't make much sense since there is nothing immutable in this.
+	// Maybe at some point a way to work with Protobuf's needs and have encapsulation will be figured out.
 	public class StratusAsset : IEquatable<StratusAsset> {
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 		/// <summary>
 		/// Size of the packet header
 		/// </summary>
@@ -268,6 +272,10 @@ namespace InWorldz.Data.Assets.Stratus {
 		#endregion
 
 		#region Comparison
+
+		public override bool Equals(object obj) {
+			return Equals(obj as StratusAsset);
+		}
 
 		public bool Equals(StratusAsset other) {
 			return Id == other.Id &&

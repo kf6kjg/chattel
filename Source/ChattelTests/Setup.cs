@@ -38,9 +38,5 @@ namespace ChattelTests {
 			// Set CWD so that native libs are found.
 			Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
 		}
-
-		[OneTimeTearDown]
-		public void Cleanup() {
-		}
 	}
 }

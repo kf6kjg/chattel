@@ -155,7 +155,7 @@ namespace Chattel {
 			return assetId.Replace("-", string.Empty).ToLower(System.Globalization.CultureInfo.InvariantCulture) + ".asset";
 		}
 
-		private Dictionary<string, string> GenerateStorageHeaders(StratusAsset asset, MemoryStream stream) {
+		private static Dictionary<string, string> GenerateStorageHeaders(StratusAsset asset, MemoryStream stream) {
 			//the HTTP headers only accept letters and digits
 			var fixedName = new StringBuilder();
 			var appended = false;
@@ -233,7 +233,7 @@ namespace Chattel {
 		}
 
 		// This code added to correctly implement the disposable pattern.
-		public void Dispose() {
+		void IDisposable.Dispose() {
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
 		}

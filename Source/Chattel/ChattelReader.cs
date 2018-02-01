@@ -132,7 +132,7 @@ namespace Chattel {
 		/// <param name="assetId">Asset identifier.</param>
 		/// <param name="handler">Callback delegate to hand the asset to.</param>
 		/// <param name="cacheRule">Bitfield controlling how the cache is to be handled.</param>
-		public void GetAssetAsync(Guid assetId, AssetHandler handler, CacheRule cacheRule = CacheRule.Normal) {
+		public void GetAssetAsync(Guid assetId, AssetHandler handler, CacheRule cacheRule) {
 			// Ask for null, get null.
 			if (assetId == Guid.Empty) {
 				handler(null);
@@ -218,6 +218,16 @@ namespace Chattel {
 				// It's gone already, so let's try again as the asset should be in the cache or we should query the servers again.
 				Thread.Sleep(50);
 			}
+		}
+
+		/// <summary>
+		/// Gets the asset from the server using CacheRule.Normal
+		/// </summary>
+		/// <returns>The asset.</returns>
+		/// <param name="assetId">Asset identifier.</param>
+		/// <param name="handler">Callback delegate to hand the asset to.</param>
+		public void GetAssetAsync(Guid assetId, AssetHandler handler) {
+			GetAssetAsync(assetId, handler, CacheRule.Normal);
 		}
 	}
 }

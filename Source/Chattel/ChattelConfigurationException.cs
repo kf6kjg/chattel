@@ -26,7 +26,7 @@
 using System;
 
 namespace Chattel {
-	internal class ChattelConfigurationException : Exception {
+	public class ChattelConfigurationException : Exception {
 		public ChattelConfigurationException(string message) : base(message) {
 		}
 
