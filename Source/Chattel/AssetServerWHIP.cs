@@ -35,7 +35,7 @@ namespace Chattel {
 		public int Port { get; private set; }
 		public string Password { get; private set; }
 
-		private string _serverHandle;
+		private readonly string _serverHandle;
 
 		private RemoteServer _provider;
 
