@@ -8,6 +8,7 @@
 			<a href="https://travis-ci.org/kf6kjg/chattel"><img alt="Travis-CI Build Status" src="https://travis-ci.org/kf6kjg/chattel.svg?branch=master"/></a><br/>
 			<a href="https://ci.appveyor.com/project/kf6kjg/chattel"><img alt="Appveyor Build Status" src="https://ci.appveyor.com/api/projects/status/github/kf6kjg/chattel?svg=true&branch=master"/></a><br/>
 			<a href="https://www.nuget.org/packages/Chattel"><img alt="Nuget Version" src="https://img.shields.io/nuget/v/Chattel.svg?maxAge=2592000"/></a>
+			<a href="https://www.codacy.com/app/kf6kjg/chattel?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kf6kjg/chattel&amp;utm_campaign=Badge_Grade"><img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/872446917ae24afdb205f06c8ee6e4cf"/></a>
 		</th>
 	</tr>
 </table>
