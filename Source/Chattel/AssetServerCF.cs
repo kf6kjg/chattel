@@ -50,12 +50,9 @@ namespace Chattel {
 		public bool UseInternalURL { get; private set; }
 		public string ContainerPrefix { get; private set; }
 
-		private string _serverHandle { get; set;}
+		private string _serverHandle;
 
 		private InWorldz.Data.Assets.Stratus.CoreExt.ExtendedCloudFilesProvider _provider;
-
-		public AssetServerCF(AssetServerCFConfig config) : this(config.Name, config.Username, config.APIKey, config.DefaultRegion, config.UseInternalURL, config.ContainerPrefix) {
-		}
 
 		public AssetServerCF(string serverTitle, string username, string apiKey, string defaultRegion, bool useInternalUrl, string containerPrefix) {
 			_serverHandle = serverTitle;

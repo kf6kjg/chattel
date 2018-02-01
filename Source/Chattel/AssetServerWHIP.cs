@@ -35,12 +35,9 @@ namespace Chattel {
 		public int Port { get; private set; }
 		public string Password { get; private set; }
 
-		private string _serverHandle { get; set; }
+		private string _serverHandle;
 
 		private RemoteServer _provider;
-
-		public AssetServerWHIP(AssetServerWHIPConfig config) : this(config.Name, config.Host, config.Port, config.Password) {
-		}
 
 		public AssetServerWHIP(string serverTitle, string host, int port, string password) {
 			_serverHandle = serverTitle;

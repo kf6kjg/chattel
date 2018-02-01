@@ -44,7 +44,7 @@ namespace Chattel {
 
 		public FileInfo WriteCacheFile { get; private set; }
 
-		public uint WriteCacheRecordCount { get; internal set; }
+		public uint WriteCacheRecordCount { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.
@@ -53,8 +53,8 @@ namespace Chattel {
 		/// Eg. if you have a new server you want to be hit for all operations, but to fallback to whichever of two older servers returns first, then set up a pattern like [ [ primary ], [ second1, second2 ] ].
 		/// </summary>
 		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
-		/// <param name="serialParallelServerConfigs">Serially-accessed parallel server configs.</param>
-		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IEnumerable<IEnumerable<IAssetServerConfig>> serialParallelServerConfigs = null) {
+		/// <param name="serialParallelServers">Serially-accessed parallel servers.</param>
+		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers = null) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
 				LOG.Log(Logging.LogLevel.Info, () => $"Cache path is empty, caching assets disabled.");
@@ -80,13 +80,11 @@ namespace Chattel {
 			var serialParallelAssetServers = new List<List<IAssetServer>>();
 			SerialParallelAssetServers = serialParallelAssetServers;
 
-			// Set up server handlers
-			if (serialParallelServerConfigs != null && serialParallelServerConfigs.Any()) {
-				foreach (var parallelConfigs in serialParallelServerConfigs) {
+			// Copy server handle lists so that the list cannot be changed from outside.
+			if (serialParallelServers != null && serialParallelServers.Any()) {
+				foreach (var parallelServers in serialParallelServers) {
 					var parallelServerConnectors = new List<IAssetServer>();
-					foreach (var config in parallelConfigs) {
-						var serverConnector = (IAssetServer) config.Type.GetConstructor(new Type[] { config.GetType() }).Invoke(new object[] { config });
-
+					foreach (var serverConnector in parallelServers) {
 						if (serverConnector != null) {
 							parallelServerConnectors.Add(serverConnector);
 						}

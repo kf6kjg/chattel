@@ -76,32 +76,6 @@ namespace ChattelTests {
 			wcache.Refresh();
 		}
 
-		public class MockServerConfig : IAssetServerConfig {
-			public Type Type => typeof(MockServer);
-
-			public string Name => "MockServer";
-		}
-
-		public class MockServer : IAssetServer {
-			public MockServerConfig Config { get; }
-
-			public MockServer(MockServerConfig config) {
-				Config = config;
-			}
-
-			public StratusAsset RequestAssetSync(Guid assetID) {
-				return null;
-			}
-
-			public void StoreAssetSync(StratusAsset asset) {
-				// It's a mock, the data can go visit Mars for all we care.
-			}
-
-			void IDisposable.Dispose() {
-				// Likewise, nothing to see here, move along.
-			}
-		}
-
 		[SetUp]
 		public void BeforeEveryTest() {
 			CleanWriteCache();
@@ -339,7 +313,8 @@ namespace ChattelTests {
 			CreateWriteCache(WriteCacheFileInfo, records);
 
 			var cache = Substitute.For<IChattelCache>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+			var server = Substitute.For<IAssetServer>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
 
 			cache.TryGetCachedAsset(firstId, out var asset1).Returns(false);
 
@@ -368,7 +343,8 @@ namespace ChattelTests {
 			CreateWriteCache(WriteCacheFileInfo, records);
 
 			var cache = Substitute.For<IChattelCache>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+			var server = Substitute.For<IAssetServer>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,
@@ -408,7 +384,8 @@ namespace ChattelTests {
 			CreateWriteCache(WriteCacheFileInfo, records);
 
 			var cache = Substitute.For<IChattelCache>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServerConfigs: new List<List<IAssetServerConfig>> { new List<IAssetServerConfig> { new MockServerConfig() } }), cache, false);
+			var server = Substitute.For<IAssetServer>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,

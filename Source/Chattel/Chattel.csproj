@@ -74,9 +74,6 @@
     <Compile Include="CloudFilesProvider\ExtendedCloudFilesProvider.cs" />
     <Compile Include="CloudFilesProvider\ExtendedJsonRestServices.cs" />
     <Compile Include="CloudFilesProvider\StratusAsset.cs" />
-    <Compile Include="IAssetServerConfig.cs" />
-    <Compile Include="AssetServerWHIPConfig.cs" />
-    <Compile Include="AssetServerCFConfig.cs" />
     <Compile Include="ChattelConfiguration.cs" />
     <Compile Include="AssetCacheSimpleFolderTree.cs" />
     <Compile Include="ChattelWriter.cs" />
