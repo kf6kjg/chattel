@@ -226,7 +226,7 @@ namespace Chattel {
 					catch (InvalidOperationException) {
 						// No available nodes found, which means we are out of ability to safely continue until one becomes available...
 						_nextAvailableWriteCacheNode = null;
-						throw new WriteCacheNodesFullException("All write cache nodes are full!");
+						throw new WriteCacheFullException("All write cache nodes are used!");
 					}
 				}
 			}

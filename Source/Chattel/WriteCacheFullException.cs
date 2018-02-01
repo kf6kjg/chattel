@@ -26,10 +26,10 @@
 using System;
 
 namespace Chattel {
-	public class WriteCacheNodesFullException : Exception {
-		public WriteCacheNodesFullException(string message) : base(message) {
+	public class WriteCacheFullException : Exception {
+		public WriteCacheFullException(string message) : base(message) {
 		}
-		public WriteCacheNodesFullException(string message, Exception e) : base(message, e) {
+		public WriteCacheFullException(string message, Exception e) : base(message, e) {
 		}
 	}
 }

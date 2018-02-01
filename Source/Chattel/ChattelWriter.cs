@@ -150,7 +150,7 @@ namespace Chattel {
 						success = true;
 					}
 				}
-				catch (WriteCacheNodesFullException) {
+				catch (WriteCacheFullException) {
 					throw;
 				}
 				catch (Exception e) {
