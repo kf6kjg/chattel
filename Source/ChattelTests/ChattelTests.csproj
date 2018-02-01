@@ -44,6 +44,9 @@
       <HintPath>..\..\packages\NSubstitute.3.1.0\lib\net46\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="InWorldz.Whip.Client">
+      <HintPath>..\..\packages\InWorldz.Whip.Client.1.1.0.6\lib\net461\InWorldz.Whip.Client.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestWriteCacheNode.cs" />
@@ -51,6 +54,7 @@
     <Compile Include="Setup.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="TestWriteCache.cs" />
+    <Compile Include="TestStratusAsset.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">
