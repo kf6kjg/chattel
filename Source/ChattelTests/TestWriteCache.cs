@@ -290,7 +290,8 @@ namespace ChattelTests {
 			CreateWriteCache(WriteCacheFileInfo, records);
 
 			var cache = Substitute.For<IChattelCache>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(), cache, false);
+			var server = Substitute.For<IAssetServer>();
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
 				WriteCacheFileInfo,
@@ -314,7 +315,7 @@ namespace ChattelTests {
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
 
 			cache.TryGetCachedAsset(firstId, out var asset1).Returns(false);
 
@@ -344,7 +345,7 @@ namespace ChattelTests {
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,

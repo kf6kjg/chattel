@@ -100,6 +100,10 @@ namespace Chattel {
 			}
 		}
 
+		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IAssetServer assetServer = null)
+			: this (cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null){
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.  Can only define servers that will be accessed serially.
 		/// The <paramref name="configSource"/> is the whole Nini configuration, but the <paramref name="assetConfig"/> is the block that contains the following entries:
