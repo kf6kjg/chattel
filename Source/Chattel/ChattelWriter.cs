@@ -61,6 +61,7 @@ namespace Chattel {
 
 			if (config.CacheEnabled && config.WriteCacheFile != null) {
 				_writeCache = new WriteCache(config.WriteCacheFile, config.WriteCacheRecordCount, this, cache);
+				config.WriteCacheFile.Refresh();
 			}
 		}
 
