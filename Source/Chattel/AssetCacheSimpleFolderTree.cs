@@ -150,7 +150,7 @@ namespace Chattel {
 			}
 		}
 
-		public void Purge() {
+		public void PurgeAll() {
 			_config.CacheFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
 		}
 

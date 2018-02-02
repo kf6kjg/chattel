@@ -30,7 +30,7 @@ namespace Chattel {
 	public interface IChattelCache {
 		bool TryGetCachedAsset(Guid assetId, out StratusAsset asset);
 		void CacheAsset(StratusAsset asset);
-		void Purge();
+		void PurgeAll();
 		void Purge(Guid assetId);
 	}
 }

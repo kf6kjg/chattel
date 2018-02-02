@@ -56,7 +56,7 @@ namespace Chattel {
 			}
 
 			if (purgeCache) {
-				_cache?.Purge();
+				_cache?.PurgeAll();
 			}
 
 			if (config.CacheEnabled && config.WriteCacheFile != null) {
