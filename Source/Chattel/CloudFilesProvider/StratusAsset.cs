@@ -278,7 +278,8 @@ namespace InWorldz.Data.Assets.Stratus {
 		}
 
 		public bool Equals(StratusAsset other) {
-			return Id == other.Id &&
+			return
+				Id == other.Id &&
 				Type == other.Type &&
 				Local == other.Local &&
 				Temporary == other.Temporary &&
@@ -286,7 +287,11 @@ namespace InWorldz.Data.Assets.Stratus {
 				Name == other.Name &&
 				Description == other.Description &&
 				StorageFlags == other.StorageFlags &&
-				Data.SequenceEqual(other.Data)
+				(
+					(Data == null && other.Data == null)
+					||
+					(other.Data != null && (Data?.SequenceEqual(other.Data) ?? false))
+				)
 			;
 		}
 
