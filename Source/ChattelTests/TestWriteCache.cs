@@ -39,18 +39,17 @@ namespace ChattelTests {
 	public static class TestWriteCache {
 		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
 		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1");
-
-		public static readonly FileInfo WriteCacheFileInfo = new FileInfo(Constants.WRITE_CACHE_PATH);
+		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
 
 		public static void CleanWriteCache() {
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
 			try {
-				WriteCacheFileInfo.Delete();
+				WRITE_CACHE_FILE_INFO.Delete();
 			}
 			catch {
 			}
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-			WriteCacheFileInfo.Refresh();
+			WRITE_CACHE_FILE_INFO.Refresh();
 		}
 
 		internal static void CreateWriteCache(FileInfo wcache, IEnumerable<Tuple<Guid, bool>> nodes) {
@@ -91,7 +90,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_Minimal_DoesntThrow() {
 			Assert.DoesNotThrow(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				2,
 				null,
 				null
@@ -111,7 +110,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_ZeroRecords_ArgumentOutOfRangeException() {
 			Assert.Throws<ArgumentOutOfRangeException>(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				0,
 				null,
 				null
@@ -122,26 +121,26 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_CreatesWriteCacheFile() {
 			Assert.DoesNotThrow(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			));
 
-			FileAssert.Exists(WriteCacheFileInfo.FullName);
+			FileAssert.Exists(WRITE_CACHE_FILE_INFO.FullName);
 		}
 
 		[Test]
 		public static void TestWriteCache_Ctor_CreatesWriteCacheFileWithCorrectMagicNumber() {
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			);
 
 			var buffer = new byte[WRITE_CACHE_MAGIC_NUMBER.Length];
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				fs.Read(buffer, 0, buffer.Length);
 				fs.Close();
 			}
@@ -152,13 +151,13 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_CreatesWriteCacheFileWithCorrectRecordCount() {
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			);
 
-			var dataLength = new FileInfo(WriteCacheFileInfo.FullName).Length - WRITE_CACHE_MAGIC_NUMBER.Length;
+			var dataLength = new FileInfo(WRITE_CACHE_FILE_INFO.FullName).Length - WRITE_CACHE_MAGIC_NUMBER.Length;
 			var recordCount = dataLength / WriteCacheNode.BYTE_SIZE;
 
 			Assert.AreEqual(WRITE_CACHE_MAX_RECORD_COUNT, recordCount);
@@ -167,13 +166,13 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_CreatesWriteCacheFileWithRecordsAllAvailable() {
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			);
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					// Skip the header
 					fs.Seek(WRITE_CACHE_MAGIC_NUMBER.Length, SeekOrigin.Begin);
@@ -194,20 +193,20 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_UpdatesWriteCacheFileWithCorrectRecordCount() {
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT / 2,
 				null,
 				null
 			);
 
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			);
 
-			var dataLength = new FileInfo(WriteCacheFileInfo.FullName).Length - WRITE_CACHE_MAGIC_NUMBER.Length;
+			var dataLength = new FileInfo(WRITE_CACHE_FILE_INFO.FullName).Length - WRITE_CACHE_MAGIC_NUMBER.Length;
 			var recordCount = dataLength / WriteCacheNode.BYTE_SIZE;
 
 			Assert.AreEqual(WRITE_CACHE_MAX_RECORD_COUNT, recordCount);
@@ -216,20 +215,20 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_Ctor_UpdatesWriteCacheFileWithRecordsAllAvailable() {
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT / 2,
 				null,
 				null
 			);
 
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
 			);
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					// Skip the header
 					fs.Seek(WRITE_CACHE_MAGIC_NUMBER.Length, SeekOrigin.Begin);
@@ -253,10 +252,10 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 			};
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				null,
 				null
@@ -269,12 +268,12 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 			};
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			var cache = Substitute.For<IChattelCache>();
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				null,
 				cache
@@ -287,14 +286,14 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 				new Tuple<Guid, bool>(Guid.NewGuid(), false),
 			};
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
 			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
 				null
@@ -311,7 +310,7 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(lastId, true),
 			};
 
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
@@ -320,7 +319,7 @@ namespace ChattelTests {
 			cache.TryGetCachedAsset(firstId, out var asset1).Returns(false);
 
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
 				cache
@@ -341,7 +340,7 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(lastId, true),
 			};
 
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
@@ -362,7 +361,7 @@ namespace ChattelTests {
 			cache.CacheAsset(lastAsset);
 
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
 				cache
@@ -382,7 +381,7 @@ namespace ChattelTests {
 				new Tuple<Guid, bool>(lastId, true),
 			};
 
-			CreateWriteCache(WriteCacheFileInfo, records);
+			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
 			var cache = Substitute.For<IChattelCache>();
 			var server = Substitute.For<IAssetServer>();
@@ -403,13 +402,13 @@ namespace ChattelTests {
 			cache.CacheAsset(lastAsset);
 
 			new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
 				cache
 			);
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					// Skip the header
 					fs.Seek(WRITE_CACHE_MAGIC_NUMBER.Length, SeekOrigin.Begin);
@@ -434,7 +433,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_ClearNode_Null_ArgumentNullException() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -446,7 +445,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_ClearNode_DoesntThrow() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -462,7 +461,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_ClearNode_SetFileByteCorrectly() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -474,7 +473,7 @@ namespace ChattelTests {
 
 			wc.ClearNode(node);
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
 
@@ -492,7 +491,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_ClearNode_LeftGuidIntact() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -506,7 +505,7 @@ namespace ChattelTests {
 
 			wc.ClearNode(node);
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
 
@@ -528,7 +527,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_WriteNode_Null_ArgumentNullException() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -540,7 +539,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_WriteNode_DoesntThrow() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -555,7 +554,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_WriteNode_SetFileByteCorrectly() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -565,7 +564,7 @@ namespace ChattelTests {
 				Id = Guid.NewGuid(),
 			});
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
 
@@ -583,7 +582,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_WriteNode_WroteCorrectGuid() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
@@ -595,7 +594,7 @@ namespace ChattelTests {
 				Id = id,
 			});
 
-			using (var fs = new FileStream(WriteCacheFileInfo.FullName, FileMode.Open, FileAccess.Read)) {
+			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
 				try {
 					fs.Seek((long)node.FileOffset, SeekOrigin.Begin);
 
@@ -613,7 +612,7 @@ namespace ChattelTests {
 		[Test]
 		public static void TestWriteCache_WriteNode_TwiceDoesntReturnSameNode() {
 			var wc = new WriteCache(
-				WriteCacheFileInfo,
+				WRITE_CACHE_FILE_INFO,
 				WRITE_CACHE_MAX_RECORD_COUNT,
 				null,
 				null
