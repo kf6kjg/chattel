@@ -31,7 +31,7 @@ using InWorldz.Data.Assets.Stratus;
 using ProtoBuf;
 
 namespace Chattel {
-	internal class AssetCacheSimpleFolderTree : IChattelCache {
+	public class AssetCacheSimpleFolderTree : IChattelCache {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetCacheSimpleFolderTree>();
 
 		private readonly ChattelConfiguration _config;
@@ -42,7 +42,7 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		internal AssetCacheSimpleFolderTree(ChattelConfiguration config) {
+		public AssetCacheSimpleFolderTree(ChattelConfiguration config) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
 
