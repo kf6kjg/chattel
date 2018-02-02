@@ -155,7 +155,17 @@ namespace Chattel {
 		}
 
 		public void Purge(Guid assetId) {
-			throw new NotImplementedException();
+			try {
+				File.Delete(UuidToCachePath(assetId));
+				// Lazily not attempting to clean up the folder tree.
+				// Using up too many inodes? Use a better cache implementation.
+			}
+			catch (DirectoryNotFoundException) {
+				throw new AssetNotFoundException(assetId);
+			}
+			catch (FileNotFoundException) {
+				throw new AssetNotFoundException(assetId);
+			}
 		}
 
 		/// <summary>
