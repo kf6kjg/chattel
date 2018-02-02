@@ -30,47 +30,47 @@ using NUnit.Framework;
 namespace ChattelTests {
 	[TestFixture]
 	public static class TestStratusAsset {
-		private static readonly Guid _assetId = Guid.NewGuid();
-		private static readonly StratusAsset _stratusAsset = new StratusAsset {
+		private static readonly Guid ASSET_ID = Guid.NewGuid();
+		private static readonly StratusAsset STRATUS_ASSET = new StratusAsset {
 			CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 			Data = new byte[] { 0, 1, 2, 3 },
 			Description = "asdf",
-			Id = _assetId,
+			Id = ASSET_ID,
 			Local = false,
 			Name = "fdsa",
 			StorageFlags = 0,
 			Temporary = false,
 			Type = 12,
 		};
-		private static readonly InWorldz.Whip.Client.Asset _whipAsset = new InWorldz.Whip.Client.Asset(
-			_assetId.ToString("N"),
-			(byte)_stratusAsset.Type,
-			_stratusAsset.Local,
-			_stratusAsset.Temporary,
+		private static readonly InWorldz.Whip.Client.Asset WHIP_ASSET = new InWorldz.Whip.Client.Asset(
+			ASSET_ID.ToString("N"),
+			(byte)STRATUS_ASSET.Type,
+			STRATUS_ASSET.Local,
+			STRATUS_ASSET.Temporary,
 			1517468421,
-			_stratusAsset.Name,
-			_stratusAsset.Description,
-			_stratusAsset.Data
+			STRATUS_ASSET.Name,
+			STRATUS_ASSET.Description,
+			STRATUS_ASSET.Data
 		);
 
 		[Test]
 		public static void TestStratusAsset_FromWHIPAsset_Correct() {
-			Assert.AreEqual(_stratusAsset, StratusAsset.FromWHIPAsset(_whipAsset));
+			Assert.AreEqual(STRATUS_ASSET, StratusAsset.FromWHIPAsset(WHIP_ASSET));
 		}
 
 		[Test]
 		public static void TestStratusAsset_ToWHIPAsset_Correct() {
-			Assert.AreEqual(_whipAsset.Serialize().data, StratusAsset.ToWHIPAsset(_stratusAsset).Serialize().data);
+			Assert.AreEqual(WHIP_ASSET.Serialize().data, StratusAsset.ToWHIPAsset(STRATUS_ASSET).Serialize().data);
 		}
 
 		[Test]
 		public static void TestStratusAsset_FromWHIPSerialized_Correct() {
-			Assert.AreEqual(_stratusAsset, StratusAsset.FromWHIPSerialized(_whipAsset.Serialize().data));
+			Assert.AreEqual(STRATUS_ASSET, StratusAsset.FromWHIPSerialized(WHIP_ASSET.Serialize().data));
 		}
 
 		[Test]
 		public static void TestStratusAsset_ToWHIPSerialized_Correct() {
-			Assert.AreEqual(_whipAsset.Serialize().data, StratusAsset.ToWHIPSerialized(_stratusAsset));
+			Assert.AreEqual(WHIP_ASSET.Serialize().data, StratusAsset.ToWHIPSerialized(STRATUS_ASSET));
 		}
 
 	}
