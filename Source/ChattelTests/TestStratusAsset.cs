@@ -29,7 +29,7 @@ using NUnit.Framework;
 
 namespace ChattelTests {
 	[TestFixture]
-	public class TestStratusAsset {
+	public static class TestStratusAsset {
 		private static readonly Guid _assetId = Guid.NewGuid();
 		private static readonly StratusAsset _stratusAsset = new StratusAsset {
 			CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
@@ -54,22 +54,22 @@ namespace ChattelTests {
 		);
 
 		[Test]
-		public void TestStratusAsset_FromWHIPAsset_Correct() {
+		public static void TestStratusAsset_FromWHIPAsset_Correct() {
 			Assert.AreEqual(_stratusAsset, StratusAsset.FromWHIPAsset(_whipAsset));
 		}
 
 		[Test]
-		public void TestStratusAsset_ToWHIPAsset_Correct() {
+		public static void TestStratusAsset_ToWHIPAsset_Correct() {
 			Assert.AreEqual(_whipAsset.Serialize().data, StratusAsset.ToWHIPAsset(_stratusAsset).Serialize().data);
 		}
 
 		[Test]
-		public void TestStratusAsset_FromWHIPSerialized_Correct() {
+		public static void TestStratusAsset_FromWHIPSerialized_Correct() {
 			Assert.AreEqual(_stratusAsset, StratusAsset.FromWHIPSerialized(_whipAsset.Serialize().data));
 		}
 
 		[Test]
-		public void TestStratusAsset_ToWHIPSerialized_Correct() {
+		public static void TestStratusAsset_ToWHIPSerialized_Correct() {
 			Assert.AreEqual(_whipAsset.Serialize().data, StratusAsset.ToWHIPSerialized(_stratusAsset));
 		}
 

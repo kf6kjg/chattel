@@ -29,9 +29,9 @@ using NUnit.Framework;
 
 namespace ChattelTests {
 	[SetUpFixture]
-	public sealed class Setup {
+	public static class Setup {
 		[OneTimeSetUp]
-		public void Init() {
+		public static void Init() {
 			// Configure Log4Net
 			XmlConfigurator.Configure(new FileInfo(Constants.LOG_CONFIG_PATH));
 

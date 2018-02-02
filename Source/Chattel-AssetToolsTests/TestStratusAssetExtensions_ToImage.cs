@@ -32,7 +32,7 @@ using System.IO;
 
 namespace ChattelAssetToolsTests {
 	[TestFixture]
-	public class TestStratusAssetExtensions_ToImage {
+	public static class TestStratusAssetExtensions_ToImage {
 		#region Test image data
 
 		public static readonly byte[] JPEG_DATA = { // Smallest 1x1px JPEG I could make with GIMP.
@@ -103,14 +103,14 @@ namespace ChattelAssetToolsTests {
 		#endregion
 
 		[OneTimeSetUp]
-		public void SetupOnce() {
+		public static void SetupOnce() {
 			CSJ2K.Util.BitmapImageCreator.Register();
 		}
 
 		#region Texture to Bitmap
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_TextureEmpty() {
+		public static void TestStatusAsset_ToImage_Bitmap_TextureEmpty() {
 			var asset = new StratusAsset {
 				Type = 0,
 				Data = new byte[] { },
@@ -120,7 +120,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_TextureNull() {
+		public static void TestStatusAsset_ToImage_Bitmap_TextureNull() {
 			var asset = new StratusAsset {
 				Type = 0,
 				Data = null,
@@ -130,7 +130,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_Texture() {
+		public static void TestStatusAsset_ToImage_Bitmap_Texture() {
 			var data = new byte[JPEG2000_DATA.Length];
 			Array.Copy(JPEG2000_DATA, data, JPEG2000_DATA.Length);
 
@@ -148,7 +148,7 @@ namespace ChattelAssetToolsTests {
 		#region ImageJPEG to Bitmap
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_ImageJPEGEmpty() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageJPEGEmpty() {
 			var asset = new StratusAsset {
 				Type = 19,
 				Data = new byte[] { },
@@ -158,7 +158,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_ImageJPEGNull() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageJPEGNull() {
 			var asset = new StratusAsset {
 				Type = 19,
 				Data = null,
@@ -168,7 +168,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_ImageJPEG() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageJPEG() {
 			var data = new byte[JPEG_DATA.Length];
 			Array.Copy(JPEG_DATA, data, JPEG_DATA.Length);
 
@@ -186,7 +186,7 @@ namespace ChattelAssetToolsTests {
 		#region ImageTGA to Bitmap
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_ImageTGAEmpty() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageTGAEmpty() {
 			var asset = new StratusAsset {
 				Type = 18,
 				Data = new byte[] { },
@@ -196,7 +196,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_ImageTGANull() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageTGANull() {
 			var asset = new StratusAsset {
 				Type = 18,
 				Data = null,
@@ -206,7 +206,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		//[Test] No TGA processor as yet.
-		public void TestStatusAsset_ToImage_Bitmap_ImageTGA() {
+		public static void TestStatusAsset_ToImage_Bitmap_ImageTGA() {
 			var data = new byte[TGA_DATA.Length];
 			Array.Copy(TGA_DATA, data, TGA_DATA.Length);
 
@@ -224,7 +224,7 @@ namespace ChattelAssetToolsTests {
 		#region TextureTGA to Bitmap
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_TextureTGAEmpty() {
+		public static void TestStatusAsset_ToImage_Bitmap_TextureTGAEmpty() {
 			var asset = new StratusAsset {
 				Type = 18,
 				Data = new byte[] { },
@@ -234,7 +234,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		[Test]
-		public void TestStatusAsset_ToImage_Bitmap_TextureTGANull() {
+		public static void TestStatusAsset_ToImage_Bitmap_TextureTGANull() {
 			var asset = new StratusAsset {
 				Type = 18,
 				Data = null,
@@ -244,7 +244,7 @@ namespace ChattelAssetToolsTests {
 		}
 
 		//[Test] No TGA processor as yet.
-		public void TestStatusAsset_ToImage_Bitmap_TextureTGA() {
+		public static void TestStatusAsset_ToImage_Bitmap_TextureTGA() {
 			var data = new byte[TGA_DATA.Length];
 			Array.Copy(TGA_DATA, data, TGA_DATA.Length);
 
