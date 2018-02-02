@@ -53,6 +53,8 @@ namespace ChattelTests {
 			STRATUS_ASSET.Data
 		);
 
+		#region Conversions
+
 		[Test]
 		public static void TestStratusAsset_FromWHIPAsset_Correct() {
 			Assert.AreEqual(STRATUS_ASSET, StratusAsset.FromWHIPAsset(WHIP_ASSET));
@@ -73,5 +75,354 @@ namespace ChattelTests {
 			Assert.AreEqual(WHIP_ASSET.Serialize().data, StratusAsset.ToWHIPSerialized(STRATUS_ASSET));
 		}
 
+		#endregion
+
+		#region Comparison
+
+		[Test]
+		public static void TestStratusAsset_Equals_Full_Equal() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_NoData_Equal() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_Bare_Equal() {
+			var asset1 = new StratusAsset {
+			};
+			var asset2 = new StratusAsset {
+			};
+
+			Assert.AreEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_CreateTimeDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468422).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_DataDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 4, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_DataDiffNull_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = null,
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_DescriptionDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "adf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_IdDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = Guid.NewGuid(),
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_LocalDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = true,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_NameDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fds",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_StorageFlagsDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 1,
+				Temporary = false,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_TempDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = true,
+				Type = 12,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		[Test]
+		public static void TestStratusAsset_Equals_TypeDiff_NotEqual() {
+			var asset1 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 12,
+			};
+			var asset2 = new StratusAsset {
+				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
+				Data = new byte[] { 0, 1, 2, 3 },
+				Description = "asdf",
+				Id = ASSET_ID,
+				Local = false,
+				Name = "fdsa",
+				StorageFlags = 0,
+				Temporary = false,
+				Type = 1,
+			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		#endregion
 	}
 }
