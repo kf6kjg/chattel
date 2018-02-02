@@ -54,7 +54,7 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
 		/// <param name="serialParallelServers">Serially-accessed parallel servers.</param>
-		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers = null) {
+		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
 				LOG.Log(Logging.LogLevel.Info, () => $"Cache path is empty, caching assets disabled.");
@@ -100,8 +100,27 @@ namespace Chattel {
 			}
 		}
 
-		public ChattelConfiguration(string cachePath = DEFAULT_DB_FOLDER_PATH, string writeCachePath = DEFAULT_WRITECACHE_FILE_PATH, uint writeCacheRecordCount = DEFAULT_WRITECACHE_RECORD_COUNT, IAssetServer assetServer = null)
-			: this (cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null){
+		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount)
+			: this(cachePath, writeCachePath, writeCacheRecordCount, (IEnumerable<IEnumerable<IAssetServer>>) null) {
+		}
+		public ChattelConfiguration(string cachePath, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
+			: this(cachePath, null, 0, serialParallelServers) {
+		}
+		public ChattelConfiguration(string cachePath)
+			: this(cachePath, null, 0) {
+		}
+		public ChattelConfiguration(IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
+			: this(null, null, 0, serialParallelServers) {
+		}
+
+		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IAssetServer assetServer)
+			: this(cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null){
+		}
+		public ChattelConfiguration(string cachePath, IAssetServer assetServer)
+			: this(cachePath, null, 0, assetServer) {
+		}
+		public ChattelConfiguration(IAssetServer assetServer)
+			: this(null, null, 0, assetServer){
 		}
 
 		/// <summary>
