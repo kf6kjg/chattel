@@ -47,6 +47,11 @@
     <Reference Include="InWorldz.Whip.Client">
       <HintPath>..\..\packages\InWorldz.Whip.Client.1.1.0.6\lib\net461\InWorldz.Whip.Client.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\packages\protobuf-net.2.3.6\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestWriteCacheNode.cs" />
@@ -55,6 +60,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="TestWriteCache.cs" />
     <Compile Include="TestStratusAsset.cs" />
+    <Compile Include="TestAssetCacheSimpleFolderTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">

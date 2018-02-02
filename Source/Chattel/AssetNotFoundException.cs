@@ -1,4 +1,4 @@
-﻿// Constants.cs
+﻿// AssetNotFoundException.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -23,24 +23,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.IO;
-using NUnit.Framework;
+using System;
 
-namespace ChattelTests {
-	internal static class Constants {
-		public static readonly string EXECUTABLE_DIRECTORY;
+namespace Chattel {
+	public class AssetNotFoundException : AssetException {
+		public AssetNotFoundException(Guid assetId) : base(assetId) {
 
-		public static readonly string LOG_CONFIG_PATH;
+		}
 
-		public static readonly string CACHE_PATH;
+		public AssetNotFoundException(Guid assetId, Exception e) : base(assetId, e) {
 
-		public static readonly string WRITE_CACHE_PATH;
-
-		static Constants() {
-			EXECUTABLE_DIRECTORY = TestContext.CurrentContext.TestDirectory;
-			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTest.config");
-			CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTestsCache");
-			WRITE_CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.wcache");
 		}
 	}
 }

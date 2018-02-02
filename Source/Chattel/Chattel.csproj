@@ -86,6 +86,7 @@
     <Compile Include="ChattelConfigurationException.cs" />
     <Compile Include="WriteCacheFullException.cs" />
     <Compile Include="WriteCache.cs" />
+    <Compile Include="AssetNotFoundException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
