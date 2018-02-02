@@ -37,22 +37,23 @@ using NUnit.Framework;
 namespace ChattelTests {
 	[TestFixture]
 	public static class TestWriteCache {
+		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
 		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
 		private static readonly byte[] WRITE_CACHE_MAGIC_NUMBER = System.Text.Encoding.ASCII.GetBytes("WHIPLRU1");
-		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
 
-		public static void CleanWriteCache() {
+
+		public static void CleanWriteCache(FileInfo wcache) {
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
 			try {
-				WRITE_CACHE_FILE_INFO.Delete();
+				wcache.Delete();
 			}
 			catch {
 			}
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-			WRITE_CACHE_FILE_INFO.Refresh();
+			wcache.Refresh();
 		}
 
-		internal static void CreateWriteCache(FileInfo wcache, IEnumerable<Tuple<Guid, bool>> nodes) {
+		public static void CreateWriteCache(FileInfo wcache, IEnumerable<Tuple<Guid, bool>> nodes) {
 			using (var fs = new FileStream(wcache.FullName, FileMode.Create, FileAccess.Write)) {
 				try {
 					fs.SetLength(WRITE_CACHE_MAGIC_NUMBER.Length + 2 * WriteCacheNode.BYTE_SIZE);
@@ -77,12 +78,12 @@ namespace ChattelTests {
 
 		[SetUp]
 		public static void BeforeEveryTest() {
-			CleanWriteCache();
+			CleanWriteCache(WRITE_CACHE_FILE_INFO);
 		}
 
 		[TearDown]
 		public static void CleanupAfterEveryTest() {
-			CleanWriteCache();
+			CleanWriteCache(WRITE_CACHE_FILE_INFO);
 		}
 
 		#region Ctor
