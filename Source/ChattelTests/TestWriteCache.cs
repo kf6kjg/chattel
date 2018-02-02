@@ -76,8 +76,9 @@ namespace ChattelTests {
 			wcache.Refresh();
 		}
 
-		[SetUp]
-		public static void BeforeEveryTest() {
+
+		[OneTimeSetUp]
+		public static void Setup() {
 			CleanWriteCache(WRITE_CACHE_FILE_INFO);
 		}
 
