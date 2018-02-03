@@ -61,6 +61,7 @@
     <Compile Include="TestWriteCache.cs" />
     <Compile Include="TestStratusAsset.cs" />
     <Compile Include="TestAssetCacheSimpleFolderTree.cs" />
+    <Compile Include="TestChattelConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">

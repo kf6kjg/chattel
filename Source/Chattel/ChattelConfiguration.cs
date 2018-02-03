@@ -192,7 +192,7 @@ namespace Chattel {
 						IAssetServer serverConnector = null;
 						var type = sourceConfig?.GetString("Type", string.Empty).ToLower(System.Globalization.CultureInfo.InvariantCulture);
 						try {
-							switch (type) {
+							switch (type) { // TODO: Create a way for these types to automatically register a string name and parameters with defaults in a central location. Then use that to generically process these here intead of a switch full of one-offs.
 								case "whip":
 									serverConnector = new AssetServerWHIP(
 										source,
