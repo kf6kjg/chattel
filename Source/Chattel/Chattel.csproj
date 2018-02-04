@@ -68,7 +68,7 @@
   <ItemGroup>
     <Compile Include="ChattelReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IAssetServer.cs" />
+    <Compile Include="AssetServer.cs" />
     <Compile Include="AssetServerWHIP.cs" />
     <Compile Include="AssetServerCF.cs" />
     <Compile Include="CloudFilesProvider\ExtendedCloudFilesProvider.cs" />

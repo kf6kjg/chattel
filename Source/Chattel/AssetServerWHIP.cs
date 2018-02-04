@@ -28,7 +28,7 @@ using InWorldz.Data.Assets.Stratus;
 using InWorldz.Whip.Client;
 
 namespace Chattel {
-	internal class AssetServerWHIP : IAssetServer {
+	internal class AssetServerWHIP : AssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerWHIP>();
 
 		public string Host { get; private set; }

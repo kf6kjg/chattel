@@ -38,7 +38,7 @@ namespace Chattel {
 
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
 
-		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
+		internal IEnumerable<IEnumerable<AssetServer>> SerialParallelAssetServers;
 
 		public DirectoryInfo CacheFolder { get; private set; }
 
@@ -54,7 +54,7 @@ namespace Chattel {
 		/// </summary>
 		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
 		/// <param name="serialParallelServers">Serially-accessed parallel servers.</param>
-		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers) {
+		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IEnumerable<IEnumerable<AssetServer>> serialParallelServers) {
 			// Set up caching
 			if (string.IsNullOrWhiteSpace(cachePath)) {
 				LOG.Log(Logging.LogLevel.Info, () => $"Cache path is empty, caching assets disabled.");
@@ -77,13 +77,13 @@ namespace Chattel {
 			}
 
 			// Set up server handlers
-			var serialParallelAssetServers = new List<List<IAssetServer>>();
+			var serialParallelAssetServers = new List<List<AssetServer>>();
 			SerialParallelAssetServers = serialParallelAssetServers;
 
 			// Copy server handle lists so that the list cannot be changed from outside.
 			if (serialParallelServers != null && serialParallelServers.Any()) {
 				foreach (var parallelServers in serialParallelServers) {
-					var parallelServerConnectors = new List<IAssetServer>();
+					var parallelServerConnectors = new List<AssetServer>();
 					foreach (var serverConnector in parallelServers) {
 						if (serverConnector != null) {
 							parallelServerConnectors.Add(serverConnector);
@@ -101,25 +101,25 @@ namespace Chattel {
 		}
 
 		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount)
-			: this(cachePath, writeCachePath, writeCacheRecordCount, (IEnumerable<IEnumerable<IAssetServer>>) null) {
+			: this(cachePath, writeCachePath, writeCacheRecordCount, (IEnumerable<IEnumerable<AssetServer>>) null) {
 		}
-		public ChattelConfiguration(string cachePath, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
+		public ChattelConfiguration(string cachePath, IEnumerable<IEnumerable<AssetServer>> serialParallelServers)
 			: this(cachePath, null, 0, serialParallelServers) {
 		}
 		public ChattelConfiguration(string cachePath)
 			: this(cachePath, null, 0) {
 		}
-		public ChattelConfiguration(IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
+		public ChattelConfiguration(IEnumerable<IEnumerable<AssetServer>> serialParallelServers)
 			: this(null, null, 0, serialParallelServers) {
 		}
 
-		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IAssetServer assetServer)
-			: this(cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null){
+		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, AssetServer assetServer)
+			: this(cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<AssetServer>> { new List<AssetServer> { assetServer } } : null){
 		}
-		public ChattelConfiguration(string cachePath, IAssetServer assetServer)
+		public ChattelConfiguration(string cachePath, AssetServer assetServer)
 			: this(cachePath, null, 0, assetServer) {
 		}
-		public ChattelConfiguration(IAssetServer assetServer)
+		public ChattelConfiguration(AssetServer assetServer)
 			: this(null, null, 0, assetServer){
 		}
 
@@ -170,7 +170,7 @@ namespace Chattel {
 			}
 
 			// Set up server handlers
-			var serialParallelAssetServers = new List<List<IAssetServer>>();
+			var serialParallelAssetServers = new List<List<AssetServer>>();
 			SerialParallelAssetServers = serialParallelAssetServers;
 
 			// Read in a config list that lists the priority order of servers and their settings.
@@ -188,11 +188,14 @@ namespace Chattel {
 
 			if (serialParallelServerSources != null && serialParallelServerSources.Any()) {
 				foreach (var parallelSources in serialParallelServerSources) {
-					var parallelServerConnectors = new List<IAssetServer>();
+					var parallelServerConnectors = new List<AssetServer>();
 					foreach (var source in parallelSources) {
 						var sourceConfig = configSource.Configs[source];
-						IAssetServer serverConnector = null;
+						AssetServer serverConnector = null;
 						var type = sourceConfig?.GetString("Type", string.Empty)?.ToLower(System.Globalization.CultureInfo.InvariantCulture);
+
+						//var serverConnector = (IAssetServer) config.Type.GetConstructor(new Type[] { config.GetType() }).Invoke(new object[] { config }); 
+
 						try {
 							switch (type) { // TODO: Create a way for these types to automatically register a string name and parameters with defaults in a central location. Then use that to generically process these here intead of a switch full of one-offs.
 								case "whip":

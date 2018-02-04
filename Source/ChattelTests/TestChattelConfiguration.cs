@@ -133,10 +133,10 @@ namespace ChattelTests {
 
 		[Test]
 		public static void TestChattelConfiguration_CtorDirect_ServerListIsIntact() {
-			var serverOrig = Substitute.For<IAssetServer>();
+			var serverOrig = Substitute.For<AssetServer>();
 
-			var assetServers = new List<List<IAssetServer>> {
-				new List<IAssetServer> {
+			var assetServers = new List<List<AssetServer>> {
+				new List<AssetServer> {
 					serverOrig
 				}
 			};
@@ -148,18 +148,18 @@ namespace ChattelTests {
 
 		[Test]
 		public static void TestChattelConfiguration_CtorDirect_ModyingSerialListDoesntChangeInternal() {
-			var serverOrig = Substitute.For<IAssetServer>();
-			var serverNew = Substitute.For<IAssetServer>();
+			var serverOrig = Substitute.For<AssetServer>();
+			var serverNew = Substitute.For<AssetServer>();
 
-			var assetServers = new List<List<IAssetServer>> {
-				new List<IAssetServer> {
+			var assetServers = new List<List<AssetServer>> {
+				new List<AssetServer> {
 					serverOrig
 				}
 			};
 
 			var config = new ChattelConfiguration(assetServers);
 
-			assetServers.Add(new List<IAssetServer>{
+			assetServers.Add(new List<AssetServer>{
 				serverNew
 			});
 
@@ -168,11 +168,11 @@ namespace ChattelTests {
 
 		[Test]
 		public static void TestChattelConfiguration_CtorDirect_ModyingParallelListDoesntChangeInternal() {
-			var serverOrig = Substitute.For<IAssetServer>();
-			var serverNew = Substitute.For<IAssetServer>();
+			var serverOrig = Substitute.For<AssetServer>();
+			var serverNew = Substitute.For<AssetServer>();
 
-			var assetServers = new List<List<IAssetServer>> {
-				new List<IAssetServer> {
+			var assetServers = new List<List<AssetServer>> {
+				new List<AssetServer> {
 					serverOrig
 				}
 			};

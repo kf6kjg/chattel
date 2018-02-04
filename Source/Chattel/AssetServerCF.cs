@@ -33,7 +33,7 @@ using net.openstack.Core.Domain;
 using net.openstack.Core.Exceptions.Response;
 
 namespace Chattel {
-	internal class AssetServerCF : IAssetServer {
+	internal class AssetServerCF : AssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerCF>();
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;
