@@ -118,15 +118,17 @@ namespace ChattelTests {
 
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_NullWriteCachePath_CacheEnabledFalse() {
+		public static void TestChattelConfiguration_CtorDirect_NullWriteCachePath_WriteCacheFileNull() {
+			CACHE_DIR_INFO.Create();
 			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, null, WRITE_CACHE_MAX_RECORD_COUNT);
-			Assert.False(config.CacheEnabled);
+			Assert.Null(config.WriteCacheFile);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_ZeroWriteCacheRecordCount_CacheEnabledFalse() {
+		public static void TestChattelConfiguration_CtorDirect_ZeroWriteCacheRecordCount_WriteCacheFileNull() {
+			CACHE_DIR_INFO.Create();
 			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 0);
-			Assert.False(config.CacheEnabled);
+			Assert.Null(config.WriteCacheFile);
 		}
 
 		[Test]
@@ -387,6 +389,7 @@ namespace ChattelTests {
 
 		[Test]
 		public static void TestChattelConfiguration_DisableCache_CacheEnabled_False() {
+			CACHE_DIR_INFO.Create();
 			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName);
 			config.DisableCache();
 			Assert.False(config.CacheEnabled);
