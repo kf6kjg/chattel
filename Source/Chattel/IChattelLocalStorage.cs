@@ -1,4 +1,4 @@
-﻿// IChattelCache.cs
+﻿// IChattelLocalStorage.cs
 //
 // Author:
 //       Ricky C <>
@@ -27,9 +27,9 @@ using System;
 using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
-	public interface IChattelCache {
-		bool TryGetCachedAsset(Guid assetId, out StratusAsset asset);
-		void CacheAsset(StratusAsset asset);
+	public interface IChattelLocalStorage {
+		bool TryGetAsset(Guid assetId, out StratusAsset asset);
+		void StoreAsset(StratusAsset asset);
 		void PurgeAll();
 		void Purge(Guid assetId);
 	}

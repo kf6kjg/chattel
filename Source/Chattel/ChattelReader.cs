@@ -38,7 +38,7 @@ namespace Chattel {
 		public delegate void AssetHandler(StratusAsset asset);
 
 		private readonly ChattelConfiguration _config;
-		private readonly IChattelCache _cache;
+		private readonly IChattelLocalStorage _localStorage;
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Queue<AssetHandler>> _idsBeingFetched = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Queue<AssetHandler>>();
 
@@ -46,27 +46,27 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		/// <param name="cache">Instance of the IChattelCache interface.  If left null, then the default ChattelCache will be instantiated.</param>
-		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
-		public ChattelReader(ChattelConfiguration config, IChattelCache cache, bool purgeCache) {
+		/// <param name="localStorage">Instance of the IChattelLocalStorage interface. If left null, then the default AssetStorageSimpleFolderTree will be instantiated.</param>
+		/// <param name="purgeLocalStorage">Whether or not to attempt to purge local storage.</param>
+		public ChattelReader(ChattelConfiguration config, IChattelLocalStorage localStorage, bool purgeLocalStorage) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
-			if (_config.CacheEnabled) {
-				_cache = cache ?? new AssetCacheSimpleFolderTree(config);
+			if (_config.LocalStorageEnabled) {
+				_localStorage = localStorage ?? new AssetStorageSimpleFolderTree(config);
 			}
 
-			if (purgeCache) {
-				_cache?.PurgeAll();
+			if (purgeLocalStorage) {
+				_localStorage?.PurgeAll();
 			}
 		}
 
-		public ChattelReader(ChattelConfiguration config, IChattelCache cache) : this(config, cache, false) {
+		public ChattelReader(ChattelConfiguration config, IChattelLocalStorage localStorage) : this(config, localStorage, false) {
 		}
 
-		public ChattelReader(ChattelConfiguration config, bool purgeCache) : this(config, config.CacheEnabled ? new AssetCacheSimpleFolderTree(config) : null, purgeCache)  {
+		public ChattelReader(ChattelConfiguration config, bool purgeLocalStorage) : this(config, config.LocalStorageEnabled ? new AssetStorageSimpleFolderTree(config) : null, purgeLocalStorage)  {
 		}
 
-		public ChattelReader(ChattelConfiguration config) : this(config, new AssetCacheSimpleFolderTree(config), false) {
+		public ChattelReader(ChattelConfiguration config) : this(config, new AssetStorageSimpleFolderTree(config), false) {
 		}
 
 		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
@@ -95,8 +95,8 @@ namespace Chattel {
 				return null;
 			}
 
-			// Hit up the cache first.
-			if (_cache?.TryGetCachedAsset(assetId, out result) ?? false) {
+			// Hit up the local storage first.
+			if (_localStorage?.TryGetAsset(assetId, out result) ?? false) {
 				return result;
 			}
 
@@ -110,7 +110,7 @@ namespace Chattel {
 				}
 
 				if (result != null) {
-					_cache?.CacheAsset(result);
+					_localStorage?.StoreAsset(result);
 					return result;
 				}
 			}
@@ -131,7 +131,7 @@ namespace Chattel {
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
 		/// <param name="handler">Callback delegate to hand the asset to.</param>
-		/// <param name="cacheRule">Bitfield controlling how the cache is to be handled.</param>
+		/// <param name="cacheRule">Bitfield controlling how local storage is to be handled.</param>
 		public void GetAssetAsync(Guid assetId, AssetHandler handler, CacheRule cacheRule) {
 			// Ask for null, get null.
 			if (assetId == Guid.Empty) {
@@ -145,8 +145,8 @@ namespace Chattel {
 			StratusAsset result = null;
 
 			while (true) {
-				// Hit up the cache first.
-				if (!cacheRule.HasFlag(CacheRule.SkipRead) && (_cache?.TryGetCachedAsset(assetId, out result) ?? false)) {
+				// Hit up the local storage first. TODO: BUG: if there's no upstream then ignore skipread.
+				if (!cacheRule.HasFlag(CacheRule.SkipRead) && (_localStorage?.TryGetAsset(assetId, out result) ?? false)) {
 					handler(result);
 					return;
 				}
@@ -166,7 +166,7 @@ namespace Chattel {
 
 						if (result != null) {
 							if (!cacheRule.HasFlag(CacheRule.SkipWrite)) {
-								_cache?.CacheAsset(result);
+								_localStorage?.StoreAsset(result);
 							}
 							break;
 						}
@@ -215,7 +215,7 @@ namespace Chattel {
 					// lock was skipped, therefore that list is already being cleaned out.
 				}
 
-				// It's gone already, so let's try again as the asset should be in the cache or we should query the servers again.
+				// It's gone already, so let's try again as the asset should be in local storage or we should query the servers again.
 				Thread.Sleep(50);
 			}
 		}

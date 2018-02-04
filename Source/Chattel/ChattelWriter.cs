@@ -35,7 +35,7 @@ namespace Chattel {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelWriter>();
 
 		private readonly ChattelConfiguration _config;
-		private readonly IChattelCache _cache;
+		private readonly IChattelLocalStorage _localStorage;
 
 		private readonly ConcurrentDictionary<Guid, ReaderWriterLockSlim> _activeWriteLocks = new ConcurrentDictionary<Guid, ReaderWriterLockSlim>();
 
@@ -45,22 +45,22 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
-		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
+		/// <param name="localStorage">Instance of the IChattelLocalStorage interface. If left null, then the default AssetStorageSimpleFolderTree will be instantiated.</param>
+		/// <param name="purgeLocalStorage">Whether or not to attempt to purge local storage.</param>
 		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
-		public ChattelWriter(ChattelConfiguration config, IChattelCache cache, bool purgeCache) {
+		public ChattelWriter(ChattelConfiguration config, IChattelLocalStorage localStorage, bool purgeLocalStorage) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 
-			if (config.CacheEnabled) {
-				_cache = cache ?? new AssetCacheSimpleFolderTree(config);
+			if (config.LocalStorageEnabled) {
+				_localStorage = localStorage ?? new AssetStorageSimpleFolderTree(config);
 			}
 
-			if (purgeCache) {
-				_cache?.PurgeAll();
+			if (purgeLocalStorage) {
+				_localStorage?.PurgeAll();
 			}
 
-			if (config.CacheEnabled && config.WriteCacheFile != null) {
-				_writeCache = new WriteCache(config.WriteCacheFile, config.WriteCacheRecordCount, this, cache);
+			if (config.LocalStorageEnabled && config.WriteCacheFile != null) {
+				_writeCache = new WriteCache(config.WriteCacheFile, config.WriteCacheRecordCount, this, localStorage);
 				config.WriteCacheFile.Refresh();
 			}
 		}
@@ -69,18 +69,18 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		/// <param name="cache">Instance of the IChattelCache interface. If left null, then the default ChattelCache will be instantiated.</param>
+		/// <param name="localStorage">Instance of the IChattelLocalStorage interface. If left null, then the default AssetStorageSimpleFolderTree will be instantiated.</param>
 		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
-		public ChattelWriter(ChattelConfiguration config, IChattelCache cache) : this(config, cache, false) {
+		public ChattelWriter(ChattelConfiguration config, IChattelLocalStorage localStorage) : this(config, localStorage, false) {
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelWriter"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		/// <param name="purgeCache">Whether or not to attempt to purge the cache.</param>
+		/// <param name="purgeLocalStorage">Whether or not to attempt to purge local storage.</param>
 		/// <exception cref="!:ChattelConfigurationException">Thrown if the are pending assets to be sent upstream and there are no upstream servers configured.</exception>
-		public ChattelWriter(ChattelConfiguration config, bool purgeCache) : this(config, null, purgeCache) {
+		public ChattelWriter(ChattelConfiguration config, bool purgeLocalStorage) : this(config, null, purgeLocalStorage) {
 		}
 
 		/// <summary>
@@ -120,14 +120,15 @@ namespace Chattel {
 				firstLock.EnterWriteLock();
 				var activeLock = _activeWriteLocks.GetOrAdd(asset.Id, firstLock);
 				if (firstLock != activeLock) {
+					LOG.Log(Logging.LogLevel.Warn, () => $"Another thread already storing asset with ID {asset.Id}, halting this call until the first completes, then just returning.");
 					// There's another thread currently adding this exact ID, so we need to wait on it so that we return when it's actually ready for a GET.
 					activeLock.EnterReadLock();
 					activeLock.ExitReadLock();
 					return;
 				}
 
-				// Hit up the cache first.
-				if (_cache?.TryGetCachedAsset(asset.Id, out StratusAsset result) ?? false) {
+				// Hit up local storage first.
+				if (_localStorage?.TryGetAsset(asset.Id, out StratusAsset result) ?? false) {
 					_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
 					firstLock.ExitWriteLock();
 					throw new AssetExistsException(asset.Id);
@@ -137,9 +138,9 @@ namespace Chattel {
 				var success = false;
 				WriteCacheNode activeNode = null;
 
-				// First step: get it in the local disk cache.
+				// First step: get it in local storage.
 				try {
-					_cache?.CacheAsset(asset);
+					_localStorage?.StoreAsset(asset);
 
 					if (HasUpstream) {
 						// Write to writecache file. In this way if we crash after this point we can recover and send the asset to the servers.
@@ -152,6 +153,7 @@ namespace Chattel {
 					}
 				}
 				catch (WriteCacheFullException) {
+					// Let this exception out: the user requested a writecache and now it's full, so storing an asset should immediately fail as there's no way to be certain that the asset will be safely retained as requested.
 					throw;
 				}
 				catch (Exception e) {

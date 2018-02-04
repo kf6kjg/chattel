@@ -72,12 +72,12 @@
     <Compile Include="CloudFilesProvider\ExtendedJsonRestServices.cs" />
     <Compile Include="CloudFilesProvider\StratusAsset.cs" />
     <Compile Include="ChattelConfiguration.cs" />
-    <Compile Include="AssetCacheSimpleFolderTree.cs" />
+    <Compile Include="AssetStorageSimpleFolderTree.cs" />
     <Compile Include="ChattelWriter.cs" />
     <Compile Include="AssetException.cs" />
     <Compile Include="AssetExistsException.cs" />
     <Compile Include="AssetWriteException.cs" />
-    <Compile Include="IChattelCache.cs" />
+    <Compile Include="IChattelLocalStorage.cs" />
     <Compile Include="LibLog.cs" />
     <Compile Include="WriteCacheNode.cs" />
     <Compile Include="ChattelConfigurationException.cs" />

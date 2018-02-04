@@ -1,4 +1,4 @@
-﻿// ChattelCache.cs
+﻿// AssetStorageSimpleFolderTree.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -31,8 +31,8 @@ using InWorldz.Data.Assets.Stratus;
 using ProtoBuf;
 
 namespace Chattel {
-	public class AssetCacheSimpleFolderTree : IChattelCache {
-		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetCacheSimpleFolderTree>();
+	public class AssetStorageSimpleFolderTree : IChattelLocalStorage {
+		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetStorageSimpleFolderTree>();
 
 		private readonly ChattelConfiguration _config;
 
@@ -42,21 +42,21 @@ namespace Chattel {
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
-		public AssetCacheSimpleFolderTree(ChattelConfiguration config) {
+		public AssetStorageSimpleFolderTree(ChattelConfiguration config) {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
 
-		public bool TryGetCachedAsset(Guid assetId, out StratusAsset asset) {
-			if (!_config.CacheEnabled) {
+		public bool TryGetAsset(Guid assetId, out StratusAsset asset) {
+			if (!_config.LocalStorageEnabled) {
 				asset = null;
 				return false;
 			}
 
 			// Convert the UUID into a path.
-			var path = UuidToCachePath(assetId);
+			var path = UuidToLocalPath(assetId);
 
 			if (_assetsBeingWritten.TryGetValue(path, out asset)) {
-				LOG.Log(Logging.LogLevel.Debug, () => $"Attempted to read an asset from cache, but another thread is writing it. Shortcutting read of {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"Attempted to read an asset from local storage, but another thread is writing it. Shortcutting read of {path}");
 				// Asset is currently being pushed to disk, so might as well return it now since I have it in memory.
 				return true;
 			}
@@ -70,25 +70,25 @@ namespace Chattel {
 				return true;
 			}
 			catch (PathTooLongException e) {
-				_config.DisableCache();
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a cached asset, but the path was too long for the filesystem.  Disabling caching.", e);
+				_config.DisableLocalStorage();
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a locally stored asset, but the path was too long for the filesystem. Disabling local storage.", e);
 			}
 			catch (DirectoryNotFoundException) {
-				// Kinda expected if that's an item that's not been cached.
+				// Kinda expected if that's an item that's not been stored locally.
 			}
 			catch (UnauthorizedAccessException e) {
-				_config.DisableCache();
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a cached asset, but this user is not allowed access.  Disabling caching.", e);
+				_config.DisableLocalStorage();
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to read a locally stored asset, but this user is not allowed access. Disabling local storage.", e);
 			}
 			catch (FileNotFoundException) {
-				// Kinda expected if that's an item that's not been cached.
+				// Kinda expected if that's an item that's not been stored locally.
 			}
 			catch (IOException e) {
 				// This could be temporary.
-				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_READER] Attempted to read a cached asset, but there was an IO error.", e);
+				LOG.Log(Logging.LogLevel.Warn, () => "[ASSET_READER] Attempted to read a locally stored asset, but there was an IO error.", e);
 			}
 			catch (ProtoException e) {
-				LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_READER] Attempted to read a cached asset, but there was a protobuf decoding error.  Removing the offending cache file as it is either corrupt or from an older installation: {path}", e);
+				LOG.Log(Logging.LogLevel.Warn, () => $"[ASSET_READER] Attempted to read a locally stored asset, but there was a protobuf decoding error. Removing the offending local storage file as it is either corrupt or from an older installation: {path}", e);
 				removeFile = true;
 			}
 
@@ -109,56 +109,56 @@ namespace Chattel {
 			return false;
 		}
 
-		public void CacheAsset(StratusAsset asset) {
-			if (!_config.CacheEnabled || asset == null) { // Caching is disabled or stupidity.
+		public void StoreAsset(StratusAsset asset) {
+			if (!_config.LocalStorageEnabled || asset == null) { // Caching is disabled or stupidity.
 				return;
 			}
 
-			var path = UuidToCachePath(asset.Id);
+			var path = UuidToLocalPath(asset.Id);
 
 			if (!_assetsBeingWritten.TryAdd(path, asset)) {
-				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Attempted to write an asset to cache, but another thread is already doing so.  Skipping write of {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Attempted to write an asset to local storage, but another thread is already doing so.  Skipping write of {path}");
 				// Can't add it, which means it's already being written to disk by another thread.  No need to continue.
 				return;
 			}
 
 			try {
-				// Since UuidToCachePath always returns a path underneath the cache folder, this will only attempt to create folders there.
+				// Since UuidToLocalPath always returns a path underneath the local storage folder, this will only attempt to create folders there.
 				Directory.CreateDirectory(Directory.GetParent(path).FullName);
 				using (var file = File.Create(path)) {
 					Serializer.Serialize(file, asset);
 				}
 				// Writing is done, remove it from the work list.
 				_assetsBeingWritten.TryRemove(path, out StratusAsset temp);
-				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Wrote an asset to cache: {path}");
+				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Wrote an asset to local storage: {path}");
 			}
 			catch (UnauthorizedAccessException e) {
-				_config.DisableCache();
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but this user is not allowed access.  Disabling caching.", e);
+				_config.DisableLocalStorage();
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to local storage, but this user is not allowed access. Disabling local storage.", e);
 			}
 			catch (PathTooLongException e) {
-				_config.DisableCache();
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but the path was too long for the filesystem.  Disabling caching.", e);
+				_config.DisableLocalStorage();
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to local storage, but the path was too long for the filesystem. Disabling local storage.", e);
 			}
 			catch (DirectoryNotFoundException e) {
-				_config.DisableCache();
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but cache folder was not found.  Disabling caching.", e);
+				_config.DisableLocalStorage();
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to local storage, but local storage folder was not found. Disabling local storage.", e);
 			}
 			catch (IOException e) {
 				// This could be temporary.
-				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to cache, but there was an IO error.", e);
+				LOG.Log(Logging.LogLevel.Error, () => "[ASSET_READER] Attempted to write an asset to local storage, but there was an IO error.", e);
 			}
 		}
 
 		public void PurgeAll() {
-			_config.CacheFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
+			_config.LocalStorageFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
 		}
 
 		public void Purge(Guid assetId) {
 			try {
-				File.Delete(UuidToCachePath(assetId));
+				File.Delete(UuidToLocalPath(assetId));
 				// Lazily not attempting to clean up the folder tree.
-				// Using up too many inodes? Use a better cache implementation.
+				// Using up too many inodes? Use a better local storage implementation.
 			}
 			catch (DirectoryNotFoundException) {
 				throw new AssetNotFoundException(assetId);
@@ -169,13 +169,13 @@ namespace Chattel {
 		}
 
 		/// <summary>
-		/// Converts a GUID to a path based on the cache location.
+		/// Converts a GUID to a path based on the local storage location.
 		/// </summary>
 		/// <returns>The path.</returns>
 		/// <param name="id">Asset identifier.</param>
-		private string UuidToCachePath(Guid id) {
+		private string UuidToLocalPath(Guid id) {
 			var noPunctuationAssetId = id.ToString("N");
-			var path = _config.CacheFolder.FullName;
+			var path = _config.LocalStorageFolder.FullName;
 			for (var index = 0; index < noPunctuationAssetId.Length; index += 2) {
 				path = Path.Combine(path, noPunctuationAssetId.Substring(index, 2));
 			}

@@ -60,7 +60,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="TestWriteCache.cs" />
     <Compile Include="TestStratusAsset.cs" />
-    <Compile Include="TestAssetCacheSimpleFolderTree.cs" />
+    <Compile Include="TestAssetStorageSimpleFolderTree.cs" />
     <Compile Include="TestChattelConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,100 +32,107 @@ using NUnit.Framework;
 namespace ChattelTests {
 	[TestFixture]
 	public static class TestChattelConfiguration {
-		private static readonly DirectoryInfo CACHE_DIR_INFO = new DirectoryInfo(Constants.CACHE_PATH);
+		private static readonly DirectoryInfo LOCAL_STORAGE_DIR_INFO = new DirectoryInfo(Constants.LOCAL_STORAGE_PATH);
 		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
 		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
 
+		private static readonly List<List<IAssetServer>> ASSET_SERVERS = new List<List<IAssetServer>> {
+			new List<IAssetServer> {
+				Substitute.For<IAssetServer>()
+			}
+		};
+
+
 		[OneTimeSetUp]
 		public static void Setup() {
-			TestAssetCacheSimpleFolderTree.CleanCacheFolder(CACHE_DIR_INFO);
+			TestAssetStorageSimpleFolderTree.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 		}
 
 		[TearDown]
 		public static void CleanupAfterEveryTest() {
-			TestAssetCacheSimpleFolderTree.CleanCacheFolder(CACHE_DIR_INFO);
+			TestAssetStorageSimpleFolderTree.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 		}
 
 		#region Ctor - Direct
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_NullCachePath_WriteCacheFileNull() {
-			var config = new ChattelConfiguration(null, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT);
+		public static void TestChattelConfiguration_CtorDirect_NullLocalStoragePath_WriteCacheFileNull() {
+			var config = new ChattelConfiguration(null, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT, ASSET_SERVERS);
 			Assert.IsNull(config.WriteCacheFile);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_NullCachePath_CacheFolderNull() {
+		public static void TestChattelConfiguration_CtorDirect_NullLocalStoragePath_LocalStorageFolderNull() {
 			var config = new ChattelConfiguration((string)null);
-			Assert.IsNull(config.CacheFolder);
+			Assert.IsNull(config.LocalStorageFolder);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_NullCachePath_CacheEnabledFalse() {
+		public static void TestChattelConfiguration_CtorDirect_NullLocalStoragePath_LocalStorageEnabledFalse() {
 			var config = new ChattelConfiguration((string)null);
-			Assert.False(config.CacheEnabled);
+			Assert.False(config.LocalStorageEnabled);
 		}
 
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_BadCachePath_WriteCacheFileNull() {
-			var config = new ChattelConfiguration("asfd", WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT);
+		public static void TestChattelConfiguration_CtorDirect_BadLocalStoragePath_WriteCacheFileNull() {
+			var config = new ChattelConfiguration("asfd", WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT, ASSET_SERVERS);
 			Assert.IsNull(config.WriteCacheFile);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_BadCachePath_CacheFolderNull() {
+		public static void TestChattelConfiguration_CtorDirect_BadLocalStoragePath_LocalStorageFolderNull() {
 			var config = new ChattelConfiguration("asfd");
-			Assert.IsNull(config.CacheFolder);
+			Assert.IsNull(config.LocalStorageFolder);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_BadCachePath_CacheEnabledFalse() {
+		public static void TestChattelConfiguration_CtorDirect_BadLocalStoragePath_LocalStorageEnabledFalse() {
 			var config = new ChattelConfiguration("asfd");
-			Assert.False(config.CacheEnabled);
+			Assert.False(config.LocalStorageEnabled);
 		}
 
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_GoodCachePath_WriteCacheFileNotNull() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT);
+		public static void TestChattelConfiguration_CtorDirect_GoodLocalStoragePath_WriteCacheFileNotNull() {
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT, ASSET_SERVERS);
 			Assert.IsNotNull(config.WriteCacheFile);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_GoodCachePath_WriteCacheRecordCount_Correct() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT);
+		public static void TestChattelConfiguration_CtorDirect_GoodLocalStoragePath_WriteCacheRecordCount_Correct() {
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT, ASSET_SERVERS);
 			Assert.AreEqual(WRITE_CACHE_MAX_RECORD_COUNT, config.WriteCacheRecordCount);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_GoodCachePath_CacheFolderNotNull() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName);
-			Assert.IsNotNull(config.CacheFolder);
+		public static void TestChattelConfiguration_CtorDirect_GoodLocalStoragePath_LocalStorageFolderNotNull() {
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			Assert.IsNotNull(config.LocalStorageFolder);
 		}
 
 		[Test]
-		public static void TestChattelConfiguration_CtorDirect_GoodCachePath_CacheEnabledTrue() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName);
-			Assert.True(config.CacheEnabled);
+		public static void TestChattelConfiguration_CtorDirect_GoodLocalStoragePath_LocalStorageEnabledTrue() {
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			Assert.True(config.LocalStorageEnabled);
 		}
 
 
 		[Test]
 		public static void TestChattelConfiguration_CtorDirect_NullWriteCachePath_WriteCacheFileNull() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, null, WRITE_CACHE_MAX_RECORD_COUNT);
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, null, WRITE_CACHE_MAX_RECORD_COUNT, ASSET_SERVERS);
 			Assert.Null(config.WriteCacheFile);
 		}
 
 		[Test]
 		public static void TestChattelConfiguration_CtorDirect_ZeroWriteCacheRecordCount_WriteCacheFileNull() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 0);
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 0, ASSET_SERVERS);
 			Assert.Null(config.WriteCacheFile);
 		}
 
@@ -184,20 +191,20 @@ namespace ChattelTests {
 
 		#endregion
 
-		#region CacheEnabled
+		#region LocalStorageEnabled
 
-		// Tested in the ctor section as it's not really easily separated.
+		// Tested in the ctor section as its not really easily separated.
 
 		#endregion
 
-		#region DisableCache
+		#region DisableLocalStorage
 
 		[Test]
-		public static void TestChattelConfiguration_DisableCache_CacheEnabled_False() {
-			CACHE_DIR_INFO.Create();
-			var config = new ChattelConfiguration(CACHE_DIR_INFO.FullName);
-			config.DisableCache();
-			Assert.False(config.CacheEnabled);
+		public static void TestChattelConfiguration_DisableLocalStorage_LocalStorageEnabled_False() {
+			LOCAL_STORAGE_DIR_INFO.Create();
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			config.DisableLocalStorage();
+			Assert.False(config.LocalStorageEnabled);
 		}
 
 		#endregion

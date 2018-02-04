@@ -23,13 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Chattel {
 	public class ChattelConfiguration {
-		public static readonly string DEFAULT_DB_FOLDER_PATH = "cache";
+		public static readonly string DEFAULT_DB_FOLDER_PATH = "localstorage";
 		public static readonly string DEFAULT_WRITECACHE_FILE_PATH = "chattel.wcache";
 		public static readonly uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
 
@@ -37,7 +38,7 @@ namespace Chattel {
 
 		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
 
-		public DirectoryInfo CacheFolder { get; private set; }
+		public DirectoryInfo LocalStorageFolder { get; private set; }
 
 		public FileInfo WriteCacheFile { get; private set; }
 
@@ -45,32 +46,23 @@ namespace Chattel {
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelConfiguration"/> class.
-		/// If the cachePath is null, empty, or references a folder that doesn't exist or doesn't have write access, the cache will be disabled.
+		/// If the localStoragePath is null, empty, or references a folder that doesn't exist or doesn't have write access, the local storage of assets will be disabled.
 		/// The serialParallelServerConfigs parameter allows you to specify server groups that should be accessed serially with subgroups that should be accessed in parallel.
 		/// Eg. if you have a new server you want to be hit for all operations, but to fallback to whichever of two older servers returns first, then set up a pattern like [ [ primary ], [ second1, second2 ] ].
 		/// </summary>
-		/// <param name="cachePath">Cache folder path.  Folder must exist or caching will be disabled.</param>
+		/// <param name="localStoragePath">Local storage folder path. Folder must exist or caching will be disabled.</param>
 		/// <param name="serialParallelServers">Serially-accessed parallel servers.</param>
-		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers) {
+		public ChattelConfiguration(string localStoragePath, string writeCachePath, uint writeCacheRecordCount, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers) {
 			// Set up caching
-			if (string.IsNullOrWhiteSpace(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"Cache path is empty, caching assets disabled.");
+			if (string.IsNullOrWhiteSpace(localStoragePath)) {
+				LOG.Log(Logging.LogLevel.Info, () => $"Local storage path is empty, caching assets disabled.");
 			}
-			else if (!Directory.Exists(cachePath)) {
-				LOG.Log(Logging.LogLevel.Info, () => $"Cache path folder does not exist, caching assets disabled.");
-			}
-			else {
-				CacheFolder = new DirectoryInfo(cachePath);
-				LOG.Log(Logging.LogLevel.Info, () => $"Caching assets enabled at {CacheFolder.FullName}");
-			}
-
-			if (string.IsNullOrWhiteSpace(writeCachePath) || !CacheEnabled || writeCacheRecordCount <= 0) {
-				LOG.Log(Logging.LogLevel.Warn, () => $"Write cache file path is empty, write cache record count is zero, or caching is disabled. Crash recovery will be compromised.");
+			else if (!Directory.Exists(localStoragePath)) {
+				LOG.Log(Logging.LogLevel.Info, () => $"Local storage path folder does not exist, caching assets disabled.");
 			}
 			else {
-				WriteCacheFile = new FileInfo(writeCachePath);
-				WriteCacheRecordCount = writeCacheRecordCount;
-				LOG.Log(Logging.LogLevel.Info, () => $"Write cache enabled at {WriteCacheFile.FullName} with {WriteCacheRecordCount} records.");
+				LocalStorageFolder = new DirectoryInfo(localStoragePath);
+				LOG.Log(Logging.LogLevel.Info, () => $"Local storage of assets enabled at {LocalStorageFolder.FullName}");
 			}
 
 			// Set up server handlers
@@ -79,6 +71,15 @@ namespace Chattel {
 
 			// Copy server handle lists so that the list cannot be changed from outside.
 			if (serialParallelServers != null && serialParallelServers.Any()) {
+				if (string.IsNullOrWhiteSpace(writeCachePath) || !LocalStorageEnabled || writeCacheRecordCount <= 0) { // Write cache only makes sense when there's both a cache AND upstream servers.
+					LOG.Log(Logging.LogLevel.Warn, () => $"Write cache file path is empty, write cache record count is zero, or local storage is disabled. Crash recovery will be compromised.");
+				}
+				else {
+					WriteCacheFile = new FileInfo(writeCachePath);
+					WriteCacheRecordCount = writeCacheRecordCount;
+					LOG.Log(Logging.LogLevel.Info, () => $"Write cache enabled at {WriteCacheFile.FullName} with {WriteCacheRecordCount} records.");
+				}
+
 				foreach (var parallelServers in serialParallelServers) {
 					var parallelServerConnectors = new List<IAssetServer>();
 					foreach (var serverConnector in parallelServers) {
@@ -97,37 +98,46 @@ namespace Chattel {
 			}
 		}
 
-		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount)
-			: this(cachePath, writeCachePath, writeCacheRecordCount, (IEnumerable<IEnumerable<IAssetServer>>) null) {
+		public ChattelConfiguration(string localStoragePath, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
+			: this(localStoragePath, null, 0, serialParallelServers) {
 		}
-		public ChattelConfiguration(string cachePath, IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
-			: this(cachePath, null, 0, serialParallelServers) {
-		}
-		public ChattelConfiguration(string cachePath)
-			: this(cachePath, null, 0) {
+		public ChattelConfiguration(string localStoragePath)
+			: this(localStoragePath, (IEnumerable<IEnumerable<IAssetServer>>)null) {
 		}
 		public ChattelConfiguration(IEnumerable<IEnumerable<IAssetServer>> serialParallelServers)
 			: this(null, null, 0, serialParallelServers) {
 		}
 
-		public ChattelConfiguration(string cachePath, string writeCachePath, uint writeCacheRecordCount, IAssetServer assetServer)
-			: this(cachePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null){
+		public ChattelConfiguration(string localStoragePath, string writeCachePath, uint writeCacheRecordCount, IAssetServer assetServer)
+			: this(localStoragePath, writeCachePath, writeCacheRecordCount, assetServer != null ? new List<List<IAssetServer>> { new List<IAssetServer> { assetServer } } : null) {
 		}
-		public ChattelConfiguration(string cachePath, IAssetServer assetServer)
-			: this(cachePath, null, 0, assetServer) {
+		public ChattelConfiguration(string localStoragePath, IAssetServer assetServer)
+			: this(localStoragePath, null, 0, assetServer) {
 		}
 		public ChattelConfiguration(IAssetServer assetServer)
-			: this(null, null, 0, assetServer){
+			: this(null, null, 0, assetServer) {
 		}
 
+		[Obsolete("See LocalStorageEnabled")]
 		public bool CacheEnabled {
 			get {
-				return CacheFolder != null;
+				return LocalStorageEnabled;
 			}
 		}
 
+		public bool LocalStorageEnabled {
+			get {
+				return LocalStorageFolder != null;
+			}
+		}
+
+		[Obsolete("See DisableLocalStorage")]
 		public void DisableCache() {
-			CacheFolder = null;
+			DisableLocalStorage();
+		}
+
+		public void DisableLocalStorage() {
+			LocalStorageFolder = null;
 		}
 	}
 }

@@ -34,7 +34,7 @@ namespace ChattelTests {
 
 		public static readonly string LOG_CONFIG_PATH;
 
-		public static readonly string CACHE_PATH;
+		public static readonly string LOCAL_STORAGE_PATH;
 
 		public static readonly string WRITE_CACHE_PATH;
 
@@ -42,7 +42,7 @@ namespace ChattelTests {
 			EXECUTABLE_DIRECTORY = TestContext.CurrentContext.TestDirectory;
 			INI_FILE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.ini");
 			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.config");
-			CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTestsCache");
+			LOCAL_STORAGE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTestsStorage");
 			WRITE_CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.wcache");
 		}
 	}

@@ -45,7 +45,7 @@ namespace Chattel {
 		private readonly object _writeCacheNodeLock = new object();
 		private WriteCacheNode _nextAvailableWriteCacheNode;
 
-		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer, IChattelCache cache) {
+		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer, IChattelLocalStorage localStorage) {
 			_fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
 			if (recordCount < 2) {
 				throw new ArgumentOutOfRangeException(nameof(recordCount), "Having less than two record makes no sense and causes errors.");
@@ -82,7 +82,7 @@ namespace Chattel {
 					throw new ChattelConfigurationException("Write cache indicates assets needing to be sent to remote servers, but there is no asset writer!");
 				}
 
-				if (cache == null) {
+				if (localStorage == null) {
 					throw new ChattelConfigurationException("Write cache indicates assets needing to be sent to remote servers, but there no cache to read them from!");
 				}
 
@@ -95,7 +95,7 @@ namespace Chattel {
 			foreach (var assetCacheNode in assetsToBeSentUpstream) {
 				LOG.Log(Logging.LogLevel.Debug, () => $"Attempting to remotely store {assetCacheNode.AssetId}.");
 
-				if (cache.TryGetCachedAsset(assetCacheNode.AssetId, out StratusAsset asset)) {
+				if (localStorage.TryGetAsset(assetCacheNode.AssetId, out StratusAsset asset)) {
 					try {
 						writer.PutAssetSync(asset);
 					}
@@ -209,7 +209,7 @@ namespace Chattel {
 				}
 			}
 			catch (Exception e) {
-				LOG.Log(Logging.LogLevel.Warn, () => $"{asset.Id} failed to write to disk-based write cache!", e);
+				LOG.Log(Logging.LogLevel.Warn, () => $"{asset.Id} failed to write to disk-based write local storage!", e);
 			}
 
 			return writeCachNode;

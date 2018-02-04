@@ -272,13 +272,13 @@ namespace ChattelTests {
 			};
 			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
-			var cache = Substitute.For<IChattelCache>();
+			var localStorage = Substitute.For<IChattelLocalStorage>();
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
 				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				null,
-				cache
+				localStorage
 			));
 		}
 
@@ -290,9 +290,9 @@ namespace ChattelTests {
 			};
 			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
-			var cache = Substitute.For<IChattelCache>();
+			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), localStorage, false);
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
 				WRITE_CACHE_FILE_INFO,
@@ -303,7 +303,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_CallsCacheGet() {
+		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockLocalStorage_CallsLocalStorageGet() {
 			var firstId = Guid.NewGuid();
 			var lastId = Guid.NewGuid();
 			var records = new Tuple<Guid, bool>[] {
@@ -314,26 +314,26 @@ namespace ChattelTests {
 
 			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
-			var cache = Substitute.For<IChattelCache>();
+			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(server), localStorage, false);
 
-			cache.TryGetCachedAsset(firstId, out var asset1).Returns(false);
+			localStorage.TryGetAsset(firstId, out var asset1).Returns(false);
 
 			new WriteCache(
 				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
-				cache
+				localStorage
 			);
 
-			cache.Received().TryGetCachedAsset(firstId, out var assetJunk1);
-			cache.DidNotReceive().TryGetCachedAsset(Guid.Empty, out var assetJunk2);
-			cache.DidNotReceive().TryGetCachedAsset(lastId, out var assetJunk3);
+			localStorage.Received().TryGetAsset(firstId, out var assetJunk1);
+			localStorage.DidNotReceive().TryGetAsset(Guid.Empty, out var assetJunk2);
+			localStorage.DidNotReceive().TryGetAsset(lastId, out var assetJunk3);
 		}
 
 		[Test]
-		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_CallsWriterPut() {
+		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockLocalStorage_CallsWriterPut() {
 			var firstId = Guid.NewGuid();
 			var lastId = Guid.NewGuid();
 			var records = new Tuple<Guid, bool>[] {
@@ -344,9 +344,9 @@ namespace ChattelTests {
 
 			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
-			var cache = Substitute.For<IChattelCache>();
+			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), localStorage, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,
@@ -356,17 +356,17 @@ namespace ChattelTests {
 				Id = lastId,
 			};
 
-			cache.TryGetCachedAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
-			cache.TryGetCachedAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
+			localStorage.TryGetAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
+			localStorage.TryGetAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
 
-			cache.CacheAsset(firstAsset);
-			cache.CacheAsset(lastAsset);
+			localStorage.StoreAsset(firstAsset);
+			localStorage.StoreAsset(lastAsset);
 
 			new WriteCache(
 				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
-				cache
+				localStorage
 			);
 
 			writer.Received().PutAssetSync(firstAsset);
@@ -374,7 +374,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockCache_ClearsWriteCache() {
+		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockLocalStorage_ClearsWriteCache() {
 			var firstId = Guid.NewGuid();
 			var lastId = Guid.NewGuid();
 			var records = new Tuple<Guid, bool>[] {
@@ -385,9 +385,9 @@ namespace ChattelTests {
 
 			CreateWriteCache(WRITE_CACHE_FILE_INFO, records);
 
-			var cache = Substitute.For<IChattelCache>();
+			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(serialParallelServers: new List<List<IAssetServer>> { new List<IAssetServer> { server } }), cache, false);
+			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(new List<List<IAssetServer>> { new List<IAssetServer> { server } }), localStorage, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,
@@ -397,17 +397,17 @@ namespace ChattelTests {
 				Id = lastId,
 			};
 
-			cache.TryGetCachedAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
-			cache.TryGetCachedAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
+			localStorage.TryGetAsset(firstId, out var asset1).Returns(parms => { parms[1] = firstAsset; return true; });
+			localStorage.TryGetAsset(lastId, out var asset2).Returns(parms => { parms[1] = lastAsset; return true; });
 
-			cache.CacheAsset(firstAsset);
-			cache.CacheAsset(lastAsset);
+			localStorage.StoreAsset(firstAsset);
+			localStorage.StoreAsset(lastAsset);
 
 			new WriteCache(
 				WRITE_CACHE_FILE_INFO,
 				(uint)records.Length,
 				writer,
-				cache
+				localStorage
 			);
 
 			using (var fs = new FileStream(WRITE_CACHE_FILE_INFO.FullName, FileMode.Open, FileAccess.Read)) {
