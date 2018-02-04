@@ -33,8 +33,6 @@ namespace ChattelTests {
 	[TestFixture]
 	public static class TestAssetStorageSimpleFolderTree {
 		private static readonly DirectoryInfo LOCAL_STORAGE_DIR_INFO = new DirectoryInfo(Constants.LOCAL_STORAGE_PATH);
-		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
-		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
 
 		public static void CleanLocalStorageFolder(DirectoryInfo localStorage) {
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
@@ -42,6 +40,7 @@ namespace ChattelTests {
 				localStorage.Delete(true);
 			}
 			catch {
+				// Failure to delete is fine.
 			}
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 			localStorage.Refresh();
