@@ -40,7 +40,7 @@ namespace Chattel {
 		private readonly ChattelConfiguration _config;
 		private readonly IChattelLocalStorage _localStorage;
 
-		private readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Queue<AssetHandler>> _idsBeingFetched = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Queue<AssetHandler>>();
+		private readonly ConcurrentDictionary<Guid, Queue<AssetHandler>> _idsBeingFetched = new ConcurrentDictionary<Guid, Queue<AssetHandler>>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
@@ -98,8 +98,8 @@ namespace Chattel {
 			StratusAsset result = null;
 
 			while (true) {
-				// Hit up the local storage first. TODO: BUG: if there's no upstream then ignore skipread.
-				if (!cacheRule.HasFlag(CacheRule.SkipRead) && (_localStorage?.TryGetAsset(assetId, out result) ?? false)) {
+				// Hit up the local storage first. If there's no upstream then ignore skipread.
+				if (!(cacheRule.HasFlag(CacheRule.SkipRead) && _config.SerialParallelAssetServers.Any()) && (_localStorage?.TryGetAsset(assetId, out result) ?? false)) {
 					handler(result);
 					return;
 				}
