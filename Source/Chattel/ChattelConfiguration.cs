@@ -32,9 +32,9 @@ using Nini.Config;
 
 namespace Chattel {
 	public class ChattelConfiguration {
-		public const string DEFAULT_DB_FOLDER_PATH = "cache";
-		public const string DEFAULT_WRITECACHE_FILE_PATH = "chattel.wcache";
-		public const uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
+		public static readonly string DEFAULT_DB_FOLDER_PATH = "cache";
+		public static readonly string DEFAULT_WRITECACHE_FILE_PATH = "chattel.wcache";
+		public static readonly uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
 
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
 
@@ -140,6 +140,8 @@ namespace Chattel {
 		/// <param name="configSource">Config source.</param>
 		/// <param name="assetConfig">Config instance for the asset options.</param>
 		public ChattelConfiguration(IConfigSource configSource, IConfig assetConfig) {
+			configSource = configSource ?? throw new ArgumentNullException(nameof(configSource));
+
 			// Set up caching
 			var cachePath = assetConfig?.GetString("CachePath", DEFAULT_DB_FOLDER_PATH) ?? DEFAULT_DB_FOLDER_PATH;
 
@@ -190,7 +192,7 @@ namespace Chattel {
 					foreach (var source in parallelSources) {
 						var sourceConfig = configSource.Configs[source];
 						IAssetServer serverConnector = null;
-						var type = sourceConfig?.GetString("Type", string.Empty).ToLower(System.Globalization.CultureInfo.InvariantCulture);
+						var type = sourceConfig?.GetString("Type", string.Empty)?.ToLower(System.Globalization.CultureInfo.InvariantCulture);
 						try {
 							switch (type) { // TODO: Create a way for these types to automatically register a string name and parameters with defaults in a central location. Then use that to generically process these here intead of a switch full of one-offs.
 								case "whip":
