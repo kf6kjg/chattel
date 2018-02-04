@@ -71,53 +71,6 @@ namespace Chattel {
 
 		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
 
-		/// <summary>
-		/// Alias for GetAssetSync
-		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="assetId">Asset identifier.</param>
-		[Obsolete("Please convert to GetAssetAsync")]
-		public StratusAsset ReadAssetSync(Guid assetId) {
-			return GetAssetSync(assetId);
-		}
-
-		/// <summary>
-		/// Gets the asset from the server.
-		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="assetId">Asset identifier.</param>
-		[Obsolete("Please convert to GetAssetAsync")]
-		public StratusAsset GetAssetSync(Guid assetId) {
-			StratusAsset result = null;
-
-			// Ask for null, get null.
-			if (assetId == Guid.Empty) {
-				return null;
-			}
-
-			// Hit up the local storage first.
-			if (_localStorage?.TryGetAsset(assetId, out result) ?? false) {
-				return result;
-			}
-
-			// Got to go try the servers now.
-			foreach (var parallelServers in _config.SerialParallelAssetServers) {
-				if (parallelServers.Count() == 1) {
-					result = parallelServers.First().RequestAssetSync(assetId);
-				}
-				else {
-					result = parallelServers.AsParallel().Select(server => server.RequestAssetSync(assetId)).FirstOrDefault(asset => asset != null);
-				}
-
-				if (result != null) {
-					_localStorage?.StoreAsset(result);
-					return result;
-				}
-			}
-
-			return null;
-		}
-
 		[Flags]
 		public enum CacheRule : uint {
 			Normal = 0,

@@ -94,15 +94,6 @@ namespace Chattel {
 		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
 
 		/// <summary>
-		/// Alias for PutAssetSync
-		/// </summary>
-		/// <param name="asset">The asset to store.</param>
-		[Obsolete("Please convert to PutAssetSync")]
-		public void WriteAssetSync(StratusAsset asset) {
-			PutAssetSync(asset);
-		}
-
-		/// <summary>
 		/// Sends the asset to the asset servers.
 		/// Throws AssetExistsException or AggregateException.
 		/// </summary>

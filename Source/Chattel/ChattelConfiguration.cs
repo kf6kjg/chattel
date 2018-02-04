@@ -118,22 +118,10 @@ namespace Chattel {
 			: this(null, null, 0, assetServer) {
 		}
 
-		[Obsolete("See LocalStorageEnabled")]
-		public bool CacheEnabled {
-			get {
-				return LocalStorageEnabled;
-			}
-		}
-
 		public bool LocalStorageEnabled {
 			get {
 				return LocalStorageFolder != null;
 			}
-		}
-
-		[Obsolete("See DisableLocalStorage")]
-		public void DisableCache() {
-			DisableLocalStorage();
 		}
 
 		public void DisableLocalStorage() {
