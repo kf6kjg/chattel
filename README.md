@@ -25,9 +25,9 @@ Chattel provides:
 * Integration with [Halcyon][]'s CloudFiles asset server.
 * Asset servers can be set up in a series-parallel array.
 * Assets can be disk-cached for faster access.
-* Integration with [LibreMetaverse](https://bitbucket.org/cinderblocks/libremetaverse) to allow easy access to assets.
-* Logging via the excellent [Apache log4net](http://logging.apache.org/log4net/).
-* Direct c'tor or Nini-based configuration.
+* Able to efficiently convert to and from WHIP-type and StratusAsset-type assets, in both object and serialized forms.
+* Chattel-AssetTools lib extends the included StratusAsset type to provide easy queries that don't require any extra external libraries.
+* Logging compatible with the majority of common .NET logging systems: your logging library will be detected and used.
 
 How is Chattel different from InWorldz' [whip-dotnet-client](https://github.com/InWorldz/whip-dotnet-client)? Simple: whip-dotnet-client is a very low-level library designed to allow connection to a WHIP server, but it cannot decode the resulting stream into something useful - Chattel can.  Chattel also takes this one step further and allows you connect to other asset servers that are not WHIP-based.
 
