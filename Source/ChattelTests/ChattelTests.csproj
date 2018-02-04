@@ -52,6 +52,9 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="Nini">
+      <HintPath>..\..\packages\Trove.Nini.1.1.0.0\lib\net20\Nini.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestWriteCacheNode.cs" />

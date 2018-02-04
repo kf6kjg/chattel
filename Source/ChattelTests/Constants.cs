@@ -30,6 +30,8 @@ namespace ChattelTests {
 	internal static class Constants {
 		public static readonly string EXECUTABLE_DIRECTORY;
 
+		public static readonly string INI_FILE_PATH;
+
 		public static readonly string LOG_CONFIG_PATH;
 
 		public static readonly string CACHE_PATH;
@@ -38,7 +40,8 @@ namespace ChattelTests {
 
 		static Constants() {
 			EXECUTABLE_DIRECTORY = TestContext.CurrentContext.TestDirectory;
-			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTest.config");
+			INI_FILE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.ini");
+			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.config");
 			CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTestsCache");
 			WRITE_CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "ChattelTests.wcache");
 		}
