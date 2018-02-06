@@ -91,7 +91,7 @@ namespace Chattel {
 		public ChattelWriter(ChattelConfiguration config) : this(config, null, false) {
 		}
 
-		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
+		public bool HasUpstream => _config.SerialParallelAssetServers.Any();
 
 		/// <summary>
 		/// Sends the asset to the asset servers.

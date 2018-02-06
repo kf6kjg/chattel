@@ -69,7 +69,7 @@ namespace Chattel {
 		public ChattelReader(ChattelConfiguration config) : this(config, new AssetStorageSimpleFolderTree(config), false) {
 		}
 
-		public bool HasUpstream => _config?.SerialParallelAssetServers.Any() ?? false;
+		public bool HasUpstream => _config.SerialParallelAssetServers.Any();
 
 		[Flags]
 		public enum CacheRule : uint {
