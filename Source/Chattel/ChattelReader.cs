@@ -63,7 +63,7 @@ namespace Chattel {
 		public ChattelReader(ChattelConfiguration config, IChattelLocalStorage localStorage) : this(config, localStorage, false) {
 		}
 
-		public ChattelReader(ChattelConfiguration config, bool purgeLocalStorage) : this(config, config.LocalStorageEnabled ? new AssetStorageSimpleFolderTree(config) : null, purgeLocalStorage)  {
+		public ChattelReader(ChattelConfiguration config, bool purgeLocalStorage) : this(config, config?.LocalStorageEnabled ?? false ? new AssetStorageSimpleFolderTree(config) : null, purgeLocalStorage)  {
 		}
 
 		public ChattelReader(ChattelConfiguration config) : this(config, new AssetStorageSimpleFolderTree(config), false) {
