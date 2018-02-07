@@ -62,6 +62,7 @@
     <Compile Include="TestStratusAsset.cs" />
     <Compile Include="TestAssetStorageSimpleFolderTree.cs" />
     <Compile Include="TestChattelConfiguration.cs" />
+    <Compile Include="TestChattelReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">
