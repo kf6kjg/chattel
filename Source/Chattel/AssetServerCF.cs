@@ -33,7 +33,7 @@ using net.openstack.Core.Domain;
 using net.openstack.Core.Exceptions.Response;
 
 namespace Chattel {
-	public class AssetServerCF : IAssetServer {
+	public sealed class AssetServerCF : IAssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerCF>();
 
 		private const int DEFAULT_READ_TIMEOUT = 45 * 1000;
@@ -217,7 +217,7 @@ namespace Chattel {
 
 		private bool disposedValue; // To detect redundant calls
 
-		protected virtual void Dispose(bool disposing) {
+		private void Dispose(bool disposing) {
 			if (!disposedValue) {
 				if (disposing) {
 					// dispose managed state (managed objects).

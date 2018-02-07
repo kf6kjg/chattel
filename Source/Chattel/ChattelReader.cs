@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
-	public class ChattelReader {
+	public sealed class ChattelReader {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelReader>();
 
 		public delegate void AssetHandler(StratusAsset asset);

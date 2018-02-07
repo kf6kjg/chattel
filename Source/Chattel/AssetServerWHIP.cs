@@ -28,7 +28,7 @@ using InWorldz.Data.Assets.Stratus;
 using InWorldz.Whip.Client;
 
 namespace Chattel {
-	public class AssetServerWHIP : IAssetServer {
+	public sealed class AssetServerWHIP : IAssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerWHIP>();
 
 		public string Host { get; private set; }
@@ -89,7 +89,7 @@ namespace Chattel {
 
 		private bool disposedValue; // To detect redundant calls
 
-		protected virtual void Dispose(bool disposing) {
+		private void Dispose(bool disposing) {
 			if (!disposedValue) {
 				if (disposing) {
 					try {

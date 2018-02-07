@@ -173,7 +173,7 @@ namespace Chattel {
 		/// </summary>
 		/// <returns>The path.</returns>
 		/// <param name="id">Asset identifier.</param>
-		private string UuidToLocalPath(Guid id) {
+		protected string UuidToLocalPath(Guid id) {
 			var noPunctuationAssetId = id.ToString("N");
 			var path = _config.LocalStorageFolder.FullName;
 			for (var index = 0; index < noPunctuationAssetId.Length; index += 2) {

@@ -292,7 +292,7 @@ namespace ChattelTests {
 
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), localStorage, false);
+			var writer = new ChattelWriter(new ChattelConfiguration(server), localStorage, false);
 
 			Assert.Throws<ChattelConfigurationException>(() => new WriteCache(
 				WRITE_CACHE_FILE_INFO,
@@ -316,7 +316,7 @@ namespace ChattelTests {
 
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(server), localStorage, false);
+			var writer = new ChattelWriter(new ChattelConfiguration(server), localStorage, false);
 
 			localStorage.TryGetAsset(firstId, out var asset1).Returns(false);
 
@@ -333,7 +333,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockLocalStorage_CallsWriterPut() {
+		public static void TestWriteCache_Ctor_ExistingFile_MockWriter_MockLocalStorage_CallsServerStore() {
 			var firstId = Guid.NewGuid();
 			var lastId = Guid.NewGuid();
 			var records = new Tuple<Guid, bool>[] {
@@ -346,7 +346,7 @@ namespace ChattelTests {
 
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(assetServer: server), localStorage, false);
+			var writer = new ChattelWriter(new ChattelConfiguration(server), localStorage, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,
@@ -369,8 +369,8 @@ namespace ChattelTests {
 				localStorage
 			);
 
-			writer.Received().PutAssetSync(firstAsset);
-			writer.DidNotReceive().PutAssetSync(lastAsset);
+			server.Received().StoreAssetSync(firstAsset);
+			server.DidNotReceive().StoreAssetSync(lastAsset);
 		}
 
 		[Test]
@@ -387,7 +387,7 @@ namespace ChattelTests {
 
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var server = Substitute.For<IAssetServer>();
-			var writer = Substitute.For<ChattelWriter>(new ChattelConfiguration(new List<List<IAssetServer>> { new List<IAssetServer> { server } }), localStorage, false);
+			var writer = new ChattelWriter(new ChattelConfiguration(new List<List<IAssetServer>> { new List<IAssetServer> { server } }), localStorage, false);
 
 			var firstAsset = new StratusAsset {
 				Id = firstId,
