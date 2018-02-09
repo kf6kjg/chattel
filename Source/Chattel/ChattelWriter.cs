@@ -28,6 +28,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
@@ -108,6 +109,7 @@ namespace Chattel {
 			var firstLock = new ReaderWriterLockSlim();
 			try {
 				firstLock.EnterWriteLock();
+
 				var activeLock = _activeWriteLocks.GetOrAdd(asset.Id, firstLock);
 				if (firstLock != activeLock) {
 					LOG.Log(Logging.LogLevel.Warn, () => $"Another thread already storing asset with ID {asset.Id}, halting this call until the first completes, then just returning.");
@@ -159,7 +161,21 @@ namespace Chattel {
 							parallelServers.First().StoreAssetSync(asset);
 						}
 						else {
-							parallelServers.AsParallel().ForAll(server => server.StoreAssetSync(asset));
+							var errorBag = new ConcurrentBag<Exception>();
+
+							Parallel.ForEach(parallelServers, server => {
+								try {
+									server.StoreAssetSync(asset);
+								}
+								catch (Exception e) {
+									errorBag.Add(e);
+								}
+							});
+
+							if (errorBag.Count >= parallelServers.Count()) {
+								// If all the servers choked, then pass the buck.
+								throw new AggregateException(errorBag);
+							}
 						}
 
 						if (activeNode != null) {
