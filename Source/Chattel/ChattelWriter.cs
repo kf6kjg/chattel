@@ -120,7 +120,7 @@ namespace Chattel {
 				// Hit up local storage first.
 				if (_localStorage?.TryGetAsset(asset.Id, out StratusAsset result) ?? false) {
 					_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
-					firstLock.ExitWriteLock();
+					// Lock is cleared in the finally clause.
 					throw new AssetExistsException(asset.Id);
 				}
 
