@@ -63,6 +63,7 @@
     <Compile Include="TestAssetStorageSimpleFolderTree.cs" />
     <Compile Include="TestChattelConfiguration.cs" />
     <Compile Include="TestChattelReader.cs" />
+    <Compile Include="TestChattelWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">
