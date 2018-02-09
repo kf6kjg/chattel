@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Chattel;
 using InWorldz.Data.Assets.Stratus;
@@ -312,14 +313,37 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
+		public void TestChattelReader_GetAssetAsync2_EmptyGuid_CallbackCalled() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var reader = new ChattelReader(config);
+
+			var wait = new AutoResetEvent(false);
+			var callbackWasCalled = false;
+
+			reader.GetAssetAsync(Guid.Empty, resultAsset => {
+				callbackWasCalled = true;
+				wait.Set();
+			});
+
+			wait.WaitOne();
+
+			Assert.True(callbackWasCalled);
+		}
+
+		[Test]
+		[Timeout(500)]
 		public void TestChattelReader_GetAssetAsync2_EmptyGuid_ReturnsNull() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var reader = new ChattelReader(config);
 
+			var wait = new AutoResetEvent(false);
+
 			reader.GetAssetAsync(Guid.Empty, resultAsset => {
 				Assert.Null(resultAsset);
-				Assert.Pass();
+				wait.Set();
 			});
+
+			wait.WaitOne();
 		}
 
 		[Test]
@@ -341,10 +365,14 @@ namespace ChattelTests {
 
 			var reader = new ChattelReader(config, localStorage);
 
+			var wait = new AutoResetEvent(false);
+
 			reader.GetAssetAsync(asset.Id, resultAsset => {
 				Assert.AreEqual(asset, resultAsset);
-				Assert.Pass();
+				wait.Set();
 			});
+
+			wait.WaitOne();
 		}
 
 		[Test]
@@ -360,10 +388,14 @@ namespace ChattelTests {
 
 			var reader = new ChattelReader(config);
 
+			var wait = new AutoResetEvent(false);
+
 			reader.GetAssetAsync(asset.Id, resultAsset => {
 				Assert.AreEqual(asset, resultAsset);
-				Assert.Pass();
+				wait.Set();
 			});
+
+			wait.WaitOne();
 		}
 
 		[Test]
@@ -378,14 +410,20 @@ namespace ChattelTests {
 				Id = Guid.NewGuid(),
 				Name = "Avengers",
 			};
+			server1.WhenForAnyArgs(x => x.StoreAssetSync(asset)).Do(x => throw new AssetWriteException(asset.Id));
+
 			server2.RequestAssetSync(asset.Id).Returns(asset);
 
 			var reader = new ChattelReader(config);
 
+			var wait = new AutoResetEvent(false);
+
 			reader.GetAssetAsync(asset.Id, resultAsset => {
 				Assert.AreEqual(asset, resultAsset);
-				Assert.Pass();
+				wait.Set();
 			});
+
+			wait.WaitOne();
 		}
 
 		[Test]
@@ -401,14 +439,20 @@ namespace ChattelTests {
 				Id = Guid.NewGuid(),
 				Name = "Avengers",
 			};
+			server1.WhenForAnyArgs(x => x.StoreAssetSync(asset)).Do(x => throw new AssetWriteException(asset.Id));
+
 			server2.RequestAssetSync(asset.Id).Returns(asset);
 
 			var reader = new ChattelReader(config);
 
+			var wait = new AutoResetEvent(false);
+
 			reader.GetAssetAsync(asset.Id, resultAsset => {
 				Assert.AreEqual(asset, resultAsset);
-				Assert.Pass();
+				wait.Set();
 			});
+
+			wait.WaitOne();
 		}
 
 		[Test]
@@ -423,7 +467,7 @@ namespace ChattelTests {
 			server
 				.RequestAssetSync(asset.Id)
 				.Returns(x => {
-					System.Threading.Thread.Sleep(500); // Slow server call.
+					Thread.Sleep(500); // Slow server call.
 					return asset;
 				})
 			;
@@ -462,7 +506,7 @@ namespace ChattelTests {
 			server
 				.RequestAssetSync(asset.Id)
 				.Returns(x => {
-					System.Threading.Thread.Sleep(500); // Slow server call.
+					Thread.Sleep(500); // Slow server call.
 					return asset;
 				})
 			;
@@ -510,7 +554,7 @@ namespace ChattelTests {
 			server
 				.RequestAssetSync(asset.Id)
 				.Returns(x => {
-					System.Threading.Thread.Sleep(500); // Slow server call.
+					Thread.Sleep(500); // Slow server call.
 					return asset;
 				})
 			;
