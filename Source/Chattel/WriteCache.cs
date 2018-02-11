@@ -45,6 +45,15 @@ namespace Chattel {
 		private readonly object _writeCacheNodeLock = new object();
 		private WriteCacheNode _nextAvailableWriteCacheNode;
 
+		/// <summary>
+		/// Opens or creates the write cache file. If there are entries in the file that are marked as not uploaded, then
+		/// this ctor loads those assets from the local storage and uploads them to the remotes passed in via the ChattelWriter instance.
+		/// </summary>
+		/// <param name="fileInfo">FileInfo instance for the path where to load or create the write cache file.</param>
+		/// <param name="recordCount">Record count to set the write cache to.</param>
+		/// <param name="writer">ChattelWriter instance for uploading un-finished assets to on load.</param>
+		/// <param name="localStorage">Local storage instace to load unfinished assets from.</param>
+		/// <exception cref="T:Chattel.ChattelConfigurationException">Thrown if there are assets marked as needing to be uploaded but the current configuration prevents uploading.</exception>
 		public WriteCache(FileInfo fileInfo, uint recordCount, ChattelWriter writer, IChattelLocalStorage localStorage) {
 			_fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
 			if (recordCount < 2) {
@@ -115,7 +124,15 @@ namespace Chattel {
 			GetNextAvailableNode();
 		}
 
-		public WriteCache(FileInfo fileInfo, uint recordCount) : this(fileInfo, recordCount, null, null) {
+		/// <summary>
+		/// Opens or creates the write cache file. If there are entries in the file that are marked as not uploaded, then
+		/// this ctor throws a ChattelConfigurationException.
+		/// </summary>
+		/// <param name="fileInfo">FileInfo instance for the path where to load or create the write cache file.</param>
+		/// <param name="recordCount">Record count to set the write cache to.</param>
+		/// <exception cref="T:Chattel.ChattelConfigurationException">Thrown if there are assets marked as needing to be uploaded but the current configuration prevents uploading.</exception>
+		public WriteCache(FileInfo fileInfo, uint recordCount)
+			: this(fileInfo, recordCount, null, null) {
 		}
 
 		private void Initialize(uint recordCount) {
@@ -183,6 +200,10 @@ namespace Chattel {
 			}
 		}
 
+		/// <summary>
+		/// Marks the passed in node as completely uploaded to a remote server and available for reuse, both in memory and on disk.
+		/// </summary>
+		/// <param name="node">Node.</param>
 		public void ClearNode(WriteCacheNode node) {
 			node = node ?? throw new ArgumentNullException(nameof(node));
 
@@ -194,6 +215,11 @@ namespace Chattel {
 			node.IsAvailable = true;
 		}
 
+		/// <summary>
+		/// Marks the next available node as in use and not yet uploaded to a remote server, both on disk and in-memory.
+		/// </summary>
+		/// <returns>The node that was marked as used.</returns>
+		/// <param name="asset">Asset.</param>
 		public WriteCacheNode WriteNode(StratusAsset asset) {
 			asset = asset ?? throw new ArgumentNullException(nameof(asset));
 

@@ -105,6 +105,11 @@ namespace InWorldz.Data.Assets.Stratus {
 
 		#region Conversions
 
+		/// <summary>
+		/// Utility to convert from a WHIP asset to a StratusAsset.
+		/// </summary>
+		/// <returns>The equivalent StratusAsset.</returns>
+		/// <param name="whipAsset">WHIP asset.</param>
 		public static StratusAsset FromWHIPAsset(Whip.Client.Asset whipAsset) {
 			return new StratusAsset {
 				Id = Guid.Parse(whipAsset.Uuid),
@@ -118,6 +123,11 @@ namespace InWorldz.Data.Assets.Stratus {
 			};
 		}
 
+		/// <summary>
+		/// Utility to convert from a StratusAsset to a WHIP asset.
+		/// </summary>
+		/// <returns>The equivalent WHIP asset.</returns>
+		/// <param name="asset">StratusAsset to convert from.</param>
 		public static Whip.Client.Asset ToWHIPAsset(StratusAsset asset) {
 			return new Whip.Client.Asset(
 				asset.Id.ToString(),
@@ -131,7 +141,11 @@ namespace InWorldz.Data.Assets.Stratus {
 			);
 		}
 
-
+		/// <summary>
+		/// Utility to effeciently extract a StratusAsset from a serialized WHIP asset.
+		/// </summary>
+		/// <returns>The StratusAsset converted from the data.</returns>
+		/// <param name="data">Serialized WHIP asset data.</param>
 		public static StratusAsset FromWHIPSerialized(byte[] data) {
 			if (data.Length < HEADER_SIZE) {
 				throw new ArgumentOutOfRangeException(nameof(data), "Not enough data given to deserialize an asset.");
@@ -192,6 +206,11 @@ namespace InWorldz.Data.Assets.Stratus {
 			return asset;
 		}
 
+		/// <summary>
+		/// Utility to effeciently serialize a StratusAsset into a serialized WHIP asset.
+		/// </summary>
+		/// <returns>The byte array converted from the StratusAsset.</returns>
+		/// <param name="asset">The StratusAsset to serialize.</param>
 		public static byte[] ToWHIPSerialized(StratusAsset asset) {
 			byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(asset.Name);
 			byte[] descBytes = System.Text.Encoding.UTF8.GetBytes(asset.Description);
@@ -273,10 +292,22 @@ namespace InWorldz.Data.Assets.Stratus {
 
 		#region Comparison
 
+		/// <summary>
+		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>.
+		/// </summary>
+		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
+		/// <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals(object obj) {
 			return Equals(obj as StratusAsset);
 		}
 
+		/// <summary>
+		/// Determines whether the specified <see cref="InWorldz.Data.Assets.Stratus.StratusAsset"/> is equal to the current <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>.
+		/// </summary>
+		/// <param name="other">The <see cref="InWorldz.Data.Assets.Stratus.StratusAsset"/> to compare with the current <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="InWorldz.Data.Assets.Stratus.StratusAsset"/> is equal to the current
+		/// <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>; otherwise, <c>false</c>.</returns>
 		public bool Equals(StratusAsset other) {
 			return
 				Id == other.Id &&

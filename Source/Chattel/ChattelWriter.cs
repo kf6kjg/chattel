@@ -91,6 +91,9 @@ namespace Chattel {
 		public ChattelWriter(ChattelConfiguration config) : this(config, null, false) {
 		}
 
+		/// <summary>
+		/// Quick check for whether or not any upstream servers were configured.
+		/// </summary>
 		public bool HasUpstream => _config.SerialParallelAssetServers.Any();
 
 		/// <summary>

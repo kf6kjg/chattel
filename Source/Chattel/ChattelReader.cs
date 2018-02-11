@@ -44,6 +44,8 @@ namespace Chattel {
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// If local storage is enabled, but no local storage instance was passed in, automatically sets up and uses the AssetStorageSimpleFolderTree for local storage.
+		/// If purgeLocalStorage is set, purges all assets in the storage.
 		/// </summary>
 		/// <param name="config">Instance of the configuration class.</param>
 		/// <param name="localStorage">Instance of the IChattelLocalStorage interface. If left null, then the default AssetStorageSimpleFolderTree will be instantiated.</param>
@@ -60,17 +62,44 @@ namespace Chattel {
 			}
 		}
 
-		public ChattelReader(ChattelConfiguration config, IChattelLocalStorage localStorage) : this(config, localStorage, false) {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// If local storage is enabled, but no local storage instance was passed in, automatically sets up and uses the AssetStorageSimpleFolderTree for local storage.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		/// <param name="localStorage">Instance of the IChattelLocalStorage interface. If left null, then the default AssetStorageSimpleFolderTree will be instantiated.</param>
+		public ChattelReader(ChattelConfiguration config, IChattelLocalStorage localStorage)
+			: this(config, localStorage, false) {
 		}
 
-		public ChattelReader(ChattelConfiguration config, bool purgeLocalStorage) : this(config, config?.LocalStorageEnabled ?? false ? new AssetStorageSimpleFolderTree(config) : null, purgeLocalStorage)  {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// Automatically sets up and uses the AssetStorageSimpleFolderTree.
+		/// If purgeLocalStorage is set, purges all assets in the storage for local storage.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		/// <param name="purgeLocalStorage">Whether or not to attempt to purge local storage.</param>
+		public ChattelReader(ChattelConfiguration config, bool purgeLocalStorage)
+			: this(config, config?.LocalStorageEnabled ?? false ? new AssetStorageSimpleFolderTree(config) : null, purgeLocalStorage)  {
 		}
 
-		public ChattelReader(ChattelConfiguration config) : this(config, new AssetStorageSimpleFolderTree(config), false) {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:ChattelReader"/> class.
+		/// Automatically sets up and uses the AssetStorageSimpleFolderTree.
+		/// </summary>
+		/// <param name="config">Instance of the configuration class.</param>
+		public ChattelReader(ChattelConfiguration config)
+			: this(config, new AssetStorageSimpleFolderTree(config), false) {
 		}
 
+		/// <summary>
+		/// Quick check for whether or not any upstream servers were configured.
+		/// </summary>
 		public bool HasUpstream => _config.SerialParallelAssetServers.Any();
 
+		/// <summary>
+		/// Ruleset for local storage operations when used as a cache for remote servers.
+		/// </summary>
 		[Flags]
 		public enum CacheRule : uint {
 			Normal = 0,
@@ -84,7 +113,7 @@ namespace Chattel {
 		/// <returns>The asset.</returns>
 		/// <param name="assetId">Asset identifier.</param>
 		/// <param name="handler">Callback delegate to hand the asset to.</param>
-		/// <param name="cacheRule">Bitfield controlling how local storage is to be handled.</param>
+		/// <param name="cacheRule">Bitfield controlling how local storage is to be handled when used as a cache for remote servers.</param>
 		public void GetAssetAsync(Guid assetId, AssetHandler handler, CacheRule cacheRule) {
 			// Ask for null, get null.
 			if (assetId == Guid.Empty) {

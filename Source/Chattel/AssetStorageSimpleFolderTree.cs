@@ -46,6 +46,12 @@ namespace Chattel {
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
 
+		/// <summary>
+		/// Requests that an asset be fetched from the folder tree.
+		/// </summary>
+		/// <returns><c>true</c>, if get asset was found, <c>false</c> otherwise.</returns>
+		/// <param name="assetId">Asset identifier.</param>
+		/// <param name="asset">The resulting asset.</param>
 		public bool TryGetAsset(Guid assetId, out StratusAsset asset) {
 			if (!_config.LocalStorageEnabled) {
 				asset = null;
@@ -109,6 +115,10 @@ namespace Chattel {
 			return false;
 		}
 
+		/// <summary>
+		/// Stores the asset in the folder tree.
+		/// </summary>
+		/// <param name="asset">Asset to store.</param>
 		public void StoreAsset(StratusAsset asset) {
 			if (!_config.LocalStorageEnabled || asset == null) { // Caching is disabled or stupidity.
 				return;
@@ -150,10 +160,20 @@ namespace Chattel {
 			}
 		}
 
+		/// <summary>
+		/// Deletes all files that match the passed filter.
+		/// Fields in each filter element are handled in as an AND condition, while sibling filters are handled in an OR condition.
+		/// Thus if you wanted to purge all assets that have the temp flag set true OR all assets with the local flag set true, you'd have an array of two filter objects, the first would set the temp flag to true, the second would set the local flag to true.
+		/// If instead you wanted to purge all assets that have the temp flag set true AND local flag set true, you'd have an array of a single filter object with both the temp flag and the local flag set to true.
+		/// </summary>
 		public void PurgeAll() {
 			_config.LocalStorageFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
 		}
 
+		/// <summary>
+		/// Delete the specified asset file. Does not remove no-longer-needed folders.
+		/// </summary>
+		/// <param name="assetId">Asset identifier.</param>
 		public void Purge(Guid assetId) {
 			try {
 				File.Delete(UuidToLocalPath(assetId));
