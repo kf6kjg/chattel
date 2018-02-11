@@ -33,10 +33,6 @@ namespace Chattel {
 	/// Configuration parameters for Chattel classes.
 	/// </summary>
 	public class ChattelConfiguration {
-		public static readonly string DEFAULT_DB_FOLDER_PATH = "localstorage";
-		public static readonly string DEFAULT_WRITECACHE_FILE_PATH = "chattel.wcache";
-		public static readonly uint DEFAULT_WRITECACHE_RECORD_COUNT = 1024U * 1024U * 1024U/*1GB*/ / WriteCacheNode.BYTE_SIZE;
-
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<ChattelConfiguration>();
 
 		internal IEnumerable<IEnumerable<IAssetServer>> SerialParallelAssetServers;
