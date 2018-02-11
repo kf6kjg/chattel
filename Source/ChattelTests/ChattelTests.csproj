@@ -64,6 +64,8 @@
     <Compile Include="TestChattelConfiguration.cs" />
     <Compile Include="TestChattelReader.cs" />
     <Compile Include="TestChattelWriter.cs" />
+    <Compile Include="TestDateRange.cs" />
+    <Compile Include="TestAssetFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chattel\Chattel.csproj">

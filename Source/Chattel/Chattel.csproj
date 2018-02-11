@@ -61,6 +61,7 @@
     <Reference Include="System.Reflection.TypeExtensions">
       <HintPath>..\..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChattelReader.cs" />
@@ -84,6 +85,8 @@
     <Compile Include="WriteCacheFullException.cs" />
     <Compile Include="WriteCache.cs" />
     <Compile Include="AssetNotFoundException.cs" />
+    <Compile Include="AssetFilter.cs" />
+    <Compile Include="DateRange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
