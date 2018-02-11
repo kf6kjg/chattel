@@ -28,6 +28,9 @@ using InWorldz.Data.Assets.Stratus;
 using InWorldz.Whip.Client;
 
 namespace Chattel {
+	/// <summary>
+	/// Provides a WHIP-protocol connection to a WHIP or WHIP-compatible asset server.
+	/// </summary>
 	public sealed class AssetServerWHIP : IAssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerWHIP>();
 
@@ -39,6 +42,13 @@ namespace Chattel {
 
 		private RemoteServer _provider;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:Chattel.AssetServerWHIP"/> class by opening up a connection to the remote WHIP server.
+		/// </summary>
+		/// <param name="serverTitle">Server title. Used to provide a visuall handle for this server in the logs.</param>
+		/// <param name="host">Host.</param>
+		/// <param name="port">Port.</param>
+		/// <param name="password">Password.</param>
 		public AssetServerWHIP(string serverTitle, string host, int port, string password) {
 			_serverHandle = serverTitle;
 
@@ -50,9 +60,14 @@ namespace Chattel {
 			_provider.Start(); // TODO: this needs to be started when needed, and shutdown after no usage for a period of time.  Noted that the library doesn't like repeated start stops, it seems to not keep up the auth info, so the whole _whipServer instance would need to be scrapped and reinitialized.
 			var status = _provider.GetServerStatus();
 
-			LOG.Log(Logging.LogLevel.Info, () => $"[WHIP_SERVER] [{_serverHandle}] WHIP connection prepared for host {Host}:{Port}\n'{status}'.");
+			LOG.Log(Logging.LogLevel.Info, () => $"[{_serverHandle}] WHIP connection prepared for host {Host}:{Port}\n'{status}'.");
 		}
 
+		/// <summary>
+		/// Handles an incoming request for an asset from the remote server.
+		/// </summary>
+		/// <returns>The asset or null if not found.</returns>
+		/// <param name="assetID">Asset identifier.</param>
 		public StratusAsset RequestAssetSync(Guid assetID) {
 			Asset whipAsset = null;
 
@@ -60,27 +75,37 @@ namespace Chattel {
 				whipAsset = _provider.GetAsset(assetID.ToString());
 			}
 			catch (AssetServerError e) {
-				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Error getting asset from server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[{_serverHandle}] Error getting asset from server.", e);
 				return null;
 			}
 			catch (AuthException e) {
-				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Authentication error getting asset from server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[{_serverHandle}] Authentication error getting asset from server.", e);
 				return null;
 			}
 
 			return StratusAsset.FromWHIPAsset(whipAsset);
 		}
 
+		/// <summary>
+		/// Handles a request to store an asset to the remote server.
+		/// </summary>
+		/// <param name="asset">Asset.</param>
+		/// <exception cref="T:Chattel.AssetWriteException">Thrown if there was an error storing the asset.</exception>
 		public void StoreAssetSync(StratusAsset asset) {
+			asset = asset ?? throw new ArgumentNullException(nameof(asset));
+			if (asset.Id == Guid.Empty) {
+				throw new ArgumentException("Assets must not have a zero ID");
+			}
+
 			try {
 				_provider.PutAsset(StratusAsset.ToWHIPAsset(asset));
 			}
 			catch (AssetServerError e) {
-				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Error sending asset to server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[{_serverHandle}] Error sending asset to server.", e);
 				throw new AssetWriteException(asset.Id, e);
 			}
 			catch (AuthException e) {
-				LOG.Log(Logging.LogLevel.Error, () => $"[WHIP_SERVER] [{_serverHandle}] Authentication error sending asset to server.", e);
+				LOG.Log(Logging.LogLevel.Error, () => $"[{_serverHandle}] Authentication error sending asset to server.", e);
 				throw new AssetWriteException(asset.Id, e);
 			}
 		}
@@ -108,7 +133,13 @@ namespace Chattel {
 			}
 		}
 
-		// This code added to correctly implement the disposable pattern.
+		/// <summary>
+		/// Releases all resource used by this object.
+		/// </summary>
+		/// <remarks>Call <see cref="IDisposable.Dispose()"/> when you are finished using the objec. The
+		/// <see cref="IDisposable.Dispose()"/> method leaves the object in an unusable state. After
+		/// calling <see cref="IDisposable.Dispose()"/>, you must release all references to the object
+		/// so the garbage collector can reclaim the memory that the object was occupying.</remarks>
 		void IDisposable.Dispose() {
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);

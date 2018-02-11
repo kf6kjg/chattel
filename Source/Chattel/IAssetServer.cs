@@ -27,8 +27,21 @@ using System;
 using InWorldz.Data.Assets.Stratus;
 
 namespace Chattel {
+	/// <summary>
+	/// An interface for common asset server operations.
+	/// </summary>
 	public interface IAssetServer : IDisposable {
+		/// <summary>
+		/// Handles an incoming request for an asset from the remote server.
+		/// </summary>
+		/// <returns>The asset.</returns>
+		/// <param name="assetID">Asset identifier.</param>
 		StratusAsset RequestAssetSync(Guid assetID);
+
+		/// <summary>
+		/// Handles a request to store an asset to the remote server.
+		/// </summary>
+		/// <param name="asset">Asset.</param>
 		void StoreAssetSync(StratusAsset asset);
 	}
 }

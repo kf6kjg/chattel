@@ -33,6 +33,9 @@ using net.openstack.Core.Domain;
 using net.openstack.Core.Exceptions.Response;
 
 namespace Chattel {
+	/// <summary>
+	/// Provides a connection to a Rackspace CloudFiles asset server.
+	/// </summary>
 	public sealed class AssetServerCF : IAssetServer {
 		private static readonly Logging.ILog LOG = Logging.LogProvider.For<AssetServerCF>();
 
@@ -54,6 +57,15 @@ namespace Chattel {
 
 		private InWorldz.Data.Assets.Stratus.CoreExt.ExtendedCloudFilesProvider _provider;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:Chattel.AssetServerCF"/> class by opening up and warming the connection to CF.
+		/// </summary>
+		/// <param name="serverTitle">Server title. Used to provide a visuall handle for this server in the logs.</param>
+		/// <param name="username">Username.</param>
+		/// <param name="apiKey">API key.</param>
+		/// <param name="defaultRegion">Default region.</param>
+		/// <param name="useInternalUrl">If set to <c>true</c> use internal URL.</param>
+		/// <param name="containerPrefix">Container prefix.</param>
 		public AssetServerCF(string serverTitle, string username, string apiKey, string defaultRegion, bool useInternalUrl, string containerPrefix) {
 			_serverHandle = serverTitle;
 
@@ -70,9 +82,14 @@ namespace Chattel {
 			//warm up
 			_provider.GetAccountHeaders(useInternalUrl: UseInternalURL, region: DefaultRegion);
 
-			LOG.Log(Logging.LogLevel.Info, () => $"[CF_SERVER] [{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
+			LOG.Log(Logging.LogLevel.Info, () => $"[{_serverHandle}] CF connection prepared for region '{DefaultRegion}' and prefix '{ContainerPrefix}' under user '{Username}'.");
 		}
 
+		/// <summary>
+		/// Handles an incoming request for an asset from the remote server.
+		/// </summary>
+		/// <returns>The asset or null if not found.</returns>
+		/// <param name="assetID">Asset identifier.</param>
 		public StratusAsset RequestAssetSync(Guid assetID) {
 			string assetIdStr = assetID.ToString();
 
@@ -89,13 +106,19 @@ namespace Chattel {
 				var stratusAsset = ProtoBuf.Serializer.Deserialize<StratusAsset>(memStream);
 
 				if (stratusAsset?.Data == null) {
-					throw new InvalidOperationException($"[CF_SERVER] [{_serverHandle}] Asset deserialization failed. Asset ID: {assetID}, Stream Len: {memStream.Length}");
+					throw new InvalidOperationException($"[{_serverHandle}] Asset deserialization failed. Asset ID: {assetID}, Stream Len: {memStream.Length}");
 				}
 
 				return stratusAsset;
 			}
 		}
 
+		/// <summary>
+		/// Handles a request to store an asset to the remote server.
+		/// </summary>
+		/// <param name="asset">Asset.</param>
+		/// <exception cref="T:Chattel.AssetExistsException">Thrown if the remote server determined that the asset already exists.</exception>
+		/// <exception cref="T:Chattel.AssetWriteException">Thrown when there was an error response from the remote server.</exception>
 		public void StoreAssetSync(StratusAsset asset) {
 			asset = asset ?? throw new ArgumentNullException(nameof(asset));
 			if (asset.Id == Guid.Empty) {
@@ -209,7 +232,7 @@ namespace Chattel {
 			stopwatch.Stop();
 
 			if (stopwatch.ElapsedMilliseconds >= WARNING_TIME) {
-				LOG.Log(Logging.LogLevel.Warn, () => $"[CF_SERVER] [{_serverHandle}] Slow CF operation {opName} took {stopwatch.ElapsedMilliseconds} ms.");
+				LOG.Log(Logging.LogLevel.Warn, () => $"[{_serverHandle}] Slow CF operation {opName} took {stopwatch.ElapsedMilliseconds} ms.");
 			}
 		}
 
@@ -229,7 +252,13 @@ namespace Chattel {
 			}
 		}
 
-		// This code added to correctly implement the disposable pattern.
+		/// <summary>
+		/// Releases all resource used by this object.
+		/// </summary>
+		/// <remarks>Call <see cref="IDisposable.Dispose()"/> when you are finished using the objec. The
+		/// <see cref="IDisposable.Dispose()"/> method leaves the object in an unusable state. After
+		/// calling <see cref="IDisposable.Dispose()"/>, you must release all references to the object
+		/// so the garbage collector can reclaim the memory that the object was occupying.</remarks>
 		void IDisposable.Dispose() {
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
