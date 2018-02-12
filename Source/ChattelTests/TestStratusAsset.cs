@@ -77,10 +77,10 @@ namespace ChattelTests {
 
 		#endregion
 
-		#region Comparison
+		#region Equal(StratusAsset)
 
 		[Test]
-		public static void TestStratusAsset_Equals_Full_Equal() {
+		public static void TestStratusAsset_EqualsStratusAsset_Full_Equal() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -108,7 +108,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_NoData_Equal() {
+		public static void TestStratusAsset_EqualsStratusAsset_NoData_Equal() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Description = "asdf",
@@ -134,7 +134,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_Bare_Equal() {
+		public static void TestStratusAsset_EqualsStratusAsset_Bare_Equal() {
 			var asset1 = new StratusAsset {
 			};
 			var asset2 = new StratusAsset {
@@ -144,7 +144,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_CreateTimeDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_CreateTimeDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -172,7 +172,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_DataDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_DataDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -200,7 +200,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_DataDiffNull_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_DataDiffNull_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -228,7 +228,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_DescriptionDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_DescriptionDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -256,7 +256,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_IdDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_IdDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -284,7 +284,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_LocalDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_LocalDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -312,7 +312,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_NameDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_NameDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -340,7 +340,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_StorageFlagsDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_StorageFlagsDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -368,7 +368,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_TempDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_TempDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -396,7 +396,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestStratusAsset_Equals_TypeDiff_NotEqual() {
+		public static void TestStratusAsset_EqualsStratusAsset_TypeDiff_NotEqual() {
 			var asset1 = new StratusAsset {
 				CreateTime = DateTimeOffset.FromUnixTimeSeconds(1517468421).DateTime,
 				Data = new byte[] { 0, 1, 2, 3 },
@@ -419,6 +419,22 @@ namespace ChattelTests {
 				Temporary = false,
 				Type = 1,
 			};
+
+			Assert.AreNotEqual(asset1, asset2);
+		}
+
+		#endregion
+
+		#region Equal(object)
+
+		// All attempts to test the positive Equals(object) code path with a StratusAsset cast to object never hit that method.
+		// Thus all I've got here is the negative case.
+
+		[Test]
+		public static void TestStratusAsset_EqualsObject_String_NotEqual() {
+			var asset1 = new StratusAsset {
+			};
+			var asset2 = "Not an asset.";
 
 			Assert.AreNotEqual(asset1, asset2);
 		}

@@ -310,6 +310,7 @@ namespace InWorldz.Data.Assets.Stratus {
 		/// <see cref="T:InWorldz.Data.Assets.Stratus.StratusAsset"/>; otherwise, <c>false</c>.</returns>
 		public bool Equals(StratusAsset other) {
 			return
+				other != null &&
 				Id == other.Id &&
 				Type == other.Type &&
 				Local == other.Local &&
