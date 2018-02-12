@@ -36,7 +36,7 @@ using NUnit.Framework;
 
 namespace ChattelTests {
 	[TestFixture]
-	public class TestChattelReader {
+	public static class TestChattelReader {
 		private static readonly DirectoryInfo LOCAL_STORAGE_DIR_INFO = new DirectoryInfo(Constants.LOCAL_STORAGE_PATH);
 
 		[OneTimeSetUp]
@@ -57,53 +57,53 @@ namespace ChattelTests {
 		#region Ctor
 
 		[Test]
-		public void TestChattelReader_Ctor_Null_ArgumentNullException() {
+		public static void TestChattelReader_Ctor_Null_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelReader(null));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_Null_False_ArgumentNullException() {
+		public static void TestChattelReader_Ctor_Null_False_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelReader(null, false));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_Null_Null_ArgumentNullException() {
+		public static void TestChattelReader_Ctor_Null_Null_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelReader(null, null));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_Null_Null_False_ArgumentNullException() {
+		public static void TestChattelReader_Ctor_Null_Null_False_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelReader(null, null, false));
 		}
 
 
 		[Test]
-		public void TestChattelReader_Ctor_BareCfg_DoesntThrow() {
+		public static void TestChattelReader_Ctor_BareCfg_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelReader(config));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BareCfg_False_DoesntThrow() {
+		public static void TestChattelReader_Ctor_BareCfg_False_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelReader(config, false));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BareCfg_Null_DoesntThrow() {
+		public static void TestChattelReader_Ctor_BareCfg_Null_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelReader(config, null));
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BareCfg_Null_False_DoesntThrow() {
+		public static void TestChattelReader_Ctor_BareCfg_Null_False_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelReader(config, null, false));
 		}
 
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -118,7 +118,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -133,7 +133,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_Null_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_Null_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -148,7 +148,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_Null_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_Null_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -164,7 +164,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_LSTree_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_LSTree_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -180,7 +180,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_LSTree_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_LSTree_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -196,7 +196,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_True_PurgesLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -211,7 +211,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_Null_True_PurgesLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_Null_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -226,7 +226,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_Ctor_BasicCfg_LSTree_True_PurgesLocalStorage() {
+		public static void TestChattelReader_Ctor_BasicCfg_LSTree_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -246,7 +246,7 @@ namespace ChattelTests {
 		#region HasUpstream
 
 		[Test]
-		public void TestChattelReader_HasUpstream_None_False() {
+		public static void TestChattelReader_HasUpstream_None_False() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 
 			var reader = new ChattelReader(config);
@@ -255,7 +255,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_HasUpstream_Mocked_True() {
+		public static void TestChattelReader_HasUpstream_Mocked_True() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 
@@ -269,7 +269,7 @@ namespace ChattelTests {
 		#region GetAssetAsync(Guid, AssetHandler)
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync2_LocalCacheIsRead() {
+		public static void TestChattelReader_GetAssetAsync2_LocalCacheIsRead() {
 			// Simply need to verify that CacheRule.Normal is in effect.
 
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
@@ -291,7 +291,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync2_LocalCacheIsWritten() {
+		public static void TestChattelReader_GetAssetAsync2_LocalCacheIsWritten() {
 			// Simply need to verify that CacheRule.Normal is in effect.
 
 			var server = Substitute.For<IAssetServer>();
@@ -313,7 +313,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_EmptyGuid_CallbackCalled() {
+		public static void TestChattelReader_GetAssetAsync2_EmptyGuid_CallbackCalled() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var reader = new ChattelReader(config);
 
@@ -332,7 +332,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_EmptyGuid_ReturnsNull() {
+		public static void TestChattelReader_GetAssetAsync2_EmptyGuid_ReturnsNull() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var reader = new ChattelReader(config);
 
@@ -348,7 +348,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_CachedAsset_ReturnsEqualAsset() {
+		public static void TestChattelReader_GetAssetAsync2_CachedAsset_ReturnsEqualAsset() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var asset = new StratusAsset {
@@ -377,7 +377,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleServer_ReturnsEqualAsset() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleServer_ReturnsEqualAsset() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var asset = new StratusAsset {
@@ -400,7 +400,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_ParallelServer_ReturnsEqualAsset() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_ParallelServer_ReturnsEqualAsset() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(new List<List<IAssetServer>> {
@@ -428,7 +428,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(500)]
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_SerialServer_ReturnsEqualAsset() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_SerialServer_ReturnsEqualAsset() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(new List<List<IAssetServer>> {
@@ -457,7 +457,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(900)] // Must be less than 2x the delay of the server.
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_ReturnsEqualAssetToBoth() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_ReturnsEqualAssetToBoth() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var asset = new StratusAsset {
@@ -496,7 +496,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(900)] // Must be less than 2x the delay of the server.
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_TakeExpectedTime() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_TakeExpectedTime() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var asset = new StratusAsset {
@@ -544,7 +544,7 @@ namespace ChattelTests {
 
 		[Test]
 		[Timeout(900)] // Must be less than 2x the delay of the server.
-		public void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_SingleServerCall() {
+		public static void TestChattelReader_GetAssetAsync2_UncachedAsset_SingleSlowServer_ParallelReads_SingleServerCall() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var asset = new StratusAsset {
@@ -582,7 +582,7 @@ namespace ChattelTests {
 		#region GetAssetAsync(Guid, AssetHandler, CacheRule) Cache Rules with upstream
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleNormal_LocalCacheIsRead() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleNormal_LocalCacheIsRead() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -603,7 +603,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleNormal_LocalCacheIsWritten() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleNormal_LocalCacheIsWritten() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -621,7 +621,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipRead_LocalCacheIsNotRead() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipRead_LocalCacheIsNotRead() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -642,7 +642,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipRead_LocalCacheIsWritten() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipRead_LocalCacheIsWritten() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -660,7 +660,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipWrite_LocalCacheIsRead() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipWrite_LocalCacheIsRead() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -681,7 +681,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipWrite_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipWrite_LocalCacheIsNotWritten() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -699,7 +699,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotRead() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotRead() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -720,7 +720,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_WithUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotWritten() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -742,7 +742,7 @@ namespace ChattelTests {
 		#region GetAssetAsync(Guid, AssetHandler, CacheRule) Cache Rules without upstream
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleNormal_LocalCacheIsRead() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleNormal_LocalCacheIsRead() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var assetId = Guid.NewGuid();
@@ -762,7 +762,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleNormal_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleNormal_LocalCacheIsNotWritten() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var asset = new StratusAsset {
@@ -777,7 +777,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipRead_LocalCacheIsReadAnyway() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipRead_LocalCacheIsReadAnyway() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var assetId = Guid.NewGuid();
@@ -797,7 +797,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipRead_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipRead_LocalCacheIsNotWritten() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var asset = new StratusAsset {
@@ -812,7 +812,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipWrite_LocalCacheIsRead() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipWrite_LocalCacheIsRead() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var assetId = Guid.NewGuid();
@@ -832,7 +832,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipWrite_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipWrite_LocalCacheIsNotWritten() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var asset = new StratusAsset {
@@ -847,7 +847,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipReadWrite_LocalCacheIsReadAnyway() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipReadWrite_LocalCacheIsReadAnyway() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var assetId = Guid.NewGuid();
@@ -867,7 +867,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotWritten() {
+		public static void TestChattelReader_GetAssetAsync3_NoUpstream_CacheRuleSkipReadWrite_LocalCacheIsNotWritten() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var asset = new StratusAsset {

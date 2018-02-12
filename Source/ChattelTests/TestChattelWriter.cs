@@ -34,7 +34,7 @@ using NUnit.Framework;
 
 namespace ChattelTests {
 	[TestFixture]
-	public class TestChattelWriter {
+	public static class TestChattelWriter {
 		private static readonly DirectoryInfo LOCAL_STORAGE_DIR_INFO = new DirectoryInfo(Constants.LOCAL_STORAGE_PATH);
 		private static readonly FileInfo WRITE_CACHE_FILE_INFO = new FileInfo(Constants.WRITE_CACHE_PATH);
 		private const uint WRITE_CACHE_MAX_RECORD_COUNT = 16;
@@ -59,53 +59,53 @@ namespace ChattelTests {
 		#region Ctor
 
 		[Test]
-		public void TestChattelWriter_Ctor_Null_ArgumentNullException() {
+		public static void TestChattelWriter_Ctor_Null_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelWriter(null));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_Null_False_ArgumentNullException() {
+		public static void TestChattelWriter_Ctor_Null_False_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelWriter(null, false));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_Null_Null_ArgumentNullException() {
+		public static void TestChattelWriter_Ctor_Null_Null_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelWriter(null, null));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_Null_Null_False_ArgumentNullException() {
+		public static void TestChattelWriter_Ctor_Null_Null_False_ArgumentNullException() {
 			Assert.Throws<ArgumentNullException>(() => new ChattelWriter(null, null, false));
 		}
 
 
 		[Test]
-		public void TestChattelWriter_Ctor_BareCfg_DoesntThrow() {
+		public static void TestChattelWriter_Ctor_BareCfg_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelWriter(config));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BareCfg_False_DoesntThrow() {
+		public static void TestChattelWriter_Ctor_BareCfg_False_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelWriter(config, false));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BareCfg_Null_DoesntThrow() {
+		public static void TestChattelWriter_Ctor_BareCfg_Null_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelWriter(config, null));
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BareCfg_Null_False_DoesntThrow() {
+		public static void TestChattelWriter_Ctor_BareCfg_Null_False_DoesntThrow() {
 			var config = new ChattelConfiguration(Substitute.For<IAssetServer>());
 			Assert.DoesNotThrow(() => new ChattelWriter(config, null, false));
 		}
 
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -120,7 +120,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -135,7 +135,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_Null_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_Null_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -150,7 +150,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_Null_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_Null_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -166,7 +166,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_LSTree_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_LSTree_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -182,7 +182,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_LSTree_False_DoesntPurgeLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_LSTree_False_DoesntPurgeLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -198,7 +198,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_True_PurgesLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -213,7 +213,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_Null_True_PurgesLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_Null_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var assetId = Guid.NewGuid();
 			TestAssetStorageSimpleFolderTree.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
@@ -228,7 +228,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_LSTree_True_PurgesLocalStorage() {
+		public static void TestChattelWriter_Ctor_BasicCfg_LSTree_True_PurgesLocalStorage() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 			var assetId = Guid.NewGuid();
@@ -244,7 +244,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_Ctor_BasicCfg_CreatesWriteCache() {
+		public static void TestChattelWriter_Ctor_BasicCfg_CreatesWriteCache() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, WRITE_CACHE_MAX_RECORD_COUNT, server);
 
@@ -262,7 +262,7 @@ namespace ChattelTests {
 		#region HasUpstream
 
 		[Test]
-		public void TestChattelWriter_HasUpstream_None_False() {
+		public static void TestChattelWriter_HasUpstream_None_False() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 
 			var writer = new ChattelWriter(config);
@@ -271,7 +271,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_HasUpstream_Mocked_True() {
+		public static void TestChattelWriter_HasUpstream_Mocked_True() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 
@@ -285,7 +285,7 @@ namespace ChattelTests {
 		#region PutAssetSync
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_Null_ArgumentNullException() {
+		public static void TestChattelWriter_PutAssetSync_Null_ArgumentNullException() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 
 			var writer = new ChattelWriter(config);
@@ -294,7 +294,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_EmptyId_ArgumentException() {
+		public static void TestChattelWriter_PutAssetSync_EmptyId_ArgumentException() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 
 			var writer = new ChattelWriter(config);
@@ -305,7 +305,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_Duplicates_AssetExistsException() {
+		public static void TestChattelWriter_PutAssetSync_Duplicates_AssetExistsException() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var writer = new ChattelWriter(config, localStorage);
@@ -323,7 +323,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesLocalStorage_NoRemote() {
+		public static void TestChattelWriter_PutAssetSync_WritesLocalStorage_NoRemote() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var writer = new ChattelWriter(config, localStorage);
@@ -338,7 +338,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesLocalStorage_OneRemote() {
+		public static void TestChattelWriter_PutAssetSync_WritesLocalStorage_OneRemote() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -354,7 +354,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesRemote_NoLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesRemote_NoLocalStorage() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -370,7 +370,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesRemote_WithLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesRemote_WithLocalStorage() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -387,7 +387,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesRemoteSeries_CorrectOrder() {
+		public static void TestChattelWriter_PutAssetSync_WritesRemoteSeries_CorrectOrder() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(new List<List<IAssetServer>> {
@@ -415,7 +415,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesBackupRemoteParallel_NoLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesBackupRemoteParallel_NoLocalStorage() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(new List<List<IAssetServer>> {
@@ -438,7 +438,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesBackupRemoteSerial_NoLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesBackupRemoteSerial_NoLocalStorage() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(new List<List<IAssetServer>> {
@@ -464,7 +464,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesBackupRemoteSerial_WithLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesBackupRemoteSerial_WithLocalStorage() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, new List<List<IAssetServer>> {
@@ -493,7 +493,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesBackupRemoteParallel_WithLocalStorage() {
+		public static void TestChattelWriter_PutAssetSync_WritesBackupRemoteParallel_WithLocalStorage() {
 			var server1 = Substitute.For<IAssetServer>();
 			var server2 = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, new List<List<IAssetServer>> {
@@ -520,7 +520,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_MultipleParallel_DoesntThrow() {
+		public static void TestChattelWriter_PutAssetSync_MultipleParallel_DoesntThrow() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -546,7 +546,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_MultipleParallel_AllReceived() {
+		public static void TestChattelWriter_PutAssetSync_MultipleParallel_AllReceived() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -577,7 +577,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_ServerError_AggregateException() {
+		public static void TestChattelWriter_PutAssetSync_ServerError_AggregateException() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -598,7 +598,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_ServerError_AggregateException_ContainsCorrectException() {
+		public static void TestChattelWriter_PutAssetSync_ServerError_AggregateException_ContainsCorrectException() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -627,7 +627,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_FullWriteCache_WriteCacheFullException() {
+		public static void TestChattelWriter_PutAssetSync_FullWriteCache_WriteCacheFullException() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -662,7 +662,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_FullWriteCache_DoesntHitRemote() {
+		public static void TestChattelWriter_PutAssetSync_FullWriteCache_DoesntHitRemote() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -705,7 +705,7 @@ namespace ChattelTests {
 		// Sequence correctness tests
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_ChecksLocalBeforeWritingLocal() {
+		public static void TestChattelWriter_PutAssetSync_ChecksLocalBeforeWritingLocal() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -723,11 +723,11 @@ namespace ChattelTests {
 			});
 		}
 
-		// Untestable: public void TestChattelWriter_PutAssetSync_WritesLocalBeforeWriteCache()
-		// Untestable: public void TestChattelWriter_PutAssetSync_WritesWriteCacheBeforeRemote() {
+		// Untestable: public static void TestChattelWriter_PutAssetSync_WritesLocalBeforeWriteCache()
+		// Untestable: public static void TestChattelWriter_PutAssetSync_WritesWriteCacheBeforeRemote() {
 
 		[Test]
-		public void TestChattelWriter_PutAssetSync_WritesLocalBeforeRemote() {
+		public static void TestChattelWriter_PutAssetSync_WritesLocalBeforeRemote() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();

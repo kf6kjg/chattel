@@ -31,11 +31,11 @@ using NUnit.Framework;
 
 namespace ChattelTests {
 	[TestFixture]
-	public class TestAssetFilter {
+	public static class TestAssetFilter {
 		#region IdFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_IdFilter_Mismatch_False() {
+		public static void TestAssetFilter_IdFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -48,7 +48,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_IdFilter_Match_True() {
+		public static void TestAssetFilter_IdFilter_Match_True() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -65,7 +65,7 @@ namespace ChattelTests {
 		#region TypeFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_TypeFilter_Mismatch_False() {
+		public static void TestAssetFilter_TypeFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -78,7 +78,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_TypeFilter_Match_True() {
+		public static void TestAssetFilter_TypeFilter_Match_True() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -95,7 +95,7 @@ namespace ChattelTests {
 		#region LocalFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_LocalFilter_Mismatch_False() {
+		public static void TestAssetFilter_LocalFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -108,7 +108,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_LocalFilter_Match_True() {
+		public static void TestAssetFilter_LocalFilter_Match_True() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -125,7 +125,7 @@ namespace ChattelTests {
 		#region TemporaryFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_TemporaryFilter_Mismatch_False() {
+		public static void TestAssetFilter_TemporaryFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -138,7 +138,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_TemporaryFilter_Match_True() {
+		public static void TestAssetFilter_TemporaryFilter_Match_True() {
 			var asset = new StratusAsset {
 				Id = Guid.Parse("d5c70f1f606340c58b9382c5c5a31d69"),
 			};
@@ -155,7 +155,7 @@ namespace ChattelTests {
 		#region CreateTimeRangeFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Nothing_True() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Nothing_True() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -168,7 +168,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Null_Null_True() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Null_Null_True() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -185,7 +185,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_WrongKind_Null_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_WrongKind_Null_False() {
 			
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
@@ -202,7 +202,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Future_Null_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Future_Null_False() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -218,7 +218,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Past_Null_True() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Past_Null_True() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -235,7 +235,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Null_WrongKind_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Null_WrongKind_False() {
 			
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
@@ -252,7 +252,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Null_Future_True() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Null_Future_True() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -268,7 +268,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Null_Past_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Null_Past_False() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -285,7 +285,7 @@ namespace ChattelTests {
 
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_WrongKind_WrongKind_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_WrongKind_WrongKind_False() {
 			
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
@@ -302,7 +302,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Future_Future_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Future_Future_False() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -318,7 +318,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Past_Past_False() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Past_Past_False() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -334,7 +334,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_CreateTimeRangeFilter_Past_Future_True() {
+		public static void TestAssetFilter_CreateTimeRangeFilter_Past_Future_True() {
 			var asset = new StratusAsset {
 				CreateTime = new DateTime(123456789L, DateTimeKind.Utc),
 			};
@@ -354,7 +354,7 @@ namespace ChattelTests {
 		#region NameFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_NameFilter_Mismatch_False() {
+		public static void TestAssetFilter_NameFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Name = "Qwerty",
 			};
@@ -367,7 +367,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_NameFilter_Match_True() {
+		public static void TestAssetFilter_NameFilter_Match_True() {
 			var asset = new StratusAsset {
 				Name = "Qwerty",
 			};
@@ -384,7 +384,7 @@ namespace ChattelTests {
 		#region DescriptionFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_DescriptionFilter_Mismatch_False() {
+		public static void TestAssetFilter_DescriptionFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				Description = "Qwerty",
 			};
@@ -397,7 +397,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_DescriptionFilter_Match_True() {
+		public static void TestAssetFilter_DescriptionFilter_Match_True() {
 			var asset = new StratusAsset {
 				Description = "Qwerty",
 			};
@@ -414,7 +414,7 @@ namespace ChattelTests {
 		#region StorageFlagsFilter MatchAsset
 
 		[Test]
-		public void TestAssetFilter_StorageFlagsFilter_Mismatch_False() {
+		public static void TestAssetFilter_StorageFlagsFilter_Mismatch_False() {
 			var asset = new StratusAsset {
 				StorageFlags = 0b0010,
 			};
@@ -427,7 +427,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_StorageFlagsFilter_Match_True() {
+		public static void TestAssetFilter_StorageFlagsFilter_Match_True() {
 			var asset = new StratusAsset {
 				StorageFlags = 0b0001,
 			};
@@ -440,7 +440,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public void TestAssetFilter_StorageFlagsFilter_PartialMatch_True() {
+		public static void TestAssetFilter_StorageFlagsFilter_PartialMatch_True() {
 			var asset = new StratusAsset {
 				StorageFlags = 0b0011,
 			};
