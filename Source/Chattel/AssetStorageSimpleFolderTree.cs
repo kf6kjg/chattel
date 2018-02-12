@@ -136,11 +136,11 @@ namespace Chattel {
 			try {
 				// Since UuidToLocalPath always returns a path underneath the local storage folder, this will only attempt to create folders there.
 				Directory.CreateDirectory(Directory.GetParent(path).FullName);
-				using (var file = File.Create(path)) {
+				using (var file = File.Open(path, FileMode.CreateNew)) {
 					Serializer.Serialize(file, asset);
 				}
 				// Writing is done, remove it from the work list.
-				_assetsBeingWritten.TryRemove(path, out StratusAsset temp);
+				_assetsBeingWritten.TryRemove(path, out var temp);
 				LOG.Log(Logging.LogLevel.Debug, () => $"[ASSET_READER] Wrote an asset to local storage: {path}");
 			}
 			catch (UnauthorizedAccessException e) {

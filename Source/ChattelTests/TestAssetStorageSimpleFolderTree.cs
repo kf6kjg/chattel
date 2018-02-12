@@ -26,8 +26,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Chattel;
 using InWorldz.Data.Assets.Stratus;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace ChattelTests {
@@ -59,6 +61,15 @@ namespace ChattelTests {
 			using (var file = File.Create(path)) {
 				ProtoBuf.Serializer.Serialize(file, asset);
 			}
+		}
+
+		public static StratusAsset GetLocalStorageEntry(DirectoryInfo localStorage, Guid assetId) {
+			var path = UuidToLocalPath(localStorage, assetId);
+			StratusAsset asset;
+			using (var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+				asset = ProtoBuf.Serializer.Deserialize<StratusAsset>(stream);
+			}
+			return asset;
 		}
 
 		public static bool LocalStorageEntryExists(DirectoryInfo localStorage, Guid assetId) {
@@ -186,6 +197,148 @@ namespace ChattelTests {
 
 			localStorage.TryGetAsset(testAsset.Id, out var asset);
 			Assert.AreEqual(testAsset, asset);
+		}
+
+		#endregion
+
+		#region StoreAsset
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_NoLocalStorage_DoesntThrow() {
+			var server = Substitute.For<IAssetServer>();
+			var config = new ChattelConfiguration(server);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+			};
+
+			Assert.DoesNotThrow(() => localStorage.StoreAsset(testAsset));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_NoLocalStorage_DoesntExist() {
+			var server = Substitute.For<IAssetServer>();
+			var config = new ChattelConfiguration(server);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+			};
+
+			localStorage.StoreAsset(testAsset);
+
+			Assert.IsFalse(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, testAsset.Id));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_Null_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			Assert.DoesNotThrow(() => localStorage.StoreAsset(null));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_Single_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+			};
+
+			Assert.DoesNotThrow(() => localStorage.StoreAsset(testAsset));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_Single_CreatesAsset() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+			};
+
+			localStorage.StoreAsset(testAsset);
+
+			Assert.IsTrue(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, testAsset.Id));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_Single_AssetStoredCorrectly() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+				Description = "7nwtzcv84w78",
+			};
+
+			localStorage.StoreAsset(testAsset);
+
+			Assert.AreEqual(testAsset, GetLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, testAsset.Id));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_ParallelDuplicate_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+				Description = "7nwtzcv84w78",
+			};
+
+			Assert.DoesNotThrow(
+				() =>
+					Parallel.Invoke(
+						() => {
+							localStorage.StoreAsset(testAsset);
+						},
+						() => {
+							localStorage.StoreAsset(testAsset);
+						}
+					)
+			);
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_SerialDuplicate_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var testAsset = new StratusAsset {
+				Id = Guid.NewGuid(),
+				Description = "7nwtzcv84w78",
+			};
+
+			localStorage.StoreAsset(testAsset);
+
+			Assert.DoesNotThrow(() => localStorage.StoreAsset(testAsset));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_StoreAsset_SerialDuplicate_DoesntOverwrite() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+
+			var testAsset1 = new StratusAsset {
+				Id = assetId,
+				Description = "7nwtzcv84w78",
+			};
+
+			var testAsset2 = new StratusAsset {
+				Id = assetId,
+				Description = "f4fn983984",
+			};
+
+			localStorage.StoreAsset(testAsset1);
+			localStorage.StoreAsset(testAsset2);
+
+			Assert.AreEqual(testAsset1, GetLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, testAsset2.Id));
 		}
 
 		#endregion
