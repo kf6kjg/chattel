@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using InWorldz.Data.Assets.Stratus;
@@ -165,9 +166,31 @@ namespace Chattel {
 		/// Fields in each filter element are handled in as an AND condition, while sibling filters are handled in an OR condition.
 		/// Thus if you wanted to purge all assets that have the temp flag set true OR all assets with the local flag set true, you'd have an array of two filter objects, the first would set the temp flag to true, the second would set the local flag to true.
 		/// If instead you wanted to purge all assets that have the temp flag set true AND local flag set true, you'd have an array of a single filter object with both the temp flag and the local flag set to true.
+		/// A null or blank list results in all assets being purged.
 		/// </summary>
-		public void PurgeAll() {
-			_config.LocalStorageFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
+		public void PurgeAll(IEnumerable<AssetFilter> assetFilter) {
+			if (assetFilter == null || !assetFilter.Any()) {
+				_config.LocalStorageFolder.EnumerateDirectories().AsParallel().ForAll(dir => dir.Delete(true));
+				return;
+			}
+
+			var fileInfos = _config.LocalStorageFolder.GetFiles("*.pbasset", SearchOption.AllDirectories);
+
+			fileInfos.AsParallel().ForAll(file => {
+				StratusAsset asset;
+				using (var stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+					asset = Serializer.Deserialize<StratusAsset>(stream);
+				}
+
+				var purgeThisAsset = false;
+				foreach (var filter in assetFilter) {
+					purgeThisAsset |= filter.MatchAsset(asset);
+				}
+
+				if (purgeThisAsset) {
+					file.Delete();
+				}
+			});
 		}
 
 		/// <summary>

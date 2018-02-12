@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Chattel;
 using InWorldz.Data.Assets.Stratus;
@@ -192,14 +193,14 @@ namespace ChattelTests {
 		#region PurgeAll
 
 		[Test]
-		public static void TestAssetStorageSimpleFolderTree_PurgeAll_EmptyLocalStorage_DoesntThrow() {
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_Null_EmptyLocalStorage_DoesntThrow() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
-			Assert.DoesNotThrow(localStorage.PurgeAll);
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(null));
 		}
 
 		[Test]
-		public static void TestAssetStorageSimpleFolderTree_PurgeAll_NonEmptyLocalStorage_DoesntThrow() {
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_Null_NonEmptyLocalStorage_DoesntThrow() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 
@@ -208,11 +209,11 @@ namespace ChattelTests {
 				Id = assetId,
 			});
 
-			Assert.DoesNotThrow(localStorage.PurgeAll);
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(null));
 		}
 
 		[Test]
-		public static void TestAssetStorageSimpleFolderTree_PurgeAll_NonEmptyLocalStorage_RemovesEntry() {
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_Null_NonEmptyLocalStorage_RemovesEntry() {
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			var localStorage = new AssetStorageSimpleFolderTree(config);
 
@@ -221,9 +222,159 @@ namespace ChattelTests {
 				Id = assetId,
 			});
 
-			localStorage.PurgeAll();
+			localStorage.PurgeAll(null);
 
 			Assert.IsFalse(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId));
+		}
+
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_EmptyList_EmptyLocalStorage_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(new List<AssetFilter>{ }));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_EmptyList_NonEmptyLocalStorage_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+			});
+
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(new List<AssetFilter> { }));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_EmptyList_NonEmptyLocalStorage_RemovesEntry() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+			});
+
+			localStorage.PurgeAll(new List<AssetFilter> { });
+
+			Assert.IsFalse(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId));
+		}
+
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_EmptyLocalStorage_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(new List<AssetFilter>{
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			}));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_Match_NonEmptyLocalStorage_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+				Local = true,
+			});
+
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(new List<AssetFilter> {
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			}));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_Match_NonEmptyLocalStorage_RemovesEntry() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+				Local = true,
+			});
+
+			localStorage.PurgeAll(new List<AssetFilter> {
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			});
+
+			Assert.IsFalse(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_Nonmatch_NonEmptyLocalStorage_DoesntThrow() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+				Local = false,
+			});
+
+			Assert.DoesNotThrow(() => localStorage.PurgeAll(new List<AssetFilter> {
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			}));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_Nonmatch_NonEmptyLocalStorage_DoesntRemoveEntry() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId,
+				Local = false,
+			});
+
+			localStorage.PurgeAll(new List<AssetFilter> {
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			});
+
+			Assert.IsTrue(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId));
+		}
+
+		[Test]
+		public static void TestAssetStorageSimpleFolderTree_PurgeAll_SingleFilter_OneMatch_OneMismatch_Correct() {
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			var localStorage = new AssetStorageSimpleFolderTree(config);
+
+			var assetId1 = Guid.NewGuid();
+			var assetId2 = Guid.NewGuid();
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId1,
+				Local = false,
+			});
+			CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new StratusAsset {
+				Id = assetId2,
+				Local = true,
+			});
+
+			localStorage.PurgeAll(new List<AssetFilter> {
+				new AssetFilter {
+					LocalFilter = true,
+				}
+			});
+
+			Assert.IsTrue(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId1));
+			Assert.IsFalse(LocalStorageEntryExists(LOCAL_STORAGE_DIR_INFO, assetId2));
 		}
 
 		#endregion

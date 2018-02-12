@@ -58,7 +58,7 @@ namespace Chattel {
 			}
 
 			if (purgeLocalStorage) {
-				_localStorage?.PurgeAll();
+				_localStorage?.PurgeAll(null);
 			}
 		}
 

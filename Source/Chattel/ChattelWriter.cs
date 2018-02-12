@@ -57,7 +57,7 @@ namespace Chattel {
 			}
 
 			if (purgeLocalStorage) {
-				_localStorage?.PurgeAll();
+				_localStorage?.PurgeAll(null);
 			}
 
 			if (config.LocalStorageEnabled && config.WriteCacheFile != null) {
