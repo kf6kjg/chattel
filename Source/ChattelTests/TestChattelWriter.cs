@@ -627,7 +627,7 @@ namespace ChattelTests {
 		}
 
 		[Test]
-		public static void TestChattelWriter_PutAssetSync_FullWriteCache_WriteCacheFullException() {
+		public static void TestChattelWriter_PutAssetSync_FullWriteCache_BadServer_AggregateException() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
@@ -650,6 +650,7 @@ namespace ChattelTests {
 			catch (AggregateException) {
 				// moving right along.
 			}
+
 			try {
 				writer.PutAssetSync(testAsset);
 			}
@@ -658,22 +659,15 @@ namespace ChattelTests {
 			}
 			// Write cache currenlty requires one left empty.
 
-			Assert.Throws<WriteCacheFullException>(() => writer.PutAssetSync(testAsset));
+			Assert.Throws<AggregateException>(() => writer.PutAssetSync(testAsset));
 		}
 
 		[Test]
-		public static void TestChattelWriter_PutAssetSync_FullWriteCache_DoesntHitRemote() {
+		public static void TestChattelWriter_PutAssetSync_FullWriteCache_HitsRemote() {
 			var server = Substitute.For<IAssetServer>();
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName, WRITE_CACHE_FILE_INFO.FullName, 4, server);
 			var localStorage = Substitute.For<IChattelLocalStorage>();
 			var writer = new ChattelWriter(config, localStorage);
-
-			server
-				.WhenForAnyArgs(x => x.StoreAssetSync(Arg.Any<StratusAsset>()))
-				.Do(x => {
-					throw new Exception(); // Just needs an error to cause remote storage failure.
-				})
-			;
 
 			var testAsset = new StratusAsset {
 				Id = Guid.NewGuid(),
@@ -685,21 +679,23 @@ namespace ChattelTests {
 			catch (AggregateException) {
 				// moving right along.
 			}
+
 			try {
 				writer.PutAssetSync(testAsset);
 			}
 			catch (AggregateException) {
 				// moving right along.
 			}
+
 			try {
 				writer.PutAssetSync(testAsset);
 			}
 			catch (WriteCacheFullException) {
 				// moving right along.
 			}
-			// Write cache currenlty requires one left empty.
+			// Write cache currently requires one left empty.
 
-			server.Received(2).StoreAssetSync(testAsset);
+			server.Received(3).StoreAssetSync(testAsset);
 		}
 
 		// Sequence correctness tests

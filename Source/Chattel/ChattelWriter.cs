@@ -147,9 +147,9 @@ namespace Chattel {
 						success = true;
 					}
 				}
-				catch (WriteCacheFullException) {
-					// Let this exception out: the user requested a writecache and now it's full, so storing an asset should immediately fail as there's no way to be certain that the asset will be safely retained as requested.
-					throw;
+				catch (WriteCacheFullException e) {
+					LOG.Log(Logging.LogLevel.Warn, () => $"Local cache is full, attempting remote servers before failing.", e);
+					exceptions.Add(e);
 				}
 				catch (Exception e) {
 					exceptions.Add(e);
@@ -203,7 +203,7 @@ namespace Chattel {
 				}
 
 				if (!success) {
-					throw new AggregateException("Unable to store asset in any asset server. See inner exceptions for details.", exceptions);
+					throw new AggregateException("Unable to store asset anywhere. See inner exceptions for details.", exceptions);
 				}
 			}
 			finally {
