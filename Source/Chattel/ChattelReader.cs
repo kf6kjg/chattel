@@ -158,6 +158,11 @@ namespace Chattel {
 
 					lock (listeners) { // Prevent new listeners from being added.
 						Parallel.ForEach(listeners, waiting_handler => {
+							if (waiting_handler == null) {
+								LOG.Log(Logging.LogLevel.Warn, () => $"Attempted to process a handler for assetId {assetId} that was null!");
+								return;
+							}
+
 							try {
 								waiting_handler(result);
 							}
