@@ -134,9 +134,8 @@ namespace Chattel {
 				}
 
 				var listeners = new Queue<AssetHandler>();
+				listeners.Enqueue(handler); // Add myself to the new listeners list first thing, assuming, probably wrongly, that the following test is true.  If wrong, meh: this queue gets dropped like an old potato.
 				if (_idsBeingFetched.TryAdd(assetId, listeners)) {
-					listeners.Enqueue(handler);
-
 					// Got to go try the servers now.
 					foreach (var parallelServers in _config.SerialParallelAssetServers) {
 						if (parallelServers.Count() == 1) { // Optimization: no need to hit up the parallel stuff if there's only 1.
