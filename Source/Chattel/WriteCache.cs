@@ -104,7 +104,7 @@ namespace Chattel {
 			foreach (var assetCacheNode in assetsToBeSentUpstream) {
 				LOG.Log(Logging.LogLevel.Debug, () => $"Attempting to remotely store {assetCacheNode.AssetId}.");
 
-				if (localStorage.TryGetAsset(assetCacheNode.AssetId, out StratusAsset asset)) {
+				if (localStorage.TryGetAsset(assetCacheNode.AssetId, out var asset)) {
 					try {
 						writer.PutAssetSync(asset);
 					}

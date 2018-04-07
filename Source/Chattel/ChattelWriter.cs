@@ -123,8 +123,8 @@ namespace Chattel {
 				}
 
 				// Hit up local storage first.
-				if (_localStorage?.TryGetAsset(asset.Id, out StratusAsset result) ?? false) {
-					_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
+				if (_localStorage?.TryGetAsset(asset.Id, out var result) ?? false) {
+					_activeWriteLocks.TryRemove(asset.Id, out var lockObj);
 					// Lock is cleared in the finally clause.
 					throw new AssetExistsException(asset.Id);
 				}
@@ -207,7 +207,7 @@ namespace Chattel {
 				}
 			}
 			finally {
-				_activeWriteLocks.TryRemove(asset.Id, out ReaderWriterLockSlim lockObj);
+				_activeWriteLocks.TryRemove(asset.Id, out var lockObj);
 				firstLock.ExitWriteLock();
 			}
 		}

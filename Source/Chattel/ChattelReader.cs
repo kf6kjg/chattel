@@ -171,7 +171,7 @@ namespace Chattel {
 							}
 						});
 
-						_idsBeingFetched.TryRemove(assetId, out Queue<AssetHandler> trash);
+						_idsBeingFetched.TryRemove(assetId, out var trash);
 					}
 
 					if (exceptions.Count > 0) {
