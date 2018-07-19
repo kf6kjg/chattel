@@ -23,56 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SpeedTests {
-	public class SerialRunner : TestRunner {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		private readonly uint _iterations;
-
-		public SerialRunner(uint iterations) {
-			_iterations = iterations;
-		}
-
-		public override void RunTest(object instance, System.Reflection.MethodInfo test) {
-			var className = instance.GetType().Name;
-
-			var testParams = new object[] { };
-
-			var stopWatch = new Stopwatch();
-
-			var failures = 0ul;
-
-			LOG.Debug($"Serial test of {className}.{test.Name} starting...");
-			stopWatch.Restart();
-
-			for (uint count = 0; count < _iterations; ++count) {
-				try {
-					stopWatch.Stop();
-					if (instance is ITestSetUp setup) {
-						setup.SetUp();
-					}
-					stopWatch.Start();
-
-					test.Invoke(instance, testParams);
-
-					stopWatch.Stop();
-					if (instance is ITestTearDown teardown) {
-						teardown.TearDown();
-					}
-					stopWatch.Start();
-				}
-				catch (System.Reflection.TargetInvocationException e) {
-					if (e.InnerException is TestFailedException testException) {
-						++failures;
-						LOG.Info($"  Test failed with message: {testException.Message}");
-					}
-				}
-			}
-
-			stopWatch.Stop();
-			LOG.Info($"Serial test of {className}.{test.Name} took {stopWatch.ElapsedMilliseconds}ms over {_iterations - failures} successful and {failures} failed iterations for an average of {(double) stopWatch.ElapsedMilliseconds / _iterations}ms/call.");
+	public class SerialRunner : ParallelRunner {
+		public SerialRunner(uint iterations) : base(iterations, 1) {
+			_name = "Serial";
 		}
 	}
 }

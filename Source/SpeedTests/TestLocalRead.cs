@@ -40,10 +40,7 @@ namespace SpeedTests {
 			ChattelCleanup.CreateLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
 			_reader = new ChattelReader(config);
-		}
 
-		void ITestSetUp.SetUp() {
-			ChattelCleanup.CreateLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 			ChattelCleanup.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new InWorldz.Data.Assets.Stratus.StratusAsset {
 				Id = _knownAssetId = Guid.NewGuid(),
 				Name = "Adama",
@@ -51,8 +48,10 @@ namespace SpeedTests {
 			});
 		}
 
+		void ITestSetUp.SetUp() {
+		}
+
 		void ITestTearDown.TearDown() {
-			ChattelCleanup.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 		}
 
 		#region IDisposable Support

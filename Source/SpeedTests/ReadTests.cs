@@ -57,7 +57,7 @@ namespace SpeedTests {
 					throw new TestFailedException("Asset fetch timeout.");
 				}
 
-				throw new TestFailedException("Asset not found");
+				throw new TestFailedException("Asset not found.");
 			}
 		}
 	}

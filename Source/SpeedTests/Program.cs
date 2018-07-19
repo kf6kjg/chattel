@@ -33,11 +33,13 @@ namespace SpeedTests {
 
 			LOG.Info("Starting up speed tests...");
 
-			var serialRunner = new SerialRunner(10);
+			var serialRunner = new SerialRunner(1000);
+			var parallelRunner = new ParallelRunner(1000, -1);
 
 			// Do some tests
 			using (var tests = new TestLocalRead(1024*1024)) {
 				serialRunner.RunTests(tests);
+				parallelRunner.RunTests(tests);
 			}
 		}
 	}
