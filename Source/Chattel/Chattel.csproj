@@ -46,22 +46,22 @@
     <Reference Include="InWorldz.Whip.Client">
       <HintPath>..\..\packages\InWorldz.Whip.Client.1.1.0.6\lib\net461\InWorldz.Whip.Client.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>..\..\packages\protobuf-net.2.3.5\lib\net40\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework" />
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\packages\protobuf-net.2.3.13\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="Flurl">
-      <HintPath>..\..\packages\Flurl.Signed.2.3.0\lib\netstandard1.4\Flurl.dll</HintPath>
+      <HintPath>..\..\packages\Flurl.Signed.2.7.1\lib\net40\Flurl.dll</HintPath>
     </Reference>
     <Reference Include="System.Reflection.TypeExtensions">
-      <HintPath>..\..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
+      <HintPath>..\..\packages\System.Reflection.TypeExtensions.4.5.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChattelReader.cs" />
