@@ -87,6 +87,15 @@ Global
 		$2.NewParentheses = False
 		$2.SpacesBeforeBrackets = False
 		$2.scope = text/x-csharp
+		$2.NewLinesForBracesInTypes = False
+		$2.NewLinesForBracesInMethods = False
+		$2.NewLinesForBracesInProperties = False
+		$2.NewLinesForBracesInAccessors = False
+		$2.NewLinesForBracesInAnonymousMethods = False
+		$2.NewLinesForBracesInControlBlocks = False
+		$2.NewLinesForBracesInAnonymousTypes = False
+		$2.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$2.NewLinesForBracesInLambdaExpressionBody = False
 		$0.TextStylePolicy = $3
 		$3.TabWidth = 2
 		$3.IndentWidth = 2
