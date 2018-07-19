@@ -33,6 +33,13 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\packages\protobuf-net.2.3.13\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -42,6 +49,10 @@
     <Compile Include="Runners\TestRunner.cs" />
     <Compile Include="Runners\SerialRunner.cs" />
     <Compile Include="TestFailedException.cs" />
+    <Compile Include="Util\ChattelCleanup.cs" />
+    <Compile Include="Util\Constants.cs" />
+    <Compile Include="ITestSetUp.cs" />
+    <Compile Include="ITestTearDown.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -49,6 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Runners\" />
+    <Folder Include="Util\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chattel\Chattel.csproj">
+      <Project>{2EEF5095-2220-4A49-BFF1-4022C62FD762}</Project>
+      <Name>Chattel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

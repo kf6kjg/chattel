@@ -1,4 +1,4 @@
-﻿// Program.cs
+﻿// Constants.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -22,23 +22,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.IO;
 
 namespace SpeedTests {
-	class MainClass {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+	internal static class Constants {
+		public static readonly string EXECUTABLE_DIRECTORY;
 
-		public static void Main(string[] args) {
-			log4net.Config.XmlConfigurator.Configure();
+		public static readonly string INI_FILE_PATH;
 
-			LOG.Info("Starting up speed tests...");
+		public static readonly string LOG_CONFIG_PATH;
 
-			var serialRunner = new SerialRunner(10);
+		public static readonly string LOCAL_STORAGE_PATH;
 
-			// Do some tests
-			using (var tests = new TestLocalRead(1024*1024)) {
-				serialRunner.RunTests(tests);
-			}
+		public static readonly string WRITE_CACHE_PATH;
+
+		static Constants() {
+			EXECUTABLE_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory;
+			INI_FILE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "SpeedTests.ini");
+			LOG_CONFIG_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "SpeedTests.config");
+			LOCAL_STORAGE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "SpeedTestsStorage");
+			WRITE_CACHE_PATH = Path.Combine(EXECUTABLE_DIRECTORY, "SpeedTests.wcache");
 		}
 	}
 }

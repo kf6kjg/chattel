@@ -23,10 +23,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.IO;
+using Chattel;
+
 namespace SpeedTests {
-	public class TestLocalRead : ReadTests, IDisposable {
-		
-		public TestLocalRead() {
+	public class TestLocalRead : ReadTests, ITestSetUp, ITestTearDown, IDisposable {
+		private static readonly DirectoryInfo LOCAL_STORAGE_DIR_INFO = new DirectoryInfo(Constants.LOCAL_STORAGE_PATH);
+
+		private readonly uint _dataSize;
+
+		public TestLocalRead(uint assetDataSize) {
+			_dataSize = assetDataSize;
+
+			ChattelCleanup.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
+
+			ChattelCleanup.CreateLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
+			var config = new ChattelConfiguration(LOCAL_STORAGE_DIR_INFO.FullName);
+			_reader = new ChattelReader(config);
+		}
+
+		void ITestSetUp.SetUp() {
+			ChattelCleanup.CreateLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
+			ChattelCleanup.CreateLocalStorageEntry(LOCAL_STORAGE_DIR_INFO, new InWorldz.Data.Assets.Stratus.StratusAsset {
+				Id = _knownAssetId = Guid.NewGuid(),
+				Name = "Adama",
+				Data = new byte[_dataSize],
+			});
+		}
+
+		void ITestTearDown.TearDown() {
+			ChattelCleanup.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 		}
 
 		#region IDisposable Support
@@ -36,28 +62,22 @@ namespace SpeedTests {
 		protected virtual void Dispose(bool disposing) {
 			if (!disposedValue) {
 				if (disposing) {
-					// TODO: dispose managed state (managed objects).
+					// dispose managed state (managed objects).
+					_reader = null;
+					ChattelCleanup.CleanLocalStorageFolder(LOCAL_STORAGE_DIR_INFO);
 				}
 
-				// TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-				// TODO: set large fields to null.
+				// free unmanaged resources (unmanaged objects) and override a finalizer below.
+				// set large fields to null.
 
 				disposedValue = true;
 			}
 		}
 
-		// TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-		// ~TestLocalRead() {
-		//   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-		//   Dispose(false);
-		// }
-
 		// This code added to correctly implement the disposable pattern.
 		public void Dispose() {
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
-			// TODO: uncomment the following line if the finalizer is overridden above.
-			// GC.SuppressFinalize(this);
 		}
 
 		#endregion

@@ -49,7 +49,19 @@ namespace SpeedTests {
 
 			for (uint count = 0; count < _iterations; ++count) {
 				try {
+					stopWatch.Stop();
+					if (instance is ITestSetUp setup) {
+						setup.SetUp();
+					}
+					stopWatch.Start();
+
 					test.Invoke(instance, testParams);
+
+					stopWatch.Stop();
+					if (instance is ITestTearDown teardown) {
+						teardown.TearDown();
+					}
+					stopWatch.Start();
 				}
 				catch (System.Reflection.TargetInvocationException e) {
 					if (e.InnerException is TestFailedException testException) {

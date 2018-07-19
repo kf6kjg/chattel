@@ -23,16 +23,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Diagnostics;
+using System.Threading;
+using Chattel;
+using InWorldz.Data.Assets.Stratus;
+
 namespace SpeedTests {
 	public class ReadTests {
 		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected void TestExamplePass() {
-			LOG.Info("TestExample ran.");
-		}
+		private const int TIMEOUT_MS = 100;
 
-		protected void TestExampleFail() {
-			throw new TestFailedException("It's supposed to fail.");
+		protected ChattelReader _reader;
+		protected Guid _knownAssetId;
+
+		protected void TestAssetKnownExists() {
+			StratusAsset asset = null;
+			var stopWatch = new Stopwatch();
+
+			stopWatch.Reset();
+			using (var wait = new AutoResetEvent(false)) {
+				_reader.GetAssetAsync(_knownAssetId, (a) => {
+					asset = a;
+					wait.Set();
+				});
+
+				wait.WaitOne(TIMEOUT_MS);
+			}
+			stopWatch.Stop();
+
+			if (asset == null) {
+				if (stopWatch.ElapsedMilliseconds >= 100) {
+					throw new TestFailedException("Asset fetch timeout.");
+				}
+
+				throw new TestFailedException("Asset not found");
+			}
 		}
 	}
 }

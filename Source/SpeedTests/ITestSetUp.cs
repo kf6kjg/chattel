@@ -1,4 +1,4 @@
-﻿// Program.cs
+﻿// ITestSetUp.cs
 //
 // Author:
 //       Ricky Curtice <ricky@rwcproductions.com>
@@ -23,22 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-
 namespace SpeedTests {
-	class MainClass {
-		private static readonly log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public static void Main(string[] args) {
-			log4net.Config.XmlConfigurator.Configure();
-
-			LOG.Info("Starting up speed tests...");
-
-			var serialRunner = new SerialRunner(10);
-
-			// Do some tests
-			using (var tests = new TestLocalRead(1024*1024)) {
-				serialRunner.RunTests(tests);
-			}
-		}
+	public interface ITestSetUp {
+		void SetUp();
 	}
 }
