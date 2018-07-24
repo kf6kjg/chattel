@@ -56,9 +56,11 @@ namespace SpeedTests {
 		}
 
 		void ITestSetUp.SetUp() {
+			// Add any per-test setup code here.
 		}
 
 		void ITestTearDown.TearDown() {
+			// Add any per-test teardown code here.
 		}
 
 		#region IDisposable Support
